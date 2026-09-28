@@ -11,7 +11,7 @@
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%230b132b'/%3E%3Cpath d='M20 35h12v30H20zM68 35h12v30H68z' fill='%232ec4b6'/%3E%3Cpath d='M32 42h36v16H32z' fill='%23ff6b35'/%3E%3Cpath d='M14 42h6v16h-6zM80 42h6v16h-6z' fill='%23ffd166'/%3E%3C/svg%3E">
   <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%230b132b'/%3E%3Cpath d='M20 35h12v30H20zM68 35h12v30H68z' fill='%232ec4b6'/%3E%3Cpath d='M32 42h36v16H32z' fill='%23ff6b35'/%3E%3Cpath d='M14 42h6v16h-6zM80 42h6v16h-6z' fill='%23ffd166'/%3E%3C/svg%3E">
   
-  <title>Mi Gym App V4.36</title>
+  <title>Mi Gym App V4.37</title>
   <style>
     :root {
       --bg-color: #0b132b;    /* Azul oscuro profundo */
@@ -32,19 +32,14 @@
       --tech-yellow: #ffd166;
       --tech-red: #e63946;
     }
+    /* Modo AMOLED: solo los fondos azul oscuro pasan a negro absoluto (píxeles apagados) */
     body.amoled {
       --bg-color: #000000;
       --card-bg: #000000;
-      --card-border: #333333;
-      --surface-1: #0a0a0a;
+      --surface-1: #000000;
       --surface-2: #000000;
-      --accent: #ffffff;
-      --text: #ffffff;
-      --text-dim: #aaaaaa;
-      --blue: #ffffff;
-      --purple: #ffffff;
     }
-    body.amoled .chip-btn.selected, body.amoled .chart-tab-btn.active { color: #000000; }
+    html:has(body.amoled) { background: #000000; }
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, sans-serif; touch-action: manipulation; -webkit-touch-callout: none; -webkit-user-select: none; user-select: none; }
     input, textarea, select { -webkit-user-select: auto; user-select: auto; }
     input, textarea, select { -webkit-user-select: auto; user-select: auto; }
@@ -543,7 +538,7 @@
   <!-- VISTA 1: INICIO (ENTRENAMIENTO) -->
   <div id="view-routines">
     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
-      <h1 style="margin-bottom:0; color:var(--text); font-size:1.6rem; letter-spacing:0.5px;">MiGymApp <span style="font-size:0.75rem; color:var(--green); font-weight:bold;">V4.36</span></h1>
+      <h1 style="margin-bottom:0; color:var(--text); font-size:1.6rem; letter-spacing:0.5px;">MiGymApp <span style="font-size:0.75rem; color:var(--green); font-weight:bold;">V4.37</span></h1>
       <button onclick="openAppSettingsModal()" style="background:none; border:none; color:var(--text-dim); padding:6px; cursor:pointer; display:flex; align-items:center; transition:color 0.2s;" title="Ajustes de la App">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
       </button>
@@ -1305,7 +1300,7 @@
 
       <div style="background:var(--surface-1); border:1px solid var(--card-border); padding:14px; border-radius:12px; margin-bottom:15px;">
         <label style="display:flex; align-items:center; justify-content:space-between; cursor:pointer; font-weight:bold; color:#fff; font-size:0.95rem; margin:0;">
-          <span>Modo AMOLED (ahorro batería)</span>
+          <span>Fondo negro absoluto (AMOLED)</span>
           <input type="checkbox" id="chk-amoled-mode" onchange="toggleAmoledModeSetting(this.checked)" style="width:20px; height:20px; accent-color:var(--green); cursor:pointer;">
         </label>
       </div>
@@ -1386,7 +1381,7 @@
     <!-- PANEL DE DATOS DE LA SERIE -->
     <div id="timer-inputs-panel" style="width: 100%; max-width: 340px;">
       
-      <div style="background: rgba(28,37,65,0.7); border:1px solid var(--card-border); padding:15px; border-radius:14px; margin-bottom:12px;">
+      <div style="background: var(--card-bg); border:1px solid var(--card-border); padding:15px; border-radius:14px; margin-bottom:12px;">
         <div style="font-size:0.85rem; color:var(--text-dim); margin-bottom:8px;">Técnica:</div>
         <div class="tech-dots-container" style="margin:0;">
           <button class="tech-dot-btn dot-grey selected" id="timer-dot-grey" onclick="setTechnique('-', this)"></button>
@@ -4788,28 +4783,49 @@
       syncGearFromSetEditor();
     }
 
+    function setEditorStep(prefix, i, field, delta) {
+      const s = setEditor.sets[i];
+      if (!s) return;
+      setEditorChange(i, field, Math.max(field === 'rest' ? 0 : 1, (parseInt(s[field]) || 0) + delta));
+      renderSetEditor(prefix);
+    }
+
+    function setEditorSetCount(prefix, value) {
+      let n = parseInt(value);
+      if (isNaN(n)) { renderSetEditor(prefix); return; }
+      n = Math.min(20, Math.max(1, n));
+      while (setEditor.sets.length < n) {
+        const last = setEditor.sets[setEditor.sets.length - 1] || { min: 8, max: 12, rest: 90, note: '' };
+        setEditor.sets.push({ min: last.min, max: last.max, rest: last.rest, note: last.note || '' });
+      }
+      while (setEditor.sets.length > n) setEditor.sets.pop();
+      syncGearFromSetEditor();
+      renderSetEditor(prefix);
+    }
+
     function renderSetEditor(prefix) {
       const el = document.getElementById(prefix + '-setedit');
       if (!el) return;
       const tabs = [['reps', '🔁', 'Repeticiones'], ['rest', '⏱️', 'Descanso'], ['note', '📝', 'Notas']];
-      const inputStyle = 'width:100%; padding:8px; text-align:center; font-size:0.95rem; margin-top:0;';
+      const btn = 'width:30px; height:30px; font-size:1.1rem; flex-shrink:0; padding:0;';
+      const inp = 'flex:1; min-width:0; padding:6px 2px; text-align:center; font-size:0.95rem; margin-top:0;';
+      const stepper = (i, field, step, val) => `
+          <div style="display:flex; align-items:center; gap:4px; flex:1; min-width:0;">
+            <button type="button" class="num-btn" style="${btn}" onclick="setEditorStep('${prefix}', ${i}, '${field}', -${step})">-</button>
+            <input type="number" inputmode="numeric" value="${val}" style="${inp}" onchange="setEditorChange(${i}, '${field}', this.value); renderSetEditor('${prefix}')">
+            <button type="button" class="num-btn" style="${btn}" onclick="setEditorStep('${prefix}', ${i}, '${field}', ${step})">+</button>
+          </div>`;
       let rows = setEditor.sets.map((s, i) => {
         let field = '';
         if (setEditor.tab === 'reps') {
-          field = `<div style="display:flex; align-items:center; gap:6px; flex:1;">
-              <input type="number" inputmode="numeric" value="${s.min}" style="${inputStyle}" onchange="setEditorChange(${i}, 'min', this.value); renderSetEditor('${prefix}')">
-              <span style="color:var(--text-dim);">–</span>
-              <input type="number" inputmode="numeric" value="${s.max}" style="${inputStyle}" onchange="setEditorChange(${i}, 'max', this.value); renderSetEditor('${prefix}')">
-              <span style="color:var(--text-dim); font-size:0.8rem;">reps</span></div>`;
+          field = `${stepper(i, 'min', 1, s.min)}<span style="color:var(--text-dim);">–</span>${stepper(i, 'max', 1, s.max)}`;
         } else if (setEditor.tab === 'rest') {
-          field = `<div style="display:flex; align-items:center; gap:6px; flex:1;">
-              <input type="number" inputmode="numeric" step="15" value="${s.rest}" style="${inputStyle}" onchange="setEditorChange(${i}, 'rest', this.value)">
-              <span style="color:var(--text-dim); font-size:0.8rem;">seg</span></div>`;
+          field = `${stepper(i, 'rest', 15, s.rest)}<span style="color:var(--text-dim); font-size:0.8rem;">seg</span>`;
         } else {
-          field = `<input type="text" value="${(s.note || '').replace(/"/g, '&quot;')}" placeholder="Nota de esta serie..." style="${inputStyle} text-align:left; flex:1;" onchange="setEditorChange(${i}, 'note', this.value)">`;
+          field = `<input type="text" value="${(s.note || '').replace(/"/g, '&quot;')}" placeholder="Nota de esta serie..." style="${inp} text-align:left; padding:8px;" onchange="setEditorChange(${i}, 'note', this.value)">`;
         }
-        return `<div style="display:flex; align-items:center; gap:10px; margin-bottom:8px;">
-            <span style="width:58px; font-size:0.85rem; font-weight:bold; color:var(--text-dim);">Serie ${i + 1}</span>${field}</div>`;
+        return `<div style="display:flex; align-items:center; gap:6px; margin-bottom:8px;">
+            <span style="width:54px; flex-shrink:0; white-space:nowrap; font-size:0.78rem; font-weight:bold; color:var(--text-dim);">Serie ${i + 1}</span>${field}</div>`;
       }).join('');
 
       el.innerHTML = `
@@ -4818,9 +4834,9 @@
         </div>
         <div style="display:flex; align-items:center; justify-content:space-between; background:var(--surface-1); border:1px solid var(--card-border); padding:8px 12px; border-radius:10px; margin-bottom:10px;">
           <span style="font-size:0.9rem; font-weight:bold; color:var(--text);">Series</span>
-          <div style="display:flex; align-items:center; gap:10px;">
+          <div style="display:flex; align-items:center; gap:8px;">
             <button type="button" class="num-btn" style="width:36px; height:36px; font-size:1.2rem;" onclick="setEditorAdjustSets('${prefix}', -1)">-</button>
-            <span style="font-size:1.3rem; font-weight:bold; min-width:28px; text-align:center;">${setEditor.sets.length}</span>
+            <input type="number" inputmode="numeric" value="${setEditor.sets.length}" style="width:52px; padding:6px 2px; text-align:center; font-size:1.2rem; font-weight:bold; margin-top:0;" onchange="setEditorSetCount('${prefix}', this.value)">
             <button type="button" class="num-btn" style="width:36px; height:36px; font-size:1.2rem;" onclick="setEditorAdjustSets('${prefix}', 1)">+</button>
           </div>
         </div>
