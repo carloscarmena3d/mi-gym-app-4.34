@@ -11,7 +11,7 @@
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%230b132b'/%3E%3Cpath d='M20 35h12v30H20zM68 35h12v30H68z' fill='%232ec4b6'/%3E%3Cpath d='M32 42h36v16H32z' fill='%23ff6b35'/%3E%3Cpath d='M14 42h6v16h-6zM80 42h6v16h-6z' fill='%23ffd166'/%3E%3C/svg%3E">
   <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%230b132b'/%3E%3Cpath d='M20 35h12v30H20zM68 35h12v30H68z' fill='%232ec4b6'/%3E%3Cpath d='M32 42h36v16H32z' fill='%23ff6b35'/%3E%3Cpath d='M14 42h6v16h-6zM80 42h6v16h-6z' fill='%23ffd166'/%3E%3C/svg%3E">
   
-  <title>Mi Gym App V4.34</title>
+  <title>Mi Gym App V4.36</title>
   <style>
     :root {
       --bg-color: #0b132b;    /* Azul oscuro profundo */
@@ -25,7 +25,26 @@
       --yellow: #ffd166;
       --blue: #3a86ff;
       --purple: #a855f7;
+      --surface-1: #111d38;
+      --surface-2: #0f172a;
+      /* Colores fijos del semáforo de técnica: no cambian en modo AMOLED */
+      --tech-green: #2ec4b6;
+      --tech-yellow: #ffd166;
+      --tech-red: #e63946;
     }
+    body.amoled {
+      --bg-color: #000000;
+      --card-bg: #000000;
+      --card-border: #333333;
+      --surface-1: #0a0a0a;
+      --surface-2: #000000;
+      --accent: #ffffff;
+      --text: #ffffff;
+      --text-dim: #aaaaaa;
+      --blue: #ffffff;
+      --purple: #ffffff;
+    }
+    body.amoled .chip-btn.selected, body.amoled .chart-tab-btn.active { color: #000000; }
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, sans-serif; touch-action: manipulation; -webkit-touch-callout: none; -webkit-user-select: none; user-select: none; }
     input, textarea, select { -webkit-user-select: auto; user-select: auto; }
     input, textarea, select { -webkit-user-select: auto; user-select: auto; }
@@ -34,11 +53,11 @@
     h1, h2, h3 { margin-bottom: 10px; color: var(--text); }
     
     .btn { background-color: var(--accent); color: white; border: none; padding: 12px 20px; border-radius: 10px; font-weight: bold; width: 100%; font-size: 1rem; cursor: pointer; }
-    .btn-secondary { background-color: #2a3a5e; color: var(--text); margin-top: 8px; }
+    .btn-secondary { background-color: var(--card-border); color: var(--text); margin-top: 8px; }
     .btn-small { width: auto; padding: 8px 15px; font-size: 0.9rem; }
     .btn-danger { background-color: var(--red); }
     .btn-calc { background-color: var(--blue); }
-    .btn-demo { background-color: #2b2d42; border: 1px solid #8d99ae; }
+    .btn-demo { background-color: #2b2d42; border: 1px solid var(--text-dim); }
     
     .card { background-color: var(--card-bg); padding: 15px; border-radius: 14px; margin-bottom: 12px; border: 1px solid var(--card-border); }
     .flex-between { display: flex; justify-content: space-between; align-items: center; }
@@ -82,7 +101,7 @@
       margin-bottom: 8px;
     }
     .view-switch-btn {
-      background: #111d38;
+      background: var(--surface-1);
       border: 1px solid var(--card-border);
       color: var(--accent);
       padding: 4px 10px;
@@ -106,7 +125,7 @@
     .history-table th {
       position: sticky;
       top: 0;
-      background-color: #111d38;
+      background-color: var(--surface-1);
       z-index: 10;
       color: var(--text-dim);
       font-weight: bold;
@@ -153,7 +172,7 @@
     }
 
     .control-group { display: flex; align-items: center; justify-content: space-between; width: 100%; margin-bottom: 10px; }
-    .num-btn { background: #2a3a5e; color: white; border: none; width: 44px; height: 44px; border-radius: 50%; font-size: 1.5rem; font-weight: bold; cursor: pointer; }
+    .num-btn { background: var(--card-border); color: white; border: none; width: 44px; height: 44px; border-radius: 50%; font-size: 1.5rem; font-weight: bold; cursor: pointer; }
     
     /* NÚMEROS LIMPIOS SIN RECUADROS NI BORDES */
     .num-val-text {
@@ -195,7 +214,7 @@
     }
     .btn-tick:active { transform: scale(0.92); }
 
-    input[type="text"], input[type="number"] { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid var(--card-border); background: #0f172a; color: white; margin-top: 5px; font-size:1rem; }
+    input[type="text"], input[type="number"] { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid var(--card-border); background: var(--surface-2); color: white; margin-top: 5px; font-size:1rem; }
 
     /* BOTONES CIRCULARES PARA TÉCNICA */
     .tech-dots-container { display: flex; gap: 20px; justify-content: center; margin: 10px 0; }
@@ -203,7 +222,7 @@
       width: 46px;
       height: 46px;
       border-radius: 50%;
-      border: 3px solid #2a3a5e;
+      border: 3px solid var(--card-border);
       background: transparent;
       cursor: pointer;
       opacity: 0.35;
@@ -247,7 +266,7 @@
       flex-direction: column;
       gap: 6px;
       margin-top: 10px;
-      background: #111d38;
+      background: var(--surface-1);
       padding: 10px 12px;
       border-radius: 8px;
       font-size: 0.85rem;
@@ -262,7 +281,7 @@
       margin: 10px 0 20px 0;
     }
     .btn-time-adj {
-      background: #111d38;
+      background: var(--surface-1);
       border: 1px solid var(--card-border);
       color: var(--accent);
       padding: 8px 16px;
@@ -281,7 +300,7 @@
     /* Grid de Accesos Secundarios */
     .tools-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 25px; }
     .tool-btn { 
-      background: #111d38; 
+      background: var(--surface-1); 
       border: 1px solid var(--card-border); 
       color: var(--text); 
       padding: 13px 10px; 
@@ -318,7 +337,7 @@
   
     /* CHIPS DE GRUPOS MUSCULARES Y BIBLIOTECA DE EJERCICIOS */
     .chip-btn {
-      background: #111d38;
+      background: var(--surface-1);
       border: 1px solid var(--card-border);
       color: var(--text-dim);
       padding: 6px 12px;
@@ -336,7 +355,7 @@
     }
     
     .library-group-card {
-      background: #111d38;
+      background: var(--surface-1);
       border: 1px solid var(--card-border);
       border-radius: 12px;
       margin-bottom: 10px;
@@ -422,7 +441,7 @@
       margin-bottom: 12px;
     }
     .kpi-card {
-      background: #111d38;
+      background: var(--surface-1);
       border: 1px solid var(--card-border);
       border-radius: 10px;
       padding: 10px 12px;
@@ -445,7 +464,7 @@
     }
     .chart-tab-btn {
       flex: 1;
-      background: #111d38;
+      background: var(--surface-1);
       border: 1px solid var(--card-border);
       color: var(--text-dim);
       padding: 8px;
@@ -512,11 +531,11 @@
         setTimeout(function() { el.style.display = 'none'; }, 420);
       }
       var minTimePassed = false, appReady = false;
-      setTimeout(function() { minTimePassed = true; if (appReady) hideSplash(); }, 1000);
+      setTimeout(function() { minTimePassed = true; if (appReady) hideSplash(); }, 2000);
       window.addEventListener('load', function() {
         appReady = true;
         if (minTimePassed) hideSplash();
-        else setTimeout(hideSplash, 1000);
+        else setTimeout(hideSplash, 2000);
       });
     })();
   </script>
@@ -524,7 +543,7 @@
   <!-- VISTA 1: INICIO (ENTRENAMIENTO) -->
   <div id="view-routines">
     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
-      <h1 style="margin-bottom:0; color:var(--text); font-size:1.6rem; letter-spacing:0.5px;">MiGymApp <span style="font-size:0.75rem; color:var(--green); font-weight:bold;">V4.34</span></h1>
+      <h1 style="margin-bottom:0; color:var(--text); font-size:1.6rem; letter-spacing:0.5px;">MiGymApp <span style="font-size:0.75rem; color:var(--green); font-weight:bold;">V4.36</span></h1>
       <button onclick="openAppSettingsModal()" style="background:none; border:none; color:var(--text-dim); padding:6px; cursor:pointer; display:flex; align-items:center; transition:color 0.2s;" title="Ajustes de la App">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
       </button>
@@ -696,7 +715,7 @@
       <h2 id="edit-set-modal-title" style="text-align:center; margin-bottom:12px;">Editar Serie</h2>
       
       <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:10px;">
-        <div style="background:#111d38; border:1px solid var(--card-border); padding:8px; border-radius:10px; text-align:center;">
+        <div style="background:var(--surface-1); border:1px solid var(--card-border); padding:8px; border-radius:10px; text-align:center;">
           <div style="font-size:0.8rem; color:var(--text-dim); margin-bottom:6px; font-weight:bold;">Discos (kg)</div>
           <div style="display:flex; align-items:center; justify-content:center; gap:4px;">
             <button class="num-btn" style="width:34px; height:34px; font-size:1.2rem;" onclick="adjustEditSetParam('weight', -2.5)">-</button>
@@ -705,7 +724,7 @@
           </div>
         </div>
 
-        <div style="background:#111d38; border:1px solid var(--card-border); padding:8px; border-radius:10px; text-align:center;">
+        <div style="background:var(--surface-1); border:1px solid var(--card-border); padding:8px; border-radius:10px; text-align:center;">
           <div style="font-size:0.8rem; color:var(--text-dim); margin-bottom:6px; font-weight:bold;">Barra (kg)</div>
           <div style="display:flex; align-items:center; justify-content:center; gap:4px;">
             <button class="num-btn" style="width:34px; height:34px; font-size:1.2rem;" onclick="adjustEditSetParam('bar', -2.5)">-</button>
@@ -716,7 +735,7 @@
       </div>
 
       <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:6px; margin-bottom:12px;">
-        <div style="background:#111d38; border:1px solid var(--card-border); padding:8px 4px; border-radius:10px; text-align:center;">
+        <div style="background:var(--surface-1); border:1px solid var(--card-border); padding:8px 4px; border-radius:10px; text-align:center;">
           <div style="font-size:0.8rem; color:var(--text-dim); margin-bottom:6px; font-weight:bold;">Reps</div>
           <div style="display:flex; align-items:center; justify-content:center; gap:2px;">
             <button class="num-btn" style="width:30px; height:30px; font-size:1rem;" onclick="adjustEditSetParam('reps', -1)">-</button>
@@ -725,7 +744,7 @@
           </div>
         </div>
 
-        <div style="background:#111d38; border:1px solid var(--card-border); padding:8px 4px; border-radius:10px; text-align:center;">
+        <div style="background:var(--surface-1); border:1px solid var(--card-border); padding:8px 4px; border-radius:10px; text-align:center;">
           <div style="font-size:0.8rem; color:var(--text-dim); margin-bottom:6px; font-weight:bold;">RIR</div>
           <div style="display:flex; align-items:center; justify-content:center; gap:2px;">
             <button class="num-btn" style="width:30px; height:30px; font-size:1rem;" onclick="adjustEditSetParam('rir', -1)">-</button>
@@ -734,7 +753,7 @@
           </div>
         </div>
 
-        <div style="background:#111d38; border:1px solid var(--card-border); padding:8px 4px; border-radius:10px; text-align:center;">
+        <div style="background:var(--surface-1); border:1px solid var(--card-border); padding:8px 4px; border-radius:10px; text-align:center;">
           <div style="font-size:0.8rem; color:var(--text-dim); margin-bottom:6px; font-weight:bold;">RPE</div>
           <div style="display:flex; align-items:center; justify-content:center; gap:2px;">
             <button class="num-btn" style="width:30px; height:30px; font-size:1rem;" onclick="adjustEditSetParam('rpe', -1)">-</button>
@@ -789,7 +808,7 @@
       </div>
 
       <!-- Tarjeta Limpia del Ejercicio Activo -->
-      <div style="background:#111d38; border:1px solid var(--card-border); border-radius:12px; padding:14px; margin-bottom:15px; cursor:pointer; text-align:center;" onclick="openStatsExPickerModal()">
+      <div style="background:var(--surface-1); border:1px solid var(--card-border); border-radius:12px; padding:14px; margin-bottom:15px; cursor:pointer; text-align:center;" onclick="openStatsExPickerModal()">
         <strong id="stats-selected-ex-name" style="font-size:1.25rem; font-weight:bold; color:#ffffff; display:block;">Ninguno</strong>
       </div>
 
@@ -817,7 +836,15 @@
         <button class="chart-tab-btn" id="btn-tab-ie" onclick="switchStatsChartTab('IE')">Gráfico Eficiencia (IE)</button>
       </div>
 
-      <canvas id="stats-chart-canvas" style="width:100%; height:180px; background:#111d38; border-radius:12px; border:1px solid var(--card-border); margin-bottom:15px; display:block;"></canvas>
+      <div id="stats-range-chips" style="display:flex; gap:6px; margin-bottom:10px; flex-wrap:wrap;">
+        <button class="chip-btn selected" data-range="all" onclick="setStatsRange('all')">Todo</button>
+        <button class="chip-btn" data-range="year" onclick="setStatsRange('year')">1 año</button>
+        <button class="chip-btn" data-range="m6" onclick="setStatsRange('m6')">6 meses</button>
+        <button class="chip-btn" data-range="month" onclick="setStatsRange('month')">1 mes</button>
+        <button class="chip-btn" data-range="week" onclick="setStatsRange('week')">1 semana</button>
+      </div>
+
+      <canvas id="stats-chart-canvas" style="width:100%; height:180px; background:var(--surface-1); border-radius:12px; border:1px solid var(--card-border); margin-bottom:15px; display:block;"></canvas>
 
       <div style="font-size:0.85rem; font-weight:bold; color:var(--text-dim); margin-bottom:8px;">HISTORIAL DETALLADO:</div>
       <div id="stats-history-container" style="flex:1; overflow-y:auto; padding-right:2px; max-height:220px;"></div>
@@ -833,7 +860,7 @@
       </div>
 
       <!-- Barra de Búsqueda Rápida -->
-      <input type="text" id="stats-modal-search" placeholder="Buscar ejercicio por nombre..." oninput="renderStatsPickerModalContent()" style="margin-bottom:10px; padding:10px 12px; border-radius:8px; border:1px solid var(--card-border); background:#0f172a; color:#fff; font-size:0.95rem;">
+      <input type="text" id="stats-modal-search" placeholder="Buscar ejercicio por nombre..." oninput="renderStatsPickerModalContent()" style="margin-bottom:10px; padding:10px 12px; border-radius:8px; border:1px solid var(--card-border); background:var(--surface-2); color:#fff; font-size:0.95rem;">
 
       <!-- Listado por Grupos Musculares (Cerrados por Defecto) -->
       <div id="stats-picker-groups-container" style="flex:1; overflow-y:auto; padding-right:2px;"></div>
@@ -855,7 +882,7 @@
           <button onclick="saveBodyWeight()" style="width:48px; height:48px; border-radius:50%; background:var(--accent); color:#ffffff; border:none; font-size:1.5rem; font-weight:bold; cursor:pointer; display:flex; align-items:center; justify-content:center; flex-shrink:0;" title="Guardar Peso">✓</button>
         </div>
 
-        <canvas id="bw-chart-canvas" style="width:100%; height:150px; background:#111d38; border-radius:12px; border:1px solid var(--card-border); margin-bottom:10px; display:block;"></canvas>
+        <canvas id="bw-chart-canvas" style="width:100%; height:150px; background:var(--surface-1); border-radius:12px; border:1px solid var(--card-border); margin-bottom:10px; display:block;"></canvas>
 
         <div style="font-size:0.85rem; font-weight:bold; color:var(--text-dim); margin-bottom:6px; text-transform:uppercase;">HISTORIAL DE REGISTROS:</div>
         <div id="bw-history" style="flex:1; overflow-y: auto; padding-right:2px; max-height:200px;"></div>
@@ -925,8 +952,8 @@
       <h2>Gestión de Datos</h2>
       <p style="font-size:0.85rem; color:var(--text-dim); margin-top:5px; margin-bottom:15px;">Guarda o restaura una copia de seguridad de tus entrenamientos.</p>
       <div style="display:flex; flex-direction:column; gap:10px;">
-        <button class="btn" style="background:#2a3a5e; display:flex; align-items:center; justify-content:center;" onclick="exportBackup()"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle; margin-right:6px;"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path><polyline points="16 6 12 2 8 6"></polyline><line x1="12" y1="2" x2="12" y2="15"></line></svg><span>Exportar Copia (Drive/Telegram)</span></button>
-        <button class="btn" style="background:#2a3a5e; display:flex; align-items:center; justify-content:center;" onclick="document.getElementById('import-file').click()"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle; margin-right:6px;"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path><polyline points="8 10 12 14 16 10"></polyline><line x1="12" y1="2" x2="12" y2="14"></line></svg><span>Importar Copia</span></button>
+        <button class="btn" style="background:var(--card-border); display:flex; align-items:center; justify-content:center;" onclick="exportBackup()"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle; margin-right:6px;"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path><polyline points="16 6 12 2 8 6"></polyline><line x1="12" y1="2" x2="12" y2="15"></line></svg><span>Exportar Copia (Drive/Telegram)</span></button>
+        <button class="btn" style="background:var(--card-border); display:flex; align-items:center; justify-content:center;" onclick="document.getElementById('import-file').click()"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle; margin-right:6px;"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path><polyline points="8 10 12 14 16 10"></polyline><line x1="12" y1="2" x2="12" y2="14"></line></svg><span>Importar Copia</span></button>
         <input type="file" id="import-file" style="display:none" accept=".json" onchange="importBackup(event)">
       </div>
 
@@ -943,6 +970,12 @@
       
       <label style="margin-top:12px;">Grupos Musculares (uno o varios):</label>
       <div id="modal-muscles-chips" style="display:flex; flex-wrap:wrap; gap:6px; margin-top:6px; margin-bottom:12px;"></div>
+
+      <label>Tipo de equipo:</label>
+      <div style="display:flex; gap:10px; margin-top:6px; margin-bottom:12px;">
+        <button type="button" id="modal-equip-free-btn" class="btn btn-secondary" style="flex:1; padding:12px; display:flex; align-items:center; justify-content:center; gap:6px;" onclick="setModalEquipmentType('free')">🏋️ Peso libre</button>
+        <button type="button" id="modal-equip-machine-btn" class="btn btn-secondary" style="flex:1; padding:12px; display:flex; align-items:center; justify-content:center; gap:6px;" onclick="setModalEquipmentType('machine')">⚙️ Máquina</button>
+      </div>
 
       <div style="display: flex; gap:12px; margin-top:20px;">
         <button class="btn btn-danger" style="flex:1; background-color: var(--red); color: white;" onclick="closeExerciseModal()">Cancelar</button>
@@ -966,7 +999,7 @@
 
       <div style="margin-bottom:12px;">
         <label style="margin-top:0; font-size:0.8rem; font-weight:bold; color:var(--text-dim);">Bloque / Grupo Muscular:</label>
-        <input type="text" id="session-gear-block-input" placeholder="Ej. Pecho, Tríceps, Hombros..." style="margin-top:3px; padding:10px; border-radius:8px; background:#0f172a; color:#fff; font-weight:bold;">
+        <input type="text" id="session-gear-block-input" placeholder="Ej. Pecho, Tríceps, Hombros..." style="margin-top:3px; padding:10px; border-radius:8px; background:var(--surface-2); color:#fff; font-weight:bold;">
       </div>
 
       <label style="display:flex; align-items:center; justify-content:center; gap:8px; margin-bottom:12px; font-weight:bold; color:var(--green); font-size:0.9rem; cursor:pointer; user-select:none;">
@@ -977,7 +1010,7 @@
       <!-- CAMPOS ESTÁNDAR -->
       <div id="session-gear-standard-fields">
         <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:10px;">
-          <div style="background:#111d38; border:1px solid var(--card-border); padding:8px; border-radius:10px; text-align:center;">
+          <div style="background:var(--surface-1); border:1px solid var(--card-border); padding:8px; border-radius:10px; text-align:center;">
             <div style="font-size:0.8rem; color:var(--text-dim); margin-bottom:6px; font-weight:bold;">Series</div>
             <div style="display:flex; align-items:center; justify-content:center; gap:6px;">
               <button class="num-btn" style="width:36px; height:36px; font-size:1.2rem;" onclick="adjustGearParam('sets', -1, 'session-gear')">-</button>
@@ -986,7 +1019,7 @@
             </div>
           </div>
 
-          <div style="background:#111d38; border:1px solid var(--card-border); padding:8px; border-radius:10px; text-align:center;">
+          <div style="background:var(--surface-1); border:1px solid var(--card-border); padding:8px; border-radius:10px; text-align:center;">
             <div style="font-size:0.8rem; color:var(--text-dim); margin-bottom:6px; font-weight:bold;">Descanso (seg)</div>
             <div style="display:flex; align-items:center; justify-content:center; gap:6px;">
               <button class="num-btn" style="width:36px; height:36px; font-size:1.2rem;" onclick="adjustGearParam('rest', -15, 'session-gear')">-</button>
@@ -997,7 +1030,7 @@
         </div>
 
         <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:10px;">
-          <div style="background:#111d38; border:1px solid var(--card-border); padding:8px; border-radius:10px; text-align:center;">
+          <div style="background:var(--surface-1); border:1px solid var(--card-border); padding:8px; border-radius:10px; text-align:center;">
             <div style="font-size:0.8rem; color:var(--text-dim); margin-bottom:6px; font-weight:bold;">Rango Mín</div>
             <div style="display:flex; align-items:center; justify-content:center; gap:6px;">
               <button class="num-btn" style="width:36px; height:36px; font-size:1.2rem;" onclick="adjustGearParam('min', -1, 'session-gear')">-</button>
@@ -1006,7 +1039,7 @@
             </div>
           </div>
 
-          <div style="background:#111d38; border:1px solid var(--card-border); padding:8px; border-radius:10px; text-align:center;">
+          <div style="background:var(--surface-1); border:1px solid var(--card-border); padding:8px; border-radius:10px; text-align:center;">
             <div style="font-size:0.8rem; color:var(--text-dim); margin-bottom:6px; font-weight:bold;">Rango Máx</div>
             <div style="display:flex; align-items:center; justify-content:center; gap:6px;">
               <button class="num-btn" style="width:36px; height:36px; font-size:1.2rem;" onclick="adjustGearParam('max', -1, 'session-gear')">-</button>
@@ -1016,7 +1049,7 @@
           </div>
         </div>
 
-        <div style="background:#111d38; border:1px solid var(--card-border); padding:8px; border-radius:10px; text-align:center; margin-bottom:15px;">
+        <div style="background:var(--surface-1); border:1px solid var(--card-border); padding:8px; border-radius:10px; text-align:center; margin-bottom:15px;">
           <div style="font-size:0.8rem; color:var(--text-dim); margin-bottom:6px; font-weight:bold;">Peso de la Barra (kg)</div>
           <div style="display:flex; align-items:center; justify-content:center; gap:6px;">
             <button class="num-btn" style="width:36px; height:36px; font-size:1.2rem;" onclick="adjustGearParam('bar', -2.5, 'session-gear')">-</button>
@@ -1029,7 +1062,7 @@
       <!-- CAMPOS ISOMÉTRICOS -->
       <div id="session-gear-iso-fields" class="hidden">
         <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:10px;">
-          <div style="background:#111d38; border:1px solid var(--card-border); padding:8px; border-radius:10px; text-align:center;">
+          <div style="background:var(--surface-1); border:1px solid var(--card-border); padding:8px; border-radius:10px; text-align:center;">
             <div style="font-size:0.8rem; color:var(--text-dim); margin-bottom:6px; font-weight:bold;">Series</div>
             <div style="display:flex; align-items:center; justify-content:center; gap:6px;">
               <button class="num-btn" style="width:36px; height:36px; font-size:1.2rem;" onclick="adjustGearParam('sets', -1, 'session-gear')">-</button>
@@ -1038,7 +1071,7 @@
             </div>
           </div>
 
-          <div style="background:#111d38; border:1px solid var(--card-border); padding:8px; border-radius:10px; text-align:center;">
+          <div style="background:var(--surface-1); border:1px solid var(--card-border); padding:8px; border-radius:10px; text-align:center;">
             <div style="font-size:0.8rem; color:var(--text-dim); margin-bottom:6px; font-weight:bold;">Descanso (seg)</div>
             <div style="display:flex; align-items:center; justify-content:center; gap:6px;">
               <button class="num-btn" style="width:36px; height:36px; font-size:1.2rem;" onclick="adjustGearParam('rest', -15, 'session-gear')">-</button>
@@ -1048,7 +1081,7 @@
           </div>
         </div>
 
-        <div style="background:#111d38; border:1px solid var(--card-border); padding:8px; border-radius:10px; text-align:center; margin-bottom:15px;">
+        <div style="background:var(--surface-1); border:1px solid var(--card-border); padding:8px; border-radius:10px; text-align:center; margin-bottom:15px;">
           <div style="font-size:0.8rem; color:var(--text-dim); margin-bottom:6px; font-weight:bold;">Tiempo Serie (seg)</div>
           <div style="display:flex; align-items:center; justify-content:center; gap:6px;">
             <button class="num-btn" style="width:36px; height:36px; font-size:1.2rem;" onclick="adjustGearParam('workTime', -5, 'session-gear')">-</button>
@@ -1078,52 +1111,13 @@
 
       <!-- CAMPOS ESTÁNDAR -->
       <div id="edit-ex-mod-standard-fields">
-        <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:10px;">
-          <div style="background:#111d38; border:1px solid var(--card-border); padding:8px; border-radius:10px; text-align:center;">
-            <div style="font-size:0.8rem; color:var(--text-dim); margin-bottom:6px; font-weight:bold;">Series</div>
-            <div style="display:flex; align-items:center; justify-content:center; gap:6px;">
-              <button class="num-btn" style="width:36px; height:36px; font-size:1.2rem;" onclick="adjustGearParam('sets', -1, 'edit-ex-mod')">-</button>
-              <span class="num-val-text" style="font-size:1.3rem; width:45px;" id="edit-ex-mod-sets-val" onclick="promptEditGearParam('sets', 'edit-ex-mod')">3</span>
-              <button class="num-btn" style="width:36px; height:36px; font-size:1.2rem;" onclick="adjustGearParam('sets', 1, 'edit-ex-mod')">+</button>
-            </div>
-          </div>
-
-          <div style="background:#111d38; border:1px solid var(--card-border); padding:8px; border-radius:10px; text-align:center;">
-            <div style="font-size:0.8rem; color:var(--text-dim); margin-bottom:6px; font-weight:bold;">Descanso (seg)</div>
-            <div style="display:flex; align-items:center; justify-content:center; gap:6px;">
-              <button class="num-btn" style="width:36px; height:36px; font-size:1.2rem;" onclick="adjustGearParam('rest', -15, 'edit-ex-mod')">-</button>
-              <span class="num-val-text" style="font-size:1.2rem; width:50px;" id="edit-ex-mod-rest-val" onclick="promptEditGearParam('rest', 'edit-ex-mod')">90</span>
-              <button class="num-btn" style="width:36px; height:36px; font-size:1.2rem;" onclick="adjustGearParam('rest', 15, 'edit-ex-mod')">+</button>
-            </div>
-          </div>
-        </div>
-
-        <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:10px;">
-          <div style="background:#111d38; border:1px solid var(--card-border); padding:8px; border-radius:10px; text-align:center;">
-            <div style="font-size:0.8rem; color:var(--text-dim); margin-bottom:6px; font-weight:bold;">Rango Mín</div>
-            <div style="display:flex; align-items:center; justify-content:center; gap:6px;">
-              <button class="num-btn" style="width:36px; height:36px; font-size:1.2rem;" onclick="adjustGearParam('min', -1, 'edit-ex-mod')">-</button>
-              <span class="num-val-text" style="font-size:1.3rem; width:45px;" id="edit-ex-mod-min-val" onclick="promptEditGearParam('min', 'edit-ex-mod')">8</span>
-              <button class="num-btn" style="width:36px; height:36px; font-size:1.2rem;" onclick="adjustGearParam('min', 1, 'edit-ex-mod')">+</button>
-            </div>
-          </div>
-
-          <div style="background:#111d38; border:1px solid var(--card-border); padding:8px; border-radius:10px; text-align:center;">
-            <div style="font-size:0.8rem; color:var(--text-dim); margin-bottom:6px; font-weight:bold;">Rango Máx</div>
-            <div style="display:flex; align-items:center; justify-content:center; gap:6px;">
-              <button class="num-btn" style="width:36px; height:36px; font-size:1.2rem;" onclick="adjustGearParam('max', -1, 'edit-ex-mod')">-</button>
-              <span class="num-val-text" style="font-size:1.3rem; width:45px;" id="edit-ex-mod-max-val" onclick="promptEditGearParam('max', 'edit-ex-mod')">12</span>
-              <button class="num-btn" style="width:36px; height:36px; font-size:1.2rem;" onclick="adjustGearParam('max', 1, 'edit-ex-mod')">+</button>
-            </div>
-          </div>
-        </div>
-
-        <div style="background:#111d38; border:1px solid var(--card-border); padding:8px; border-radius:10px; text-align:center; margin-bottom:15px;">
-          <div style="font-size:0.8rem; color:var(--text-dim); margin-bottom:6px; font-weight:bold;">Peso de la Barra (kg)</div>
-          <div style="display:flex; align-items:center; justify-content:center; gap:6px;">
-            <button class="num-btn" style="width:36px; height:36px; font-size:1.2rem;" onclick="adjustGearParam('bar', -2.5, 'edit-ex-mod')">-</button>
-            <span class="num-val-text" style="font-size:1.3rem; width:60px;" id="edit-ex-mod-bar-val" onclick="promptEditGearParam('bar', 'edit-ex-mod')">0</span>
-            <button class="num-btn" style="width:36px; height:36px; font-size:1.2rem;" onclick="adjustGearParam('bar', 2.5, 'edit-ex-mod')">+</button>
+        <div id="edit-ex-mod-setedit"></div>
+        <div style="display:flex; align-items:center; justify-content:space-between; background:var(--surface-1); border:1px solid var(--card-border); padding:8px 12px; border-radius:10px; margin:10px 0 15px;">
+          <span style="font-size:0.8rem; color:var(--text-dim); font-weight:bold;">Peso de la barra (kg)</span>
+          <div style="display:flex; align-items:center; gap:6px;">
+            <button class="num-btn" style="width:32px; height:32px; font-size:1.1rem;" onclick="adjustGearParam('bar', -2.5, 'edit-ex-mod')">-</button>
+            <span class="num-val-text" style="font-size:1.1rem; width:50px;" id="edit-ex-mod-bar-val" onclick="promptEditGearParam('bar', 'edit-ex-mod')">0</span>
+            <button class="num-btn" style="width:32px; height:32px; font-size:1.1rem;" onclick="adjustGearParam('bar', 2.5, 'edit-ex-mod')">+</button>
           </div>
         </div>
       </div>
@@ -1131,7 +1125,7 @@
       <!-- CAMPOS ISOMÉTRICOS -->
       <div id="edit-ex-mod-iso-fields" class="hidden">
         <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:10px;">
-          <div style="background:#111d38; border:1px solid var(--card-border); padding:8px; border-radius:10px; text-align:center;">
+          <div style="background:var(--surface-1); border:1px solid var(--card-border); padding:8px; border-radius:10px; text-align:center;">
             <div style="font-size:0.8rem; color:var(--text-dim); margin-bottom:6px; font-weight:bold;">Series</div>
             <div style="display:flex; align-items:center; justify-content:center; gap:6px;">
               <button class="num-btn" style="width:36px; height:36px; font-size:1.2rem;" onclick="adjustGearParam('sets', -1, 'edit-ex-mod')">-</button>
@@ -1140,7 +1134,7 @@
             </div>
           </div>
 
-          <div style="background:#111d38; border:1px solid var(--card-border); padding:8px; border-radius:10px; text-align:center;">
+          <div style="background:var(--surface-1); border:1px solid var(--card-border); padding:8px; border-radius:10px; text-align:center;">
             <div style="font-size:0.8rem; color:var(--text-dim); margin-bottom:6px; font-weight:bold;">Descanso (seg)</div>
             <div style="display:flex; align-items:center; justify-content:center; gap:6px;">
               <button class="num-btn" style="width:36px; height:36px; font-size:1.2rem;" onclick="adjustGearParam('rest', -15, 'edit-ex-mod')">-</button>
@@ -1150,7 +1144,7 @@
           </div>
         </div>
 
-        <div style="background:#111d38; border:1px solid var(--card-border); padding:8px; border-radius:10px; text-align:center; margin-bottom:15px;">
+        <div style="background:var(--surface-1); border:1px solid var(--card-border); padding:8px; border-radius:10px; text-align:center; margin-bottom:15px;">
           <div style="font-size:0.8rem; color:var(--text-dim); margin-bottom:6px; font-weight:bold;">Tiempo Serie (seg)</div>
           <div style="display:flex; align-items:center; justify-content:center; gap:6px;">
             <button class="num-btn" style="width:36px; height:36px; font-size:1.2rem;" onclick="adjustGearParam('workTime', -5, 'edit-ex-mod')">-</button>
@@ -1178,10 +1172,10 @@
       </div>
 
       <!-- Barra de Búsqueda Rápida -->
-      <input type="text" id="routine-ex-search" placeholder="Buscar ejercicio por nombre..." oninput="renderRoutineExercisePicker()" style="margin-bottom:10px; padding:10px 12px; border-radius:8px; border:1px solid var(--card-border); background:#0f172a; color:#fff; font-size:0.95rem;">
+      <input type="text" id="routine-ex-search" placeholder="Buscar ejercicio por nombre..." oninput="renderRoutineExercisePicker()" style="margin-bottom:10px; padding:10px 12px; border-radius:8px; border:1px solid var(--card-border); background:var(--surface-2); color:#fff; font-size:0.95rem;">
 
       <!-- Contenedor del Listado por Grupos Musculares -->
-      <div id="routine-ex-picker-container" style="flex:1; overflow-y:auto; padding-right:2px; max-height:20vh; margin-bottom:10px; border:1px solid var(--card-border); border-radius:8px; padding:8px; background:#111d38;"></div>
+      <div id="routine-ex-picker-container" style="flex:1; overflow-y:auto; padding-right:2px; max-height:20vh; margin-bottom:10px; border:1px solid var(--card-border); border-radius:8px; padding:8px; background:var(--surface-1);"></div>
 
       <div style="font-size:0.85rem; color:var(--green); font-weight:bold; margin-bottom:8px; text-align:center;" id="routine-selected-ex-display">
         Ejercicio seleccionado: <span id="lbl-selected-ex-name" style="text-decoration:underline;">Ninguno</span>
@@ -1194,51 +1188,12 @@
 
       <!-- CAMPOS ESTÁNDAR -->
       <div id="routine-mod-standard-fields">
-        <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:8px;">
-          <div style="background:#111d38; border:1px solid var(--card-border); padding:6px; border-radius:10px; text-align:center;">
-            <div style="font-size:0.75rem; color:var(--text-dim); margin-bottom:4px; font-weight:bold;">Series</div>
-            <div style="display:flex; align-items:center; justify-content:center; gap:6px;">
-              <button class="num-btn" style="width:32px; height:32px; font-size:1.1rem;" onclick="adjustGearParam('sets', -1, 'routine-mod')">-</button>
-              <span class="num-val-text" style="font-size:1.2rem; width:40px;" id="routine-mod-sets-val" onclick="promptEditGearParam('sets', 'routine-mod')">3</span>
-              <button class="num-btn" style="width:32px; height:32px; font-size:1.1rem;" onclick="adjustGearParam('sets', 1, 'routine-mod')">+</button>
-            </div>
-          </div>
-
-          <div style="background:#111d38; border:1px solid var(--card-border); padding:6px; border-radius:10px; text-align:center;">
-            <div style="font-size:0.75rem; color:var(--text-dim); margin-bottom:4px; font-weight:bold;">Descanso (seg)</div>
-            <div style="display:flex; align-items:center; justify-content:center; gap:6px;">
-              <button class="num-btn" style="width:32px; height:32px; font-size:1.1rem;" onclick="adjustGearParam('rest', -15, 'routine-mod')">-</button>
-              <span class="num-val-text" style="font-size:1.15rem; width:45px;" id="routine-mod-rest-val" onclick="promptEditGearParam('rest', 'routine-mod')">90</span>
-              <button class="num-btn" style="width:32px; height:32px; font-size:1.1rem;" onclick="adjustGearParam('rest', 15, 'routine-mod')">+</button>
-            </div>
-          </div>
-        </div>
-
-        <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:8px;">
-          <div style="background:#111d38; border:1px solid var(--card-border); padding:6px; border-radius:10px; text-align:center;">
-            <div style="font-size:0.75rem; color:var(--text-dim); margin-bottom:4px; font-weight:bold;">Rango Mín</div>
-            <div style="display:flex; align-items:center; justify-content:center; gap:6px;">
-              <button class="num-btn" style="width:32px; height:32px; font-size:1.1rem;" onclick="adjustGearParam('min', -1, 'routine-mod')">-</button>
-              <span class="num-val-text" style="font-size:1.2rem; width:40px;" id="routine-mod-min-val" onclick="promptEditGearParam('min', 'routine-mod')">8</span>
-              <button class="num-btn" style="width:32px; height:32px; font-size:1.1rem;" onclick="adjustGearParam('min', 1, 'routine-mod')">+</button>
-            </div>
-          </div>
-
-          <div style="background:#111d38; border:1px solid var(--card-border); padding:6px; border-radius:10px; text-align:center;">
-            <div style="font-size:0.75rem; color:var(--text-dim); margin-bottom:4px; font-weight:bold;">Rango Máx</div>
-            <div style="display:flex; align-items:center; justify-content:center; gap:6px;">
-              <button class="num-btn" style="width:32px; height:32px; font-size:1.1rem;" onclick="adjustGearParam('max', -1, 'routine-mod')">-</button>
-              <span class="num-val-text" style="font-size:1.2rem; width:40px;" id="routine-mod-max-val" onclick="promptEditGearParam('max', 'routine-mod')">12</span>
-              <button class="num-btn" style="width:32px; height:32px; font-size:1.1rem;" onclick="adjustGearParam('max', 1, 'routine-mod')">+</button>
-            </div>
-          </div>
-        </div>
-
-        <div style="background:#111d38; border:1px solid var(--card-border); padding:6px; border-radius:10px; text-align:center; margin-bottom:10px;">
-          <div style="font-size:0.75rem; color:var(--text-dim); margin-bottom:4px; font-weight:bold;">Peso Barra (kg)</div>
-          <div style="display:flex; align-items:center; justify-content:center; gap:6px;">
+        <div id="routine-mod-setedit"></div>
+        <div style="display:flex; align-items:center; justify-content:space-between; background:var(--surface-1); border:1px solid var(--card-border); padding:8px 12px; border-radius:10px; margin:10px 0 15px;">
+          <span style="font-size:0.8rem; color:var(--text-dim); font-weight:bold;">Peso de la barra (kg)</span>
+          <div style="display:flex; align-items:center; gap:6px;">
             <button class="num-btn" style="width:32px; height:32px; font-size:1.1rem;" onclick="adjustGearParam('bar', -2.5, 'routine-mod')">-</button>
-            <span class="num-val-text" style="font-size:1.2rem; width:50px;" id="routine-mod-bar-val" onclick="promptEditGearParam('bar', 'routine-mod')">0</span>
+            <span class="num-val-text" style="font-size:1.1rem; width:50px;" id="routine-mod-bar-val" onclick="promptEditGearParam('bar', 'routine-mod')">0</span>
             <button class="num-btn" style="width:32px; height:32px; font-size:1.1rem;" onclick="adjustGearParam('bar', 2.5, 'routine-mod')">+</button>
           </div>
         </div>
@@ -1247,7 +1202,7 @@
       <!-- CAMPOS ISOMÉTRICOS -->
       <div id="routine-mod-iso-fields" class="hidden">
         <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:8px;">
-          <div style="background:#111d38; border:1px solid var(--card-border); padding:6px; border-radius:10px; text-align:center;">
+          <div style="background:var(--surface-1); border:1px solid var(--card-border); padding:6px; border-radius:10px; text-align:center;">
             <div style="font-size:0.75rem; color:var(--text-dim); margin-bottom:4px; font-weight:bold;">Series</div>
             <div style="display:flex; align-items:center; justify-content:center; gap:6px;">
               <button class="num-btn" style="width:32px; height:32px; font-size:1.1rem;" onclick="adjustGearParam('sets', -1, 'routine-mod')">-</button>
@@ -1256,7 +1211,7 @@
             </div>
           </div>
 
-          <div style="background:#111d38; border:1px solid var(--card-border); padding:6px; border-radius:10px; text-align:center;">
+          <div style="background:var(--surface-1); border:1px solid var(--card-border); padding:6px; border-radius:10px; text-align:center;">
             <div style="font-size:0.75rem; color:var(--text-dim); margin-bottom:4px; font-weight:bold;">Descanso (seg)</div>
             <div style="display:flex; align-items:center; justify-content:center; gap:6px;">
               <button class="num-btn" style="width:32px; height:32px; font-size:1.1rem;" onclick="adjustGearParam('rest', -15, 'routine-mod')">-</button>
@@ -1266,7 +1221,7 @@
           </div>
         </div>
 
-        <div style="background:#111d38; border:1px solid var(--card-border); padding:6px; border-radius:10px; text-align:center; margin-bottom:10px;">
+        <div style="background:var(--surface-1); border:1px solid var(--card-border); padding:6px; border-radius:10px; text-align:center; margin-bottom:10px;">
           <div style="font-size:0.75rem; color:var(--text-dim); margin-bottom:4px; font-weight:bold;">Tiempo Serie (seg)</div>
           <div style="display:flex; align-items:center; justify-content:center; gap:6px;">
             <button class="num-btn" style="width:32px; height:32px; font-size:1.1rem;" onclick="adjustGearParam('workTime', -5, 'routine-mod')">-</button>
@@ -1297,7 +1252,7 @@
       </div>
 
       <!-- Barra de Búsqueda Rápida -->
-      <input type="text" id="library-ex-search" placeholder="Buscar ejercicio por nombre..." oninput="renderExerciseLibraryContent()" style="margin-bottom:10px; padding:10px 12px; border-radius:8px; border:1px solid var(--card-border); background:#0f172a; color:#fff; font-size:0.95rem;">
+      <input type="text" id="library-ex-search" placeholder="Buscar ejercicio por nombre..." oninput="renderExerciseLibraryContent()" style="margin-bottom:10px; padding:10px 12px; border-radius:8px; border:1px solid var(--card-border); background:var(--surface-2); color:#fff; font-size:0.95rem;">
 
       <div id="library-muscle-groups-container" style="flex:1; overflow-y:auto; padding-right:2px;"></div>
     </div>
@@ -1314,7 +1269,7 @@
       </div>
 
       <!-- Barra de Búsqueda Rápida -->
-      <input type="text" id="swap-ex-search" placeholder="Buscar ejercicio por nombre..." oninput="renderSwapExerciseList()" style="margin-bottom:10px; padding:10px 12px; border-radius:8px; border:1px solid var(--card-border); background:#0f172a; color:#fff; font-size:0.95rem;">
+      <input type="text" id="swap-ex-search" placeholder="Buscar ejercicio por nombre..." oninput="renderSwapExerciseList()" style="margin-bottom:10px; padding:10px 12px; border-radius:8px; border:1px solid var(--card-border); background:var(--surface-2); color:#fff; font-size:0.95rem;">
 
       <div id="swap-ex-list-container" style="flex:1; overflow-y:auto; padding-right:2px; max-height:48vh; margin-bottom:15px;"></div>
 
@@ -1334,17 +1289,24 @@
         <button class="btn btn-secondary btn-small" onclick="closeModal('modal-app-settings')">✕ Cerrar</button>
       </div>
 
-      <div style="background:#111d38; border:1px solid var(--card-border); padding:14px; border-radius:12px; margin-bottom:15px;">
+      <div style="background:var(--surface-1); border:1px solid var(--card-border); padding:14px; border-radius:12px; margin-bottom:15px;">
         <label style="display:flex; align-items:center; justify-content:space-between; cursor:pointer; font-weight:bold; color:#fff; font-size:0.95rem; margin:0;">
           <span>Mostrar botones "Volver"</span>
           <input type="checkbox" id="chk-show-back-buttons" onchange="toggleBackButtonsSetting(this.checked)" style="width:20px; height:20px; accent-color:var(--green); cursor:pointer;">
         </label>
       </div>
 
-      <div style="background:#111d38; border:1px solid var(--card-border); padding:14px; border-radius:12px; margin-bottom:15px;">
+      <div style="background:var(--surface-1); border:1px solid var(--card-border); padding:14px; border-radius:12px; margin-bottom:15px;">
         <label style="display:flex; align-items:center; justify-content:space-between; cursor:pointer; font-weight:bold; color:#fff; font-size:0.95rem; margin:0;">
           <span>Backup automático diario</span>
           <input type="checkbox" id="chk-auto-backup" onchange="toggleAutoBackupSetting(this.checked)" style="width:20px; height:20px; accent-color:var(--green); cursor:pointer;">
+        </label>
+      </div>
+
+      <div style="background:var(--surface-1); border:1px solid var(--card-border); padding:14px; border-radius:12px; margin-bottom:15px;">
+        <label style="display:flex; align-items:center; justify-content:space-between; cursor:pointer; font-weight:bold; color:#fff; font-size:0.95rem; margin:0;">
+          <span>Modo AMOLED (ahorro batería)</span>
+          <input type="checkbox" id="chk-amoled-mode" onchange="toggleAmoledModeSetting(this.checked)" style="width:20px; height:20px; accent-color:var(--green); cursor:pointer;">
         </label>
       </div>
 
@@ -1418,7 +1380,7 @@
 
     <!-- BOTÓN CIRCULAR RESET -->
     <div style="display:flex; justify-content:center; margin-top:-8px; margin-bottom:15px;">
-      <button class="btn-time-adj" onclick="promptResetRestTimer()" style="width:48px; height:48px; border-radius:50%; padding:0; display:flex; align-items:center; justify-content:center; font-size:1.5rem; border-color:var(--yellow); color:var(--yellow); background:#111d38;" title="Resetear temporizador">↺</button>
+      <button class="btn-time-adj" onclick="promptResetRestTimer()" style="width:48px; height:48px; border-radius:50%; padding:0; display:flex; align-items:center; justify-content:center; font-size:1.5rem; border-color:var(--yellow); color:var(--yellow); background:var(--surface-1);" title="Resetear temporizador">↺</button>
     </div>
 
     <!-- PANEL DE DATOS DE LA SERIE -->
@@ -1466,7 +1428,7 @@
     <div class="modal-box">
       <h2 style="text-align:center; margin-bottom:6px;">Nota del Ejercicio</h2>
       <div style="text-align:center; margin-bottom:12px; color:var(--accent); font-weight:bold;" id="exercise-note-ex-name"></div>
-      <textarea id="exercise-note-textarea" placeholder="Ej: Polea altura 4, asiento en 3, agarre estrecho..." style="width:100%; min-height:110px; padding:10px; border-radius:8px; background:#0f172a; color:#fff; border:1px solid var(--card-border); font-size:0.95rem; font-family:inherit;"></textarea>
+      <textarea id="exercise-note-textarea" placeholder="Ej: Polea altura 4, asiento en 3, agarre estrecho..." style="width:100%; min-height:110px; padding:10px; border-radius:8px; background:var(--surface-2); color:#fff; border:1px solid var(--card-border); font-size:0.95rem; font-family:inherit;"></textarea>
       <div style="display:flex; gap:12px; margin-top:14px;">
         <button class="btn btn-danger" style="flex:1; background-color: var(--red); color:white;" onclick="closeModal('modal-exercise-note')">Cancelar</button>
         <button class="btn" style="flex:1; background-color: var(--green); color:#000; font-weight:bold;" onclick="saveExerciseNote()">✓ Guardar</button>
@@ -1497,7 +1459,7 @@
   <div id="modal-custom-prompt" class="modal-overlay hidden">
     <div class="modal-box" style="text-align:center; padding:22px 18px;">
       <h3 id="custom-prompt-title" style="margin-bottom:15px; font-size:1.15rem; color:#fff;"></h3>
-      <input type="text" id="custom-prompt-input" style="font-size:1.2rem; text-align:center; font-weight:bold; margin-bottom:20px; padding:12px; border-radius:10px; background:#0f172a; color:#fff; border:1px solid var(--card-border);">
+      <input type="text" id="custom-prompt-input" style="font-size:1.2rem; text-align:center; font-weight:bold; margin-bottom:20px; padding:12px; border-radius:10px; background:var(--surface-2); color:#fff; border:1px solid var(--card-border);">
       <div style="display:flex; gap:12px; justify-content:center;">
         <button class="btn btn-danger" style="flex:1; background-color: var(--red); color: white;" onclick="closeModal('modal-custom-prompt')">Cancelar</button>
         <button class="btn" id="custom-prompt-confirm-btn" style="flex:1; background-color: var(--green); color: #000;">Aceptar</button>
@@ -2894,6 +2856,17 @@
       saveDB();
     }
 
+    function toggleAmoledModeSetting(enabled) {
+      if (!db.settings) db.settings = {};
+      db.settings.amoledMode = enabled;
+      saveDB();
+      applyAmoledMode();
+    }
+
+    function applyAmoledMode() {
+      document.body.classList.toggle('amoled', !!(db.settings && db.settings.amoledMode));
+    }
+
     function checkAutoBackup() {
       if (!db.settings || !db.settings.autoBackup) return;
       if (!db.routines || db.routines.length === 0) return;
@@ -2933,7 +2906,7 @@
       const rm1 = (r === 1) ? w : Math.round(w * (1 + (r / 30)));
 
       let html = `
-        <div style="background:#111d38; border:1px solid var(--card-border); border-radius:12px; padding:12px; margin-bottom:12px;">
+        <div style="background:var(--surface-1); border:1px solid var(--card-border); border-radius:12px; padding:12px; margin-bottom:12px;">
           <div style="text-align:center; font-size:0.78rem; color:var(--text-dim); font-weight:bold;">1RM ESTIMADO (MÁXIMO)</div>
           <div style="text-align:center; font-size:1.8rem; font-weight:bold; color:var(--green); margin:4px 0;">${rm1} kg</div>
         </div>
@@ -2945,7 +2918,7 @@
         <div style="background:var(--card-bg); border:1px solid var(--card-border); border-radius:10px; overflow:hidden;">
           <table style="width:100%; border-collapse:collapse; font-size:0.85rem; text-align:center;">
             <thead>
-              <tr style="background:#111d38; color:var(--text-dim); border-bottom:1px solid var(--card-border);">
+              <tr style="background:var(--surface-1); color:var(--text-dim); border-bottom:1px solid var(--card-border);">
                 <th style="padding:6px;">RM</th>
                 <th style="padding:6px;">Reps</th>
                 <th style="padding:6px;">Peso Estimado</th>
@@ -3004,6 +2977,8 @@
       applyAppSettings();
       const chkBackup = document.getElementById('chk-auto-backup');
       if (chkBackup) chkBackup.checked = !!(db.settings && db.settings.autoBackup);
+      const chkAmoled = document.getElementById('chk-amoled-mode');
+      if (chkAmoled) chkAmoled.checked = !!(db.settings && db.settings.amoledMode);
       openModal('modal-app-settings');
     }
 
@@ -3015,7 +2990,9 @@
     }
 
     function initApp() {
+      migrateExerciseNamesAndEquipment();
       applyAppSettings(); 
+      applyAmoledMode();
       ensureCatalogSync(); 
       renderRoutines(); 
       renderBodyWeight(); 
@@ -3216,7 +3193,7 @@
     function buildCategoryChartHtml(cat) {
       if (cat.type === 'simple') {
         return `<div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">` + cat.metrics.map(m => `
-          <div style="background:#1c2541; border:1px solid var(--card-border); border-radius:10px; padding:8px;">
+          <div style="background:var(--card-bg); border:1px solid var(--card-border); border-radius:10px; padding:8px;">
             <div style="font-size:10px; color:var(--text-dim); margin-bottom:4px;">${m.label}</div>
             <canvas id="mschart-${m.key}" style="width:100%; height:70px; display:block;"></canvas>
           </div>`).join('') + `</div>`;
@@ -3225,11 +3202,11 @@
       return rows.map((r, i) => `
         <div style="font-size:10px; color:var(--text-dim); text-transform:uppercase; font-weight:bold; margin-top:${i === 0 ? '0' : '10px'};">${r.rowLabel}</div>
         <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:4px;">
-          <div style="background:#1c2541; border:1px solid var(--card-border); border-radius:10px; padding:8px;">
+          <div style="background:var(--card-bg); border:1px solid var(--card-border); border-radius:10px; padding:8px;">
             <div style="font-size:10px; color:var(--text-dim); margin-bottom:4px;">Izquierdo</div>
             <canvas id="mschart-${r.left}" style="width:100%; height:70px; display:block;"></canvas>
           </div>
-          <div style="background:#1c2541; border:1px solid var(--card-border); border-radius:10px; padding:8px;">
+          <div style="background:var(--card-bg); border:1px solid var(--card-border); border-radius:10px; padding:8px;">
             <div style="font-size:10px; color:var(--text-dim); margin-bottom:4px;">Derecho</div>
             <canvas id="mschart-${r.right}" style="width:100%; height:70px; display:block;"></canvas>
           </div>
@@ -3251,7 +3228,7 @@
             <span style="color:var(--text-dim);">${getCategoryFieldLabel(cat, k)}</span>
             <span style="color:#fff; font-weight:bold;">${m[k]} cm</span>
           </div>`).join('');
-        return `<div style="background:#0f172a; border:1px solid var(--card-border); border-radius:8px; padding:10px 12px; cursor:pointer;" onclick="openEditMeasurementsModal(${idx}, '${cat.id}')">
+        return `<div style="background:var(--surface-2); border:1px solid var(--card-border); border-radius:8px; padding:10px 12px; cursor:pointer;" onclick="openEditMeasurementsModal(${idx}, '${cat.id}')">
           <div style="font-size:0.8rem; font-weight:bold; color:#fff; margin-bottom:8px;">${m.date}</div>
           <div style="display:grid; grid-template-columns:1fr 1fr; gap:6px 14px;">${cells}</div>
         </div>`;
@@ -3265,8 +3242,8 @@
         <button class="btn" style="width:100%; margin-top:10px; padding:9px; font-size:0.85rem;" onclick="saveMeasurementCategory('${cat.id}')">✓ Guardar registro</button>
 
         <div style="display:flex; gap:6px; margin:14px 0 10px;">
-          <span onclick="setMeasureCategoryView('${cat.id}','historial')" style="flex:1; text-align:center; font-size:0.75rem; font-weight:bold; padding:7px; border-radius:6px; cursor:pointer; ${viewMode === 'historial' ? 'background:var(--green); color:#000;' : 'background:#0f172a; border:1px solid var(--card-border); color:var(--text-dim);'}">Historial</span>
-          <span onclick="setMeasureCategoryView('${cat.id}','grafica')" style="flex:1; text-align:center; font-size:0.75rem; font-weight:bold; padding:7px; border-radius:6px; cursor:pointer; ${viewMode === 'grafica' ? 'background:var(--green); color:#000;' : 'background:#0f172a; border:1px solid var(--card-border); color:var(--text-dim);'}">Gráfica</span>
+          <span onclick="setMeasureCategoryView('${cat.id}','historial')" style="flex:1; text-align:center; font-size:0.75rem; font-weight:bold; padding:7px; border-radius:6px; cursor:pointer; ${viewMode === 'historial' ? 'background:var(--green); color:#000;' : 'background:var(--surface-2); border:1px solid var(--card-border); color:var(--text-dim);'}">Historial</span>
+          <span onclick="setMeasureCategoryView('${cat.id}','grafica')" style="flex:1; text-align:center; font-size:0.75rem; font-weight:bold; padding:7px; border-radius:6px; cursor:pointer; ${viewMode === 'grafica' ? 'background:var(--green); color:#000;' : 'background:var(--surface-2); border:1px solid var(--card-border); color:var(--text-dim);'}">Gráfica</span>
         </div>
 
         <div id="mscontent-${cat.id}">
@@ -3279,7 +3256,7 @@
       const container = document.getElementById('ms-categories');
       if (!container) return;
       container.innerHTML = MEASURE_CATEGORIES.map(cat => `
-        <div style="background:#1c2541; border:1px solid var(--card-border); border-radius:10px; margin-bottom:8px; overflow:hidden;">
+        <div style="background:var(--card-bg); border:1px solid var(--card-border); border-radius:10px; margin-bottom:8px; overflow:hidden;">
           <div onclick="toggleMeasureCategory('${cat.id}')" style="display:flex; justify-content:space-between; align-items:center; padding:12px 14px; cursor:pointer;">
             <span style="font-weight:bold; font-size:0.9rem;">${cat.label}</span>
             <span id="chev-${cat.id}" style="color:var(--text-dim);">${openMeasureCategoryId === cat.id ? '▴' : '▾'}</span>
@@ -3372,7 +3349,7 @@
       ctx.clearRect(0, 0, w, h);
 
       if (!dataPoints || dataPoints.length === 0) {
-        ctx.fillStyle = '#8d99ae';
+        ctx.fillStyle = 'var(--text-dim)';
         ctx.font = '10px sans-serif';
         ctx.textAlign = 'center';
         ctx.fillText('Sin datos', w / 2, h / 2);
@@ -3501,7 +3478,7 @@
         const isDayActive = session && activeDayIds.includes(day.id) && hasAnyLogs;
 
         const cardStyle = isDayActive 
-          ? 'border:2px solid var(--green); border-left:6px solid var(--green); background:#111d38; box-shadow:0 0 14px rgba(46,196,182,0.35);'
+          ? 'border:2px solid var(--green); border-left:6px solid var(--green); background:var(--surface-1); box-shadow:0 0 14px rgba(46,196,182,0.35);'
           : 'border:1px solid var(--card-border); border-left:6px solid var(--accent); background:var(--card-bg);';
 
         const statusTag = isDayActive
@@ -3515,7 +3492,7 @@
                 <strong style="font-size:1.1rem; color:${isDayActive ? 'var(--green)' : '#ffffff'};">${day.name}</strong>
               </div>
               <div style="display:flex; align-items:center; gap:6px;">
-                <span style="background:#0f172a; border:1px solid var(--card-border); color:var(--text-dim); padding:2px 8px; border-radius:12px; font-size:0.75rem; font-weight:bold;">${countEx} ejercicios</span>
+                <span style="background:var(--surface-2); border:1px solid var(--card-border); color:var(--text-dim); padding:2px 8px; border-radius:12px; font-size:0.75rem; font-weight:bold;">${countEx} ejercicios</span>
                 ${statusTag}
               </div>
             </div>
@@ -3618,7 +3595,7 @@
         const isActive = r.isActive;
 
         const cardStyle = isActive 
-          ? 'border:2px solid var(--green);  background:#111d38; box-shadow:0 0 12px rgba(46,196,182,0.25);'
+          ? 'border:2px solid var(--green);  background:var(--surface-1); box-shadow:0 0 12px rgba(46,196,182,0.25);'
           : 'border:1px solid var(--card-border); border-left:6px solid var(--accent); background:var(--card-bg);';
 
         return `
@@ -3633,7 +3610,7 @@
               <div style="margin-bottom:4px;">
                 <strong style="font-size:1.1rem; color:${isActive ? 'var(--green)' : '#ffffff'};">${r.name}</strong>
               </div>
-              <span style="background:#0f172a; border:1px solid var(--card-border); color:var(--text-dim); padding:2px 8px; border-radius:12px; font-size:0.75rem; font-weight:bold;">${daysCount} días configurados</span>
+              <span style="background:var(--surface-2); border:1px solid var(--card-border); color:var(--text-dim); padding:2px 8px; border-radius:12px; font-size:0.75rem; font-weight:bold;">${daysCount} días configurados</span>
             </div>
             <div style="width:32px; height:32px; border-radius:8px; border:2px solid ${isActive ? 'var(--green)' : 'var(--card-border)'}; background:${isActive ? 'var(--green)' : 'transparent'}; color:#000; display:flex; align-items:center; justify-content:center; font-weight:bold; font-size:1.15rem; cursor:pointer;"
                  onclick="event.stopPropagation(); handleRoutinePointerCancel(); setActiveRoutine(${r.id});"
@@ -3873,7 +3850,7 @@
             const tot = blockCounts[b] || 0;
 
             dayExHtml += `
-              <div style="margin-top:10px; margin-bottom:5px; display:flex; align-items:center; justify-content:space-between; background:#0f172a; border:1px solid var(--card-border); padding:6px 10px; border-radius:8px; cursor:pointer; user-select:none; -webkit-user-select:none;"
+              <div style="margin-top:10px; margin-bottom:5px; display:flex; align-items:center; justify-content:space-between; background:var(--surface-2); border:1px solid var(--card-border); padding:6px 10px; border-radius:8px; cursor:pointer; user-select:none; -webkit-user-select:none;"
                    onpointerdown="handleEditingBlockPointerDown(${day.id}, '${safeBlock}')"
                    onpointerup="handleEditingBlockPointerCancel()"
                    onpointercancel="handleEditingBlockPointerCancel()"
@@ -3911,7 +3888,7 @@
 
         return `
           <div class="card day-drag-card" data-day-index="${dayIdx}" 
-               style="background:#111d38; border:1px solid var(--card-border); border-left:6px solid var(--accent); margin-bottom:12px; user-select:none; -webkit-user-select:none;"
+               style="background:var(--surface-1); border:1px solid var(--card-border); border-left:6px solid var(--accent); margin-bottom:12px; user-select:none; -webkit-user-select:none;"
                onpointerdown="handleEditingDayPointerDown(${day.id})"
                onpointerup="handleEditingDayPointerCancel()"
                onpointercancel="handleEditingDayPointerCancel()"
@@ -3994,6 +3971,7 @@
       };
 
       updateGearParamsUI('edit-ex-mod');
+      initSetEditor('edit-ex-mod', ex);
 
       openModal('modal-edit-routine-ex-params');
     }
@@ -4021,7 +3999,9 @@
         ex.min = gearParamsState.min;
         ex.max = gearParamsState.max;
         ex.barWeight = gearParamsState.bar;
+        ex.setConfigs = setEditor.sets.map(s => ({ min: s.min, max: s.max, rest: s.rest, note: s.note || '' }));
       }
+      if (isIso) delete ex.setConfigs;
 
       closeModal('modal-edit-routine-ex-params');
       renderEditingRoutineDays();
@@ -4149,6 +4129,23 @@
     // Modal para definir un ejercicio en el catálogo (Nombre + Grupos Musculares únicamente)
     let editingOldExName = '';
 
+    let selectedEquipmentForModal = 'free';
+
+    function setModalEquipmentType(type) {
+      selectedEquipmentForModal = type;
+      const freeBtn = document.getElementById('modal-equip-free-btn');
+      const machineBtn = document.getElementById('modal-equip-machine-btn');
+      if (freeBtn) { freeBtn.style.background = (type === 'free') ? 'var(--accent)' : 'var(--card-border)'; freeBtn.style.color = (type === 'free') ? '#fff' : 'var(--text)'; }
+      if (machineBtn) { machineBtn.style.background = (type === 'machine') ? 'var(--accent)' : 'var(--card-border)'; machineBtn.style.color = (type === 'machine') ? '#fff' : 'var(--text)'; }
+    }
+
+    function getExerciseEquipmentIcon(exName) {
+      const type = db.exerciseEquipment && db.exerciseEquipment[exName];
+      if (type === 'machine') return '⚙️';
+      if (type === 'free') return '🏋️';
+      return '';
+    }
+
     function openExerciseModal(defaultName = '', preSelectedMuscles = [], context = 'catalog') {
       catalogExContext = context;
       editingOldExName = defaultName ? defaultName.trim() : '';
@@ -4156,10 +4153,118 @@
       document.getElementById('modal-name').value = defaultName;
       
       renderMuscleChips(preSelectedMuscles.length > 0 ? preSelectedMuscles : ["Pecho"]);
+      const currentType = (defaultName && db.exerciseEquipment && db.exerciseEquipment[defaultName]) || 'free';
+      setModalEquipmentType(currentType);
       openModal('modal-overlay');
     }
 
     function closeExerciseModal() { closeModal('modal-overlay'); }
+
+    // ===== MIGRACIÓN ÚNICA: nombres cortos + tipo de equipo (máquina / peso libre) =====
+    const EXERCISE_SHORT_NAMES = {
+      'Press banca plano con barra': ['Press plano barra', 'free'],
+      'Press banca plano con mancuernas': ['Press plano mancuernas', 'free'],
+      'Press banca inclinado con barra': ['Press inclinado barra', 'free'],
+      'Press banca inclinado con mancuernas': ['Press inclinado mancuernas', 'free'],
+      'Fondos en paralelas': ['Fondos en paralelas', 'free'],
+      'Contractora de pectoral (Pec Deck)': ['Pec Deck', 'machine'],
+      'Press plano máquina sentado': ['Press plano sentado', 'machine'],
+      'Aperturas mancuernas': ['Aperturas', 'free'],
+      'Cruces poleas': ['Cruces de poleas', 'machine'],
+      'Remo con barra de pie': ['Remo con barra', 'free'],
+      'Remo con mancuerna': ['Remo a un brazo', 'free'],
+      'Dominadas': ['Dominadas', 'free'],
+      'Remo en T': ['Remo en T', 'free'],
+      'Remo unilateral en máquina': ['Remo unilateral', 'machine'],
+      'Jalón al pecho': ['Jalón al pecho', 'machine'],
+      'Pullover': ['Pullover', 'machine'],
+      'Remo polea': ['Remo en polea', 'machine'],
+      'Press militar con barra': ['Press militar barra', 'free'],
+      'Press militar con mancuernas': ['Press militar mancuernas', 'free'],
+      'Elevaciones laterales con mancuernas': ['Elevaciones laterales', 'free'],
+      'Face pull': ['Face pull', 'machine'],
+      'Deltoides posterior en máquina (Pec Deck inverso)': ['Deltoides posterior', 'machine'],
+      'Curl de bíceps con barra Z': ['Curl de bíceps', 'free'],
+      'Curl martillo con mancuernas': ['Curl martillo', 'free'],
+      'Curl de bíceps alterno con mancuernas': ['Curl alterno', 'free'],
+      'Curl alterno en banco Scott': ['Banco Scott', 'free'],
+      'Press francés con barra Z': ['Press francés', 'free'],
+      'Extensiones de tríceps en polea': ['Extensiones de tríceps', 'machine'],
+      'Sentadilla con barra': ['Sentadilla', 'free'],
+      'Sentadilla Hack en máquina': ['Sentadilla Hack', 'machine'],
+      'Extensiones de cuádriceps sentado': ['Extensiones de cuádriceps', 'machine'],
+      'Curl femoral sentado': ['Curl femoral sentado', 'machine'],
+      'Curl femoral tumbado': ['Curl femoral tumbado', 'machine'],
+      'Peso muerto': ['Peso muerto', 'free'],
+      'Peso muerto con piernas semirrígidas': ['Peso muerto rígido', 'free'],
+      'Sentadilla búlgara con mancuernas': ['Sentadilla búlgara', 'free'],
+      'Elevación de gemelos': ['Elevación de gemelos', 'machine'],
+      'Prensa': ['Prensa', 'machine'],
+      'Crunch abdominal': ['Crunch abdominal', 'free'],
+      'Rueda abdominal': ['Rueda abdominal', 'free'],
+      'Plancha abdominal': ['Plancha abdominal', 'free'],
+      'Elevaciones de piernas colgado': ['Elevaciones de piernas', 'free'],
+      'Encogimiento abdominal en polea': ['Encogimiento abdominal', 'machine']
+    };
+
+    function migrateExerciseNamesAndEquipment() {
+      if (!db) return;
+      if (!db.settings) db.settings = {};
+      if (db.settings.namesMigratedV1) return;
+      if (!db.exerciseEquipment) db.exerciseEquipment = {};
+
+      Object.keys(EXERCISE_SHORT_NAMES).forEach(oldName => {
+        const [newName, type] = EXERCISE_SHORT_NAMES[oldName];
+        if (oldName !== newName) renameExerciseEverywhere(oldName, newName);
+        if (db.exerciseCatalog && db.exerciseCatalog[newName] && !db.exerciseEquipment[newName]) {
+          db.exerciseEquipment[newName] = type;
+        }
+      });
+
+      db.settings.namesMigratedV1 = true;
+      saveDB();
+    }
+
+    // Renombra un ejercicio en TODOS los sitios donde aparece su nombre como clave o referencia
+    function renameExerciseEverywhere(oldName, newName) {
+      if (!oldName || !newName || oldName === newName) return;
+
+      if (db.exerciseCatalog && db.exerciseCatalog[oldName]) {
+        if (!db.exerciseCatalog[newName]) db.exerciseCatalog[newName] = db.exerciseCatalog[oldName];
+        delete db.exerciseCatalog[oldName];
+      }
+      if (db.history && db.history[oldName]) {
+        db.history[newName] = (db.history[newName] || []).concat(db.history[oldName]);
+        delete db.history[oldName];
+      }
+      ['exerciseNotes', 'lastBarWeights', 'lastWeightSteps', 'exerciseEquipment'].forEach(key => {
+        if (db[key] && db[key][oldName] !== undefined) {
+          if (db[key][newName] === undefined) db[key][newName] = db[key][oldName];
+          delete db[key][oldName];
+        }
+      });
+
+      const fixExList = (list) => {
+        (list || []).forEach(ex => {
+          if (!ex || typeof ex !== 'object') return;
+          if (ex.name === oldName) ex.name = newName;
+          if (ex.supersetWith === oldName) ex.supersetWith = newName;
+        });
+      };
+      (db.routines || []).forEach(r => {
+        fixExList(r.exercises);
+        (r.days || []).forEach(d => fixExList(d.exercises));
+      });
+
+      if (session) {
+        fixExList(session.exercises);
+        if (session.logs && session.logs[oldName]) {
+          session.logs[newName] = (session.logs[newName] || []).concat(session.logs[oldName]);
+          delete session.logs[oldName];
+        }
+      }
+      if (state.activeExObj && state.activeExObj.name === oldName) state.activeExObj.name = newName;
+    }
 
     function saveExerciseModal() {
       const newName = document.getElementById('modal-name').value.trim(); 
@@ -4170,52 +4275,13 @@
 
       const oldName = editingOldExName;
 
-      // SI SE HA CAMBIADO EL NOMBRE A UN EJERCICIO EXISTENTE -> MIGRACIÓN CASCADA DE HISTORIAL Y RUTINAS
+      // SI SE HA CAMBIADO EL NOMBRE -> MIGRACIÓN CASCADA (historial, rutinas, notas, equipo...)
       if (oldName && oldName !== newName) {
-        // 1. Migrar en Catálogo
-        delete db.exerciseCatalog[oldName];
-        db.exerciseCatalog[newName] = assignedMuscles;
-
-        // 2. Migrar en Histórico Global (db.history)
-        if (db.history && db.history[oldName]) {
-          db.history[newName] = (db.history[newName] || []).concat(db.history[oldName]);
-          delete db.history[oldName];
-        }
-
-        // 3. Migrar en las Rutinas Guardadas (db.routines)
-        if (db.routines) {
-          db.routines.forEach(r => {
-            if (r.exercises) {
-              r.exercises.forEach(ex => {
-                if (typeof ex === 'string' && ex === oldName) ex = newName;
-                else if (ex.name === oldName) ex.name = newName;
-              });
-            }
-          });
-        }
-
-        // 4. Migrar en la Sesión Activa de Entrenamiento (session)
-        if (session) {
-          if (session.exercises) {
-            session.exercises.forEach(ex => {
-              if (ex.name === oldName) ex.name = newName;
-            });
-          }
-          if (session.logs && session.logs[oldName]) {
-            session.logs[newName] = (session.logs[newName] || []).concat(session.logs[oldName]);
-            delete session.logs[oldName];
-          }
-        }
-
-        // 5. Migrar objeto de entrenamiento activo en pantalla si coincide
-        if (state.activeExObj && state.activeExObj.name === oldName) {
-          state.activeExObj.name = newName;
-        }
-
-      } else {
-        // Guardado normal/creación sin renombre
-        db.exerciseCatalog[newName] = assignedMuscles;
+        renameExerciseEverywhere(oldName, newName);
       }
+      db.exerciseCatalog[newName] = assignedMuscles;
+      if (!db.exerciseEquipment) db.exerciseEquipment = {};
+      db.exerciseEquipment[newName] = selectedEquipmentForModal;
 
       saveDB();
       saveSession();
@@ -4256,6 +4322,7 @@
       };
 
       updateGearParamsUI('routine-mod');
+      initSetEditor('routine-mod', null);
       renderRoutineExercisePicker();
       openModal('modal-add-to-routine');
     }
@@ -4355,6 +4422,7 @@
         rest: gearParamsState.rest,
         barWeight: gearParamsState.bar
       };
+      if (!isIso) ex.setConfigs = setEditor.sets.map(s => ({ min: s.min, max: s.max, rest: s.rest, note: s.note || '' }));
 
       if (addingTargetDayId !== null && currentEditingRoutineObj) {
         // Añadir a la plantilla del día en el editor de rutina
@@ -4403,7 +4471,7 @@
         html += `
           <div class="library-group-card" style="border-left:5px solid var(--accent);">
             <div class="library-group-header" onclick="toggleLibraryGroup(this)">
-              <span>${svgMuscleAccent}${muscle} <span style="background:#0f172a; border:1px solid var(--card-border); color:var(--text-dim); padding:2px 8px; border-radius:12px; font-size:0.75rem; font-weight:bold; margin-left:6px;">${exList.length}</span></span>
+              <span>${svgMuscleAccent}${muscle} <span style="background:var(--surface-2); border:1px solid var(--card-border); color:var(--text-dim); padding:2px 8px; border-radius:12px; font-size:0.75rem; font-weight:bold; margin-left:6px;">${exList.length}</span></span>
               <span class="group-arrow">${forceOpen ? '▲' : '▼'}</span>
             </div>
             <div class="library-group-content ${forceOpen ? '' : 'hidden'}">
@@ -4424,7 +4492,7 @@
                    onclick="if(!catalogLongPressTriggered) editCatalogExercise('${safeExName}')"
                    style="user-select:none; -webkit-user-select:none; cursor:pointer;">
                 <div>
-                  <strong>${exName}</strong><br>
+                  <strong>${getExerciseEquipmentIcon(exName)} ${exName}</strong><br>
                   <small style="color:var(--text-dim);">${musclesList}</small>
                 </div>
                 <button class="btn btn-secondary btn-small" style="font-size:0.75rem; padding:4px 8px;" onclick="event.stopPropagation(); handleCatalogExPointerCancel(); editCatalogExercise('${safeExName}')">Editar</button>
@@ -4511,7 +4579,6 @@
     }
 
     function editCatalogExercise(exName) {
-      closeModal('modal-exercise-library');
       const muscles = db.exerciseCatalog[exName] || ["Otro"];
       openExerciseModal(exName, muscles, false);
     }
@@ -4668,6 +4735,106 @@
       if (isoSetsEl) isoSetsEl.innerText = gearParamsState.sets;
       if (isoRestEl) isoRestEl.innerText = gearParamsState.rest;
       if (isoWorkEl) isoWorkEl.innerText = gearParamsState.workTime || 15;
+    }
+
+
+    // ===== EDITOR DE SERIES INDIVIDUALES (repeticiones, descanso, notas por serie) =====
+    let setEditor = { tab: 'reps', sets: [] };
+
+    function initSetEditor(prefix, ex) {
+      const n = Math.max(1, gearParamsState.sets || 3);
+      if (ex && Array.isArray(ex.setConfigs) && ex.setConfigs.length > 0) {
+        setEditor.sets = ex.setConfigs.map(s => ({ min: s.min, max: s.max, rest: s.rest, note: s.note || '' }));
+      } else {
+        setEditor.sets = Array.from({ length: n }, () => ({
+          min: gearParamsState.min || 8, max: gearParamsState.max || 12, rest: gearParamsState.rest || 90, note: ''
+        }));
+      }
+      setEditor.tab = 'reps';
+      syncGearFromSetEditor();
+      renderSetEditor(prefix);
+    }
+
+    function syncGearFromSetEditor() {
+      if (!setEditor.sets.length) return;
+      gearParamsState.sets = setEditor.sets.length;
+      gearParamsState.min = setEditor.sets[0].min;
+      gearParamsState.max = setEditor.sets[0].max;
+      gearParamsState.rest = setEditor.sets[0].rest;
+    }
+
+    function setEditorTab(prefix, tab) { setEditor.tab = tab; renderSetEditor(prefix); }
+
+    function setEditorAdjustSets(prefix, delta) {
+      if (delta > 0) {
+        const last = setEditor.sets[setEditor.sets.length - 1] || { min: 8, max: 12, rest: 90, note: '' };
+        setEditor.sets.push({ min: last.min, max: last.max, rest: last.rest, note: last.note || '' });
+      } else if (setEditor.sets.length > 1) {
+        setEditor.sets.pop();
+      }
+      syncGearFromSetEditor();
+      renderSetEditor(prefix);
+    }
+
+    function setEditorChange(i, field, value) {
+      const s = setEditor.sets[i];
+      if (!s) return;
+      if (field === 'note') { s.note = value; return; }
+      let v = parseInt(value);
+      if (isNaN(v) || v < 0) return;
+      if (field === 'min') { s.min = Math.max(1, v); if (s.max < s.min) s.max = s.min; }
+      if (field === 'max') { s.max = Math.max(1, v); if (s.min > s.max) s.min = s.max; }
+      if (field === 'rest') s.rest = v;
+      syncGearFromSetEditor();
+    }
+
+    function renderSetEditor(prefix) {
+      const el = document.getElementById(prefix + '-setedit');
+      if (!el) return;
+      const tabs = [['reps', '🔁', 'Repeticiones'], ['rest', '⏱️', 'Descanso'], ['note', '📝', 'Notas']];
+      const inputStyle = 'width:100%; padding:8px; text-align:center; font-size:0.95rem; margin-top:0;';
+      let rows = setEditor.sets.map((s, i) => {
+        let field = '';
+        if (setEditor.tab === 'reps') {
+          field = `<div style="display:flex; align-items:center; gap:6px; flex:1;">
+              <input type="number" inputmode="numeric" value="${s.min}" style="${inputStyle}" onchange="setEditorChange(${i}, 'min', this.value); renderSetEditor('${prefix}')">
+              <span style="color:var(--text-dim);">–</span>
+              <input type="number" inputmode="numeric" value="${s.max}" style="${inputStyle}" onchange="setEditorChange(${i}, 'max', this.value); renderSetEditor('${prefix}')">
+              <span style="color:var(--text-dim); font-size:0.8rem;">reps</span></div>`;
+        } else if (setEditor.tab === 'rest') {
+          field = `<div style="display:flex; align-items:center; gap:6px; flex:1;">
+              <input type="number" inputmode="numeric" step="15" value="${s.rest}" style="${inputStyle}" onchange="setEditorChange(${i}, 'rest', this.value)">
+              <span style="color:var(--text-dim); font-size:0.8rem;">seg</span></div>`;
+        } else {
+          field = `<input type="text" value="${(s.note || '').replace(/"/g, '&quot;')}" placeholder="Nota de esta serie..." style="${inputStyle} text-align:left; flex:1;" onchange="setEditorChange(${i}, 'note', this.value)">`;
+        }
+        return `<div style="display:flex; align-items:center; gap:10px; margin-bottom:8px;">
+            <span style="width:58px; font-size:0.85rem; font-weight:bold; color:var(--text-dim);">Serie ${i + 1}</span>${field}</div>`;
+      }).join('');
+
+      el.innerHTML = `
+        <div style="display:flex; gap:6px; margin-bottom:10px;">
+          ${tabs.map(t => `<button type="button" class="chart-tab-btn ${setEditor.tab === t[0] ? 'active' : ''}" style="font-size:1.1rem; padding:8px 4px;" onclick="setEditorTab('${prefix}', '${t[0]}')" title="${t[2]}">${t[1]}</button>`).join('')}
+        </div>
+        <div style="display:flex; align-items:center; justify-content:space-between; background:var(--surface-1); border:1px solid var(--card-border); padding:8px 12px; border-radius:10px; margin-bottom:10px;">
+          <span style="font-size:0.9rem; font-weight:bold; color:var(--text);">Series</span>
+          <div style="display:flex; align-items:center; gap:10px;">
+            <button type="button" class="num-btn" style="width:36px; height:36px; font-size:1.2rem;" onclick="setEditorAdjustSets('${prefix}', -1)">-</button>
+            <span style="font-size:1.3rem; font-weight:bold; min-width:28px; text-align:center;">${setEditor.sets.length}</span>
+            <button type="button" class="num-btn" style="width:36px; height:36px; font-size:1.2rem;" onclick="setEditorAdjustSets('${prefix}', 1)">+</button>
+          </div>
+        </div>
+        <div style="max-height:32vh; overflow-y:auto; padding-right:2px;">${rows}</div>`;
+    }
+
+    // Objetivo de una serie concreta (con valores generales como respaldo)
+    function getSetConfig(ex, setNum) {
+      const base = { min: parseInt(ex.min) || 8, max: parseInt(ex.max) || 12, rest: parseInt(ex.rest) || 90, note: '' };
+      if (ex && Array.isArray(ex.setConfigs) && ex.setConfigs.length > 0) {
+        const c = ex.setConfigs[Math.min(Math.max(1, setNum), ex.setConfigs.length) - 1];
+        if (c) return { min: c.min, max: c.max, rest: c.rest, note: c.note || '' };
+      }
+      return base;
     }
 
     function adjustGearParam(type, delta, prefix) {
@@ -4829,11 +4996,11 @@
           const blockTitleColor = isBlockFinished ? 'var(--green)' : 'var(--accent)';
           const blockBadgeStyle = isBlockFinished 
             ? 'background:rgba(46,196,182,0.15); border:1px solid var(--green); color:var(--green);' 
-            : 'background:#0f172a; border:1px solid var(--card-border); color:var(--text-dim);';
+            : 'background:var(--surface-2); border:1px solid var(--card-border); color:var(--text-dim);';
           const checkMark = isBlockFinished ? ' <span style="font-size:0.85rem; color:var(--green); font-weight:bold;">✓</span>' : '';
 
           html += `
-            <div style="margin-top:14px; margin-bottom:8px; display:flex; align-items:center; justify-content:space-between; background:#111d38; border:1px solid var(--card-border); border-left:${blockBorderLeft}; padding:10px 14px; border-radius:12px; cursor:pointer; user-select:none; -webkit-user-select:none;"
+            <div style="margin-top:14px; margin-bottom:8px; display:flex; align-items:center; justify-content:space-between; background:var(--surface-1); border:1px solid var(--card-border); border-left:${blockBorderLeft}; padding:10px 14px; border-radius:12px; cursor:pointer; user-select:none; -webkit-user-select:none;"
                  onpointerdown="handleSessionBlockPointerDown('${safeBlock}')"
                  onpointerup="handleSessionBlockPointerCancel()"
                  onpointercancel="handleSessionBlockPointerCancel()"
@@ -4868,9 +5035,9 @@
 
           let cardStyle = 'border:1px solid var(--card-border); border-left:6px solid var(--accent); background:var(--card-bg);';
           if (isFullyCompleted) {
-            cardStyle = 'border:2px solid var(--green); border-left:6px solid var(--green); background:#111d38; box-shadow:0 0 12px rgba(46,196,182,0.25);';
+            cardStyle = 'border:2px solid var(--green); border-left:6px solid var(--green); background:var(--surface-1); box-shadow:0 0 12px rgba(46,196,182,0.25);';
           } else if (setsDone > 0) {
-            cardStyle = 'border:1px solid var(--card-border); border-left:6px solid var(--green); background:#111d38;';
+            cardStyle = 'border:1px solid var(--card-border); border-left:6px solid var(--green); background:var(--surface-1);';
           }
 
           const specText = isIso 
@@ -4898,7 +5065,7 @@
                     <strong style="font-size:1.1rem; color:${titleColor};">${ex.name}</strong>
                   </div>
                   <div style="display:flex; align-items:center; gap:6px; flex-wrap:wrap;">
-                    <span style="background:#0f172a; border:1px solid var(--card-border); color:var(--text-dim); padding:2px 8px; border-radius:12px; font-size:0.75rem; font-weight:bold;">${specText}</span>
+                    <span style="background:var(--surface-2); border:1px solid var(--card-border); color:var(--text-dim); padding:2px 8px; border-radius:12px; font-size:0.75rem; font-weight:bold;">${specText}</span>
                     ${badgeHtml}
                   </div>
                 </div>
@@ -5030,7 +5197,7 @@
         : '';
 
       const hasExNote = !!(db.exerciseNotes && db.exerciseNotes[exName] && db.exerciseNotes[exName].trim() !== '');
-      const noteBadgeHtml = `<span onclick="openExerciseNoteModal()" title="Nota del ejercicio" style="background:#111d38; border:1px solid ${hasExNote ? 'var(--green)' : 'var(--card-border)'}; padding:4px 9px; border-radius:12px; cursor:pointer; display:inline-flex; align-items:center;">${svgNoteIcon(hasExNote)}</span>`;
+      const noteBadgeHtml = `<span onclick="openExerciseNoteModal()" title="Nota del ejercicio" style="background:var(--surface-1); border:1px solid ${hasExNote ? 'var(--green)' : 'var(--card-border)'}; padding:4px 9px; border-radius:12px; cursor:pointer; display:inline-flex; align-items:center;">${svgNoteIcon(hasExNote)}</span>`;
 
       if (isIsometricEx(state.activeExObj)) {
         const workSec = state.isoWorkTime || state.activeExObj.workTime || state.activeExObj.min || 15;
@@ -5040,26 +5207,27 @@
             <div style="font-size:1.35rem; font-weight:bold; color:#ffffff; line-height:1.2; margin-bottom:8px;">${exName}</div>
             ${supersetBadge}
             <div style="display:flex; align-items:center; gap:8px;">
-              <span style="background:#111d38; border:1px solid var(--card-border); color:var(--text-dim); padding:4px 10px; border-radius:12px; font-size:0.8rem; font-weight:bold;">${sets} series × ${workSec}s</span>
-              <span onclick="promptChangeRestTime()" style="background:#111d38; border:1px solid var(--card-border); color:var(--accent); padding:4px 10px; border-radius:12px; font-size:0.8rem; font-weight:bold; cursor:pointer;">${svgTimerDim}${restSec}s</span>
+              <span style="background:var(--surface-1); border:1px solid var(--card-border); color:var(--text-dim); padding:4px 10px; border-radius:12px; font-size:0.8rem; font-weight:bold;">${sets} series × ${workSec}s</span>
+              <span onclick="promptChangeRestTime()" style="background:var(--surface-1); border:1px solid var(--card-border); color:var(--accent); padding:4px 10px; border-radius:12px; font-size:0.8rem; font-weight:bold; cursor:pointer;">${svgTimerDim}${restSec}s</span>
               ${noteBadgeHtml}
-              <span style="margin-left:auto; background:#111d38; border:1px solid var(--card-border); color:var(--green); padding:4px 10px; border-radius:12px; font-size:0.8rem; font-weight:bold; display:flex; align-items:center;">${svgHourglass}<span id="header-session-timer-text">00:00</span></span>
+              <span style="margin-left:auto; background:var(--surface-1); border:1px solid var(--card-border); color:var(--green); padding:4px 10px; border-radius:12px; font-size:0.8rem; font-weight:bold; display:flex; align-items:center;">${svgHourglass}<span id="header-session-timer-text">00:00</span></span>
             </div>
           </div>
         `;
       } else {
-        const minR = state.activeExObj.min || 8;
-        const maxR = state.activeExObj.max || 12;
-        const restS = state.activeExObj.rest || 90;
+        const curCfg = getSetConfig(state.activeExObj, state.currentSet || 1);
+        const minR = curCfg.min;
+        const maxR = curCfg.max;
+        const restS = curCfg.rest;
         titleEl.innerHTML = `
           <div style="margin-bottom:12px; padding:2px 0;">
             <div style="font-size:1.35rem; font-weight:bold; color:#ffffff; line-height:1.2; margin-bottom:8px;">${exName}</div>
             ${supersetBadge}
             <div style="display:flex; align-items:center; gap:8px;">
-              <span style="background:#111d38; border:1px solid var(--card-border); color:var(--text-dim); padding:4px 10px; border-radius:12px; font-size:0.8rem; font-weight:bold;">${sets} × ${minR}-${maxR} reps</span>
-              <span onclick="promptChangeRestTime()" style="background:#111d38; border:1px solid var(--card-border); color:var(--accent); padding:4px 10px; border-radius:12px; font-size:0.8rem; font-weight:bold; cursor:pointer;">${svgTimerDim}${restS}s</span>
+              <span style="background:var(--surface-1); border:1px solid var(--card-border); color:var(--text-dim); padding:4px 10px; border-radius:12px; font-size:0.8rem; font-weight:bold;">${sets} × ${minR}-${maxR} reps</span>
+              <span onclick="promptChangeRestTime()" style="background:var(--surface-1); border:1px solid var(--card-border); color:var(--accent); padding:4px 10px; border-radius:12px; font-size:0.8rem; font-weight:bold; cursor:pointer;">${svgTimerDim}${restS}s</span>
               ${noteBadgeHtml}
-              <span style="margin-left:auto; background:#111d38; border:1px solid var(--card-border); color:var(--green); padding:4px 10px; border-radius:12px; font-size:0.8rem; font-weight:bold; display:flex; align-items:center;">${svgHourglass}<span id="header-session-timer-text">00:00</span></span>
+              <span style="margin-left:auto; background:var(--surface-1); border:1px solid var(--card-border); color:var(--green); padding:4px 10px; border-radius:12px; font-size:0.8rem; font-weight:bold; display:flex; align-items:center;">${svgHourglass}<span id="header-session-timer-text">00:00</span></span>
             </div>
           </div>
         `;
@@ -5835,7 +6003,7 @@ function openEditHistorySetModal(type, idx) {
                 
                 if (isFirst) {
                   dayTdPast = `
-                    <td rowspan="${sessSets.length}" style="vertical-align:middle; border-right:1px solid var(--card-border); background:#111d38; padding:2px; border-top:2px solid var(--card-border);">
+                    <td rowspan="${sessSets.length}" style="vertical-align:middle; border-right:1px solid var(--card-border); background:var(--surface-1); padding:2px; border-top:2px solid var(--card-border);">
                       <span class="rel-day-tag is-past" onclick="showDateInfo('${dateStr}')">${relInfo.label}</span>
                     </td>
                   `;
@@ -5920,9 +6088,9 @@ function openEditHistorySetModal(type, idx) {
 
             if (log) {
               let techDot = '-';
-              if (log.technique === 'Bien') techDot = '<span style="color:var(--green); font-size:0.9rem;">●</span>';
-              if (log.technique === 'Aceptable') techDot = '<span style="color:var(--yellow); font-size:0.9rem;">●</span>';
-              if (log.technique === 'Regular') techDot = '<span style="color:var(--red); font-size:0.9rem;">●</span>';
+              if (log.technique === 'Bien') techDot = '<span style="color:var(--tech-green); font-size:0.9rem;">●</span>';
+              if (log.technique === 'Aceptable') techDot = '<span style="color:var(--tech-yellow); font-size:0.9rem;">●</span>';
+              if (log.technique === 'Regular') techDot = '<span style="color:var(--tech-red); font-size:0.9rem;">●</span>';
 
               const bWeight = (log.barWeight !== undefined) ? log.barWeight : 0;
               const totalSetW = log.weight + bWeight;
@@ -6034,7 +6202,7 @@ function openEditHistorySetModal(type, idx) {
                 
                 if (isFirst) {
                   dayTdPast = `
-                    <td rowspan="${sessSets.length}" style="vertical-align:middle; border-right:1px solid var(--card-border); background:#111d38; padding:2px; border-top:2px solid var(--card-border);">
+                    <td rowspan="${sessSets.length}" style="vertical-align:middle; border-right:1px solid var(--card-border); background:var(--surface-1); padding:2px; border-top:2px solid var(--card-border);">
                       <span class="rel-day-tag is-past" onclick="showDateInfo('${dateStr}')">${relInfo.label}</span><br>
                       <span style="font-size:0.65rem; color:var(--green); font-weight:bold;">${avgRM}kg</span><br>
                       <span style="font-size:0.62rem; color:var(--accent); font-weight:bold;">IE:${ieScore}</span>
@@ -6043,9 +6211,9 @@ function openEditHistorySetModal(type, idx) {
                 }
 
                 let techDot = '-';
-                if (h.technique === 'Bien') techDot = '<span style="color:var(--green); font-size:0.9rem;">●</span>';
-                if (h.technique === 'Aceptable') techDot = '<span style="color:var(--yellow); font-size:0.9rem;">●</span>';
-                if (h.technique === 'Regular') techDot = '<span style="color:var(--red); font-size:0.9rem;">●</span>';
+                if (h.technique === 'Bien') techDot = '<span style="color:var(--tech-green); font-size:0.9rem;">●</span>';
+                if (h.technique === 'Aceptable') techDot = '<span style="color:var(--tech-yellow); font-size:0.9rem;">●</span>';
+                if (h.technique === 'Regular') techDot = '<span style="color:var(--tech-red); font-size:0.9rem;">●</span>';
 
                 const bW = (h.barWeight !== undefined) ? h.barWeight : 0;
                 const totW = h.weight + bW;
@@ -6088,7 +6256,7 @@ function openEditHistorySetModal(type, idx) {
         // MODO 2: TARJETAS
         html += `
           <div style="background:var(--card-bg); border-radius:14px; margin-bottom:12px; border:1.5px solid var(--green); border-left:6px solid var(--green); box-shadow:0 0 12px rgba(46,196,182,0.25); overflow:hidden;">
-            <div style="background:#111d38; padding:10px 14px; display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--card-border);">
+            <div style="background:var(--surface-1); padding:10px 14px; display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--card-border);">
               <strong style="color:var(--green); font-size:0.95rem; cursor:pointer;" 
                              onpointerdown="handlePointerDown('today_header', 0)" 
                              onpointerup="handlePointerCancel()" 
@@ -6124,9 +6292,9 @@ function openEditHistorySetModal(type, idx) {
             } else {
               // VISTA TARJETA ESTÁNDAR DE FUERZA
               let techDot = '-';
-              if (log.technique === 'Bien') techDot = '<span style="color:var(--green); font-size:1.1rem;">●</span>';
-              if (log.technique === 'Aceptable') techDot = '<span style="color:var(--yellow); font-size:1.1rem;">●</span>';
-              if (log.technique === 'Regular') techDot = '<span style="color:var(--red); font-size:1.1rem;">●</span>';
+              if (log.technique === 'Bien') techDot = '<span style="color:var(--tech-green); font-size:1.1rem;">●</span>';
+              if (log.technique === 'Aceptable') techDot = '<span style="color:var(--tech-yellow); font-size:1.1rem;">●</span>';
+              if (log.technique === 'Regular') techDot = '<span style="color:var(--tech-red); font-size:1.1rem;">●</span>';
 
               const bWeight = (log.barWeight !== undefined) ? log.barWeight : 0;
               const totalSetW = log.weight + bWeight;
@@ -6233,7 +6401,7 @@ function openEditHistorySetModal(type, idx) {
             if (isIso) {
               html += `
                 <div style="background:var(--card-bg); border-radius:14px; margin-bottom:12px; border:1px solid var(--card-border); border-left:6px solid var(--red); overflow:hidden;">
-                  <div style="background:#111d38; padding:10px 14px; display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--card-border);">
+                  <div style="background:var(--surface-1); padding:10px 14px; display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--card-border);">
                     <strong class="rel-day-tag is-past" onclick="showDateInfo('${dateStr}')">${relInfo.label}</strong>
                     <span style="color:var(--text-dim); font-size:0.8rem;">${sessSets.length} series</span>
                   </div>
@@ -6275,7 +6443,7 @@ function openEditHistorySetModal(type, idx) {
 
               html += `
                 <div style="background:var(--card-bg); border-radius:14px; margin-bottom:12px; border:1px solid var(--card-border); border-left:6px solid var(--red); overflow:hidden;">
-                  <div style="background:#111d38; padding:10px 14px; display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--card-border);">
+                  <div style="background:var(--surface-1); padding:10px 14px; display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--card-border);">
                     <strong class="rel-day-tag is-past" onclick="showDateInfo('${dateStr}')">${relInfo.label}</strong>
                     <div style="display:flex; gap:6px;">
                       <span style="background:rgba(46,196,182,0.15); color:var(--green); border:1px solid var(--green); padding:3px 8px; border-radius:6px; font-weight:bold; font-size:0.75rem;">RM: ${avgRM}kg</span>
@@ -6287,9 +6455,9 @@ function openEditHistorySetModal(type, idx) {
 
               sessSets.forEach(h => {
                 let techDot = '-';
-                if (h.technique === 'Bien') techDot = '<span style="color:var(--green); font-size:1.1rem;">●</span>';
-                if (h.technique === 'Aceptable') techDot = '<span style="color:var(--yellow); font-size:1.1rem;">●</span>';
-                if (h.technique === 'Regular') techDot = '<span style="color:var(--red); font-size:1.1rem;">●</span>';
+                if (h.technique === 'Bien') techDot = '<span style="color:var(--tech-green); font-size:1.1rem;">●</span>';
+                if (h.technique === 'Aceptable') techDot = '<span style="color:var(--tech-yellow); font-size:1.1rem;">●</span>';
+                if (h.technique === 'Regular') techDot = '<span style="color:var(--tech-red); font-size:1.1rem;">●</span>';
 
                 const bW = (h.barWeight !== undefined) ? h.barWeight : 0;
                 const totW = h.weight + bW;
@@ -6376,7 +6544,7 @@ function openEditHistorySetModal(type, idx) {
           state.pendingSupersetReturn = state.supersetReturnIdx;
           state.supersetLeg = 0;
         }
-        startTimer(state.activeExObj.rest, calculatedRest, false);
+        startTimer(getSetConfig(state.activeExObj, state.currentSet).rest, calculatedRest, false);
       }
     }
 
@@ -6907,7 +7075,7 @@ function openEditHistorySetModal(type, idx) {
           html += `
             <div class="library-group-card" style="border-left:5px solid var(--accent);">
               <div class="library-group-header" onclick="toggleLibraryGroup(this)">
-                <span>${svgMuscleAccent}${muscle} <span style="background:#0f172a; border:1px solid var(--card-border); color:var(--text-dim); padding:2px 8px; border-radius:12px; font-size:0.75rem; font-weight:bold; margin-left:6px;">${exList.length}</span></span>
+                <span>${svgMuscleAccent}${muscle} <span style="background:var(--surface-2); border:1px solid var(--card-border); color:var(--text-dim); padding:2px 8px; border-radius:12px; font-size:0.75rem; font-weight:bold; margin-left:6px;">${exList.length}</span></span>
                 <span class="group-arrow">${forceOpen ? '▲' : '▼'}</span>
               </div>
               <div class="library-group-content ${forceOpen ? '' : 'hidden'}">
@@ -6946,6 +7114,64 @@ function openEditHistorySetModal(type, idx) {
       renderStatsView();
     }
 
+    let statsRange = 'all';
+
+    function setStatsRange(r) {
+      statsRange = r;
+      document.querySelectorAll('#stats-range-chips .chip-btn').forEach(b => {
+        b.classList.toggle('selected', b.dataset.range === r);
+      });
+      renderStatsView();
+    }
+
+    // Filtra por periodo, agrupa (semanas/meses) si hay demasiados puntos y suaviza con media móvil
+    function prepareStatsChartPoints(sessionPoints, key) {
+      const today = new Date(); today.setHours(0,0,0,0);
+      const rangeDays = { week: 7, month: 30, m6: 182, year: 365 }[statsRange];
+      let pts = sessionPoints.map(p => ({ d: parseDateStr(p.date), v: p[key] }));
+      if (rangeDays) {
+        const cutoff = new Date(today.getTime() - rangeDays * 86400000);
+        pts = pts.filter(p => p.d >= cutoff);
+      }
+      if (pts.length === 0) return [];
+
+      const spanDays = (pts[pts.length - 1].d - pts[0].d) / 86400000;
+      let bucketDays = 0;
+      if (pts.length > 14) {
+        if (spanDays > 400) bucketDays = 30;
+        else if (spanDays > 60) bucketDays = 7;
+      }
+
+      const fmtShort = d => bucketDays === 30
+        ? `${d.getMonth() + 1}/${String(d.getFullYear()).slice(2)}`
+        : `${d.getDate()}/${d.getMonth() + 1}`;
+
+      let out;
+      if (bucketDays > 0) {
+        const groups = new Map();
+        pts.forEach(p => {
+          const idx = Math.floor((p.d - pts[0].d) / 86400000 / bucketDays);
+          if (!groups.has(idx)) groups.set(idx, []);
+          groups.get(idx).push(p);
+        });
+        out = [...groups.values()].map(g => ({
+          label: fmtShort(g[0].d),
+          value: g.reduce((s, p) => s + p.v, 0) / g.length
+        }));
+      } else {
+        out = pts.map(p => ({ label: `${p.d.getDate()}/${p.d.getMonth() + 1}`, value: p.v }));
+      }
+
+      // Media móvil de 3 puntos para suavizar picos
+      if (out.length >= 5) {
+        out = out.map((p, i) => {
+          const a = out[Math.max(0, i - 1)].value, b = p.value, c = out[Math.min(out.length - 1, i + 1)].value;
+          return { label: p.label, value: (a + b + c) / 3 };
+        });
+      }
+      return out.map(p => ({ label: p.label, value: Math.round(p.value * 10) / 10 }));
+    }
+
     function switchStatsChartTab(tab) {
       activeStatsChartTab = tab;
       document.getElementById('btn-tab-rm').classList.toggle('active', tab === 'RM');
@@ -6972,11 +7198,9 @@ function openEditHistorySetModal(type, idx) {
       // Canvas Chart - Using theme colors (Turquoise #2ec4b6 & Orange #ff6b35)
       setTimeout(() => {
         if (activeStatsChartTab === 'RM') {
-          const pts = stats.sessionPoints.map(p => ({ label: p.relLabel, value: p.rm }));
-          drawLineChart('stats-chart-canvas', pts, '#2ec4b6', 'kg');
+          drawLineChart('stats-chart-canvas', prepareStatsChartPoints(stats.sessionPoints, 'rm'), '#2ec4b6', 'kg');
         } else {
-          const pts = stats.sessionPoints.map(p => ({ label: p.relLabel, value: p.ie }));
-          drawLineChart('stats-chart-canvas', pts, '#ff6b35', 'pts');
+          drawLineChart('stats-chart-canvas', prepareStatsChartPoints(stats.sessionPoints, 'ie'), '#ff6b35', 'pts');
         }
       }, 50);
 
@@ -7081,7 +7305,7 @@ function openEditHistorySetModal(type, idx) {
 
         html += `
           <div style="background:var(--card-bg); border-radius:10px; margin-bottom:8px; border:1px solid var(--card-border); overflow:hidden;">
-            <div style="background:#111d38; padding:8px 12px; display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--card-border);">
+            <div style="background:var(--surface-1); padding:8px 12px; display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--card-border);">
               <strong style="color:var(--green); font-size:0.85rem;">${relInfo.label} (${dateStr})</strong>
               <div style="display:flex; gap:6px;">
                 <span style="background:rgba(46,196,182,0.15); color:var(--green); border:1px solid var(--green); padding:2px 6px; border-radius:4px; font-weight:bold; font-size:0.7rem;">RM: ${avgRM}kg</span>
@@ -7093,9 +7317,9 @@ function openEditHistorySetModal(type, idx) {
 
         sessSets.forEach((h, sIdx) => {
           let techDot = '-';
-          if (h.technique === 'Bien') techDot = '<span style="color:var(--green);">●</span>';
-          if (h.technique === 'Aceptable') techDot = '<span style="color:var(--yellow);">●</span>';
-          if (h.technique === 'Regular') techDot = '<span style="color:var(--red);">●</span>';
+          if (h.technique === 'Bien') techDot = '<span style="color:var(--tech-green);">●</span>';
+          if (h.technique === 'Aceptable') techDot = '<span style="color:var(--tech-yellow);">●</span>';
+          if (h.technique === 'Regular') techDot = '<span style="color:var(--tech-red);">●</span>';
 
           const bW = (h.barWeight !== undefined) ? h.barWeight : 0;
           const totW = h.weight + bW;
@@ -7132,7 +7356,7 @@ function openEditHistorySetModal(type, idx) {
       ctx.clearRect(0, 0, w, h);
 
       if (!dataPoints || dataPoints.length === 0) {
-        ctx.fillStyle = '#8d99ae';
+        ctx.fillStyle = 'var(--text-dim)';
         ctx.font = '13px sans-serif';
         ctx.textAlign = 'center';
         ctx.fillText('Sin datos suficientes para graficar.', w / 2, h / 2);
@@ -7187,19 +7411,24 @@ function openEditHistorySetModal(type, idx) {
       });
       ctx.stroke();
 
-      // Puntos y etiquetas
-      points.forEach(pt => {
+      // Puntos y etiquetas (se aclaran si hay muchos puntos)
+      const step = Math.max(1, Math.ceil(points.length / 7));
+      const dotR = points.length > 20 ? 2.5 : 5;
+      points.forEach((pt, idx) => {
         ctx.fillStyle = strokeColor;
         ctx.beginPath();
-        ctx.arc(pt.x, pt.y, 5, 0, Math.PI * 2);
+        ctx.arc(pt.x, pt.y, dotR, 0, Math.PI * 2);
         ctx.fill();
+
+        const showLabel = (idx % step === 0) || idx === points.length - 1;
+        if (!showLabel) return;
 
         ctx.fillStyle = '#ffffff';
         ctx.font = 'bold 10px sans-serif';
         ctx.textAlign = 'center';
         ctx.fillText(`${pt.val}${labelUnit}`, pt.x, pt.y - 8);
 
-        ctx.fillStyle = '#8d99ae';
+        ctx.fillStyle = '#aaaaaa';
         ctx.font = '9px sans-serif';
         ctx.fillText(pt.label, pt.x, h - paddingBottom + 16);
       });
