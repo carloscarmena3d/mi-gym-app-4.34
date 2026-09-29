@@ -11,7 +11,7 @@
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%230b132b'/%3E%3Cpath d='M20 35h12v30H20zM68 35h12v30H68z' fill='%232ec4b6'/%3E%3Cpath d='M32 42h36v16H32z' fill='%23ff6b35'/%3E%3Cpath d='M14 42h6v16h-6zM80 42h6v16h-6z' fill='%23ffd166'/%3E%3C/svg%3E">
   <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%230b132b'/%3E%3Cpath d='M20 35h12v30H20zM68 35h12v30H68z' fill='%232ec4b6'/%3E%3Cpath d='M32 42h36v16H32z' fill='%23ff6b35'/%3E%3Cpath d='M14 42h6v16h-6zM80 42h6v16h-6z' fill='%23ffd166'/%3E%3C/svg%3E">
   
-  <title>Mi Gym App V4.37</title>
+  <title>Mi Gym App V4.38</title>
   <style>
     :root {
       --bg-color: #0b132b;    /* Azul oscuro profundo */
@@ -538,7 +538,7 @@
   <!-- VISTA 1: INICIO (ENTRENAMIENTO) -->
   <div id="view-routines">
     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
-      <h1 style="margin-bottom:0; color:var(--text); font-size:1.6rem; letter-spacing:0.5px;">MiGymApp <span style="font-size:0.75rem; color:var(--green); font-weight:bold;">V4.37</span></h1>
+      <h1 style="margin-bottom:0; color:var(--text); font-size:1.6rem; letter-spacing:0.5px;">MiGymApp <span style="font-size:0.75rem; color:var(--green); font-weight:bold;">V4.38</span></h1>
       <button onclick="openAppSettingsModal()" style="background:none; border:none; color:var(--text-dim); padding:6px; cursor:pointer; display:flex; align-items:center; transition:color 0.2s;" title="Ajustes de la App">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
       </button>
@@ -579,7 +579,7 @@
     <button class="btn btn-secondary btn-small nav-back-btn" onclick="showView('view-routines')">← Volver a Inicio</button>
     <h1 id="routine-title" style="margin-top:15px;"></h1>
     <div id="exercises-list"></div>
-    <button class="btn btn-secondary" style="margin-top:15px; margin-bottom: 15px;" onclick="openAddToRoutineModal()">+ Añadir Ejercicio</button>
+    <button class="btn btn-secondary" style="margin-top:15px; margin-bottom: 15px;" onclick="openRoutinePickerModal()">+ Añadir Ejercicio</button>
   </div>
 
   <!-- VISTA 3: ENTRENANDO EJERCICIO -->
@@ -966,12 +966,6 @@
       <label style="margin-top:12px;">Grupos Musculares (uno o varios):</label>
       <div id="modal-muscles-chips" style="display:flex; flex-wrap:wrap; gap:6px; margin-top:6px; margin-bottom:12px;"></div>
 
-      <label>Tipo de equipo:</label>
-      <div style="display:flex; gap:10px; margin-top:6px; margin-bottom:12px;">
-        <button type="button" id="modal-equip-free-btn" class="btn btn-secondary" style="flex:1; padding:12px; display:flex; align-items:center; justify-content:center; gap:6px;" onclick="setModalEquipmentType('free')">🏋️ Peso libre</button>
-        <button type="button" id="modal-equip-machine-btn" class="btn btn-secondary" style="flex:1; padding:12px; display:flex; align-items:center; justify-content:center; gap:6px;" onclick="setModalEquipmentType('machine')">⚙️ Máquina</button>
-      </div>
-
       <div style="display: flex; gap:12px; margin-top:20px;">
         <button class="btn btn-danger" style="flex:1; background-color: var(--red); color: white;" onclick="closeExerciseModal()">Cancelar</button>
         <button class="btn" style="flex:1; background-color: var(--green); color: #000; font-weight:bold;" onclick="saveExerciseModal()">✓ Aceptar</button>
@@ -1157,24 +1151,28 @@
   </div>
 
   <!-- MODAL CONFIGURAR Y AÑADIR EJERCICIO A RUTINA (SELECCIÓN POR GRUPOS MUSCULARES Y BÚSQUEDA) -->
-  <div id="modal-add-to-routine" class="modal-overlay hidden">
+  <!-- PANTALLA 1: elegir qué ejercicio añadir -->
+  <div id="modal-routine-ex-picker" class="modal-overlay hidden">
     <div class="modal-box" style="max-height:88vh; display:flex; flex-direction:column;">
       <h2 style="margin-bottom:10px; text-align:center;">Añadir a la Rutina</h2>
-      
-      <!-- Opción 1: Crear nuevo ejercicio en catálogo si no existe -->
+
       <div class="swap-add-btn" onclick="openExerciseModalForRoutineCreation()">
         + Crear nuevo ejercicio en el catálogo
       </div>
 
-      <!-- Barra de Búsqueda Rápida -->
       <input type="text" id="routine-ex-search" placeholder="Buscar ejercicio por nombre..." oninput="renderRoutineExercisePicker()" style="margin-bottom:10px; padding:10px 12px; border-radius:8px; border:1px solid var(--card-border); background:var(--surface-2); color:#fff; font-size:0.95rem;">
 
-      <!-- Contenedor del Listado por Grupos Musculares -->
-      <div id="routine-ex-picker-container" style="flex:1; overflow-y:auto; padding-right:2px; max-height:20vh; margin-bottom:10px; border:1px solid var(--card-border); border-radius:8px; padding:8px; background:var(--surface-1);"></div>
+      <div id="routine-ex-picker-container" style="flex:1; overflow-y:auto; padding-right:2px; margin-bottom:15px; border:1px solid var(--card-border); border-radius:8px; padding:8px; background:var(--surface-1);"></div>
 
-      <div style="font-size:0.85rem; color:var(--green); font-weight:bold; margin-bottom:8px; text-align:center;" id="routine-selected-ex-display">
-        Ejercicio seleccionado: <span id="lbl-selected-ex-name" style="text-decoration:underline;">Ninguno</span>
-      </div>
+      <button class="btn btn-danger" style="background-color: var(--red); color: white;" onclick="closeModal('modal-routine-ex-picker')">Cancelar</button>
+    </div>
+  </div>
+
+  <!-- PANTALLA 2: ajustar series/reps/descanso del ejercicio elegido -->
+  <div id="modal-add-to-routine" class="modal-overlay hidden">
+    <div class="modal-box" style="max-height:88vh; display:flex; flex-direction:column;">
+      <h2 style="margin-bottom:2px; text-align:center;">Configurar Ejercicio</h2>
+      <div style="text-align:center; color:var(--accent); font-weight:bold; font-size:1.05rem; margin-bottom:14px;" id="lbl-selected-ex-name">Ejercicio</div>
 
       <label style="display:flex; align-items:center; justify-content:center; gap:8px; margin-bottom:12px; font-weight:bold; color:var(--green); font-size:0.9rem; cursor:pointer; user-select:none;">
         <input type="checkbox" id="routine-mod-iso-chk" onchange="toggleIsometricModeModal('routine-mod', this.checked)" style="width:18px; height:18px; accent-color:var(--green);">
@@ -1227,7 +1225,7 @@
       </div>
 
       <div style="display: flex; gap:12px; margin-top:auto;">
-        <button class="btn btn-danger" style="flex:1; background-color: var(--red); color: white;" onclick="closeModal('modal-add-to-routine')">Cancelar</button>
+        <button class="btn btn-danger" style="flex:1; background-color: var(--red); color: white;" onclick="backToRoutineExPicker()">Atrás</button>
         <button class="btn" style="flex:1; background-color: var(--green); color: #000; font-weight:bold;" onclick="confirmAddExerciseToRoutine()">✓ Aceptar</button>
       </div>
     </div>
@@ -1718,8 +1716,7 @@
       "Pecho"
     ],
     "Fondos en paralelas": [
-      "Pecho",
-      "Tríceps"
+      "Pecho"
     ],
     "Contractora de pectoral (Pec Deck)": [
       "Pecho"
@@ -1728,8 +1725,7 @@
       "Espalda"
     ],
     "Dominadas": [
-      "Espalda",
-      "Bíceps"
+      "Espalda"
     ],
     "Remo en T": [
       "Espalda"
@@ -1795,8 +1791,7 @@
       "Piernas"
     ],
     "Peso muerto": [
-      "Piernas",
-      "Espalda"
+      "Piernas"
     ],
     "Sentadilla búlgara con mancuernas": [
       "Piernas"
@@ -1839,8 +1834,7 @@
             "Pecho"
       ],
       "Fondos en paralelas": [
-            "Pecho",
-            "Tríceps"
+            "Pecho"
       ],
       "Contractora de pectoral (Pec Deck)": [
             "Pecho"
@@ -1849,8 +1843,7 @@
             "Espalda"
       ],
       "Dominadas": [
-            "Espalda",
-            "Bíceps"
+            "Espalda"
       ],
       "Remo en T": [
             "Espalda"
@@ -1916,8 +1909,7 @@
             "Piernas"
       ],
       "Peso muerto": [
-            "Piernas",
-            "Espalda"
+            "Piernas"
       ],
       "Peso muerto con piernas semirrígidas": [
             "Piernas"
@@ -2631,7 +2623,7 @@
     try { session = JSON.parse(localStorage.getItem('gym_session')) || null; } catch(e) { session = null; }
     
     // MODO DE HISTORIAL: 'table' ó 'cards'
-    let historyViewMode = localStorage.getItem('gym_view_mode') || 'table';
+    let historyViewMode = localStorage.getItem('gym_view_mode') || 'cards';
 
     const LONG_PRESS_DELAY = 500; // 0.5 segundos para todas las pulsaciones largas
     
@@ -4037,7 +4029,7 @@
 
     function addExerciseToEditingRoutineDay(dayId) {
       ensureCatalogSync();
-      openAddToRoutineModal('', dayId);
+      openRoutinePickerModal(dayId);
     }
 
     function deleteExFromEditingRoutineDay(dayId, exIndex) {
@@ -4124,23 +4116,6 @@
     // Modal para definir un ejercicio en el catálogo (Nombre + Grupos Musculares únicamente)
     let editingOldExName = '';
 
-    let selectedEquipmentForModal = 'free';
-
-    function setModalEquipmentType(type) {
-      selectedEquipmentForModal = type;
-      const freeBtn = document.getElementById('modal-equip-free-btn');
-      const machineBtn = document.getElementById('modal-equip-machine-btn');
-      if (freeBtn) { freeBtn.style.background = (type === 'free') ? 'var(--accent)' : 'var(--card-border)'; freeBtn.style.color = (type === 'free') ? '#fff' : 'var(--text)'; }
-      if (machineBtn) { machineBtn.style.background = (type === 'machine') ? 'var(--accent)' : 'var(--card-border)'; machineBtn.style.color = (type === 'machine') ? '#fff' : 'var(--text)'; }
-    }
-
-    function getExerciseEquipmentIcon(exName) {
-      const type = db.exerciseEquipment && db.exerciseEquipment[exName];
-      if (type === 'machine') return '⚙️';
-      if (type === 'free') return '🏋️';
-      return '';
-    }
-
     function openExerciseModal(defaultName = '', preSelectedMuscles = [], context = 'catalog') {
       catalogExContext = context;
       editingOldExName = defaultName ? defaultName.trim() : '';
@@ -4148,8 +4123,6 @@
       document.getElementById('modal-name').value = defaultName;
       
       renderMuscleChips(preSelectedMuscles.length > 0 ? preSelectedMuscles : ["Pecho"]);
-      const currentType = (defaultName && db.exerciseEquipment && db.exerciseEquipment[defaultName]) || 'free';
-      setModalEquipmentType(currentType);
       openModal('modal-overlay');
     }
 
@@ -4202,21 +4175,29 @@
       'Encogimiento abdominal en polea': ['Encogimiento abdominal', 'machine']
     };
 
+    // Revierte los nombres cortos de vuelta a los nombres largos originales
+    // (para quien ya haya pasado por la V4.36/4.37 con nombres acortados)
     function migrateExerciseNamesAndEquipment() {
       if (!db) return;
       if (!db.settings) db.settings = {};
-      if (db.settings.namesMigratedV1) return;
-      if (!db.exerciseEquipment) db.exerciseEquipment = {};
+      if (db.settings.namesRevertedV1) return;
 
       Object.keys(EXERCISE_SHORT_NAMES).forEach(oldName => {
-        const [newName, type] = EXERCISE_SHORT_NAMES[oldName];
-        if (oldName !== newName) renameExerciseEverywhere(oldName, newName);
-        if (db.exerciseCatalog && db.exerciseCatalog[newName] && !db.exerciseEquipment[newName]) {
-          db.exerciseEquipment[newName] = type;
-        }
+        const [shortName] = EXERCISE_SHORT_NAMES[oldName];
+        if (oldName !== shortName) renameExerciseEverywhere(shortName, oldName);
       });
 
-      db.settings.namesMigratedV1 = true;
+      // Cada ejercicio se queda solo con su grupo muscular principal (el primero de la lista)
+      if (db.exerciseCatalog) {
+        Object.keys(db.exerciseCatalog).forEach(exName => {
+          const groups = db.exerciseCatalog[exName];
+          if (Array.isArray(groups) && groups.length > 1) {
+            db.exerciseCatalog[exName] = [groups[0]];
+          }
+        });
+      }
+
+      db.settings.namesRevertedV1 = true;
       saveDB();
     }
 
@@ -4276,7 +4257,6 @@
       }
       db.exerciseCatalog[newName] = assignedMuscles;
       if (!db.exerciseEquipment) db.exerciseEquipment = {};
-      db.exerciseEquipment[newName] = selectedEquipmentForModal;
 
       saveDB();
       saveSession();
@@ -4287,7 +4267,7 @@
         selectedSwapExName = newName;
         confirmSwapExercise();
       } else if (catalogExContext === 'routine') {
-        openAddToRoutineModal(newName);
+        openAddToRoutineModal(newName, addingTargetDayId);
       } else {
         if (!document.getElementById('modal-exercise-library').classList.contains('hidden')) {
           openExerciseLibrary();
@@ -4298,15 +4278,15 @@
     let selectedRoutineExName = '';
 
     // Modal para Añadir y Configurar Ejercicio dentro de una Rutina (Session o Editor de Día)
-    function openAddToRoutineModal(preselectedExName = '', targetDayId = null) {
+    function openAddToRoutineModal(preselectedExName, targetDayId = null) {
       ensureCatalogSync();
       addingTargetDayId = targetDayId !== undefined ? targetDayId : null;
 
-      const allExNames = Object.keys(db.exerciseCatalog || {}).sort((a,b) => a.localeCompare(b, 'es', {sensitivity: 'base'}));
+      const allExNames = Object.keys(db.exerciseCatalog || {});
       selectedRoutineExName = preselectedExName && allExNames.includes(preselectedExName) ? preselectedExName : (allExNames[0] || '');
-      
-      const searchInput = document.getElementById('routine-ex-search');
-      if (searchInput) searchInput.value = '';
+
+      const lblSelected = document.getElementById('lbl-selected-ex-name');
+      if (lblSelected) lblSelected.innerText = selectedRoutineExName || 'Ejercicio';
 
       gearParamsState = {
         sets: 3,
@@ -4316,28 +4296,47 @@
         bar: 0
       };
 
+      const isIso = isIsometricEx(selectedRoutineExName);
+      const stdDiv = document.getElementById('routine-mod-standard-fields');
+      const isoDiv = document.getElementById('routine-mod-iso-fields');
+      const isoChk = document.getElementById('routine-mod-iso-chk');
+      if (isoChk) isoChk.checked = isIso;
+      if (isIso) {
+        if (stdDiv) stdDiv.classList.add('hidden');
+        if (isoDiv) isoDiv.classList.remove('hidden');
+        gearParamsState.workTime = 15;
+        gearParamsState.rest = 30;
+      } else {
+        if (stdDiv) stdDiv.classList.remove('hidden');
+        if (isoDiv) isoDiv.classList.add('hidden');
+      }
+
       updateGearParamsUI('routine-mod');
       initSetEditor('routine-mod', null);
-      renderRoutineExercisePicker();
       openModal('modal-add-to-routine');
+    }
+
+    // PANTALLA 1: solo el listado para elegir ejercicio
+    function openRoutinePickerModal(targetDayId = null) {
+      ensureCatalogSync();
+      addingTargetDayId = targetDayId !== undefined ? targetDayId : null;
+      const searchInput = document.getElementById('routine-ex-search');
+      if (searchInput) searchInput.value = '';
+      renderRoutineExercisePicker();
+      openModal('modal-routine-ex-picker');
     }
 
     function renderRoutineExercisePicker() {
       ensureCatalogSync();
       const container = document.getElementById('routine-ex-picker-container');
       const searchVal = (document.getElementById('routine-ex-search') ? document.getElementById('routine-ex-search').value : '').trim().toLowerCase();
-      const lblSelected = document.getElementById('lbl-selected-ex-name');
-
-      if (lblSelected) {
-        lblSelected.innerText = selectedRoutineExName || 'Ninguno';
-      }
 
       let html = '';
       let matchCount = 0;
 
       ALL_MUSCLE_GROUPS.forEach(muscle => {
         let exList = Object.keys(db.exerciseCatalog || {})
-          .filter(exName => (db.exerciseCatalog[exName] || []).includes(muscle))
+          .filter(exName => (db.exerciseCatalog[exName] || [])[0] === muscle)
           .sort((a,b) => a.localeCompare(b, 'es', {sensitivity: 'base'}));
 
         if (searchVal) {
@@ -4354,12 +4353,10 @@
           `;
 
           exList.forEach(name => {
-            const isSelected = (name === selectedRoutineExName);
             html += `
-              <div style="background:var(--card-bg); border:1px solid ${isSelected ? 'var(--green)' : 'var(--card-border)'}; border-radius:6px; padding:6px 10px; margin-bottom:4px; cursor:pointer; display:flex; justify-content:space-between; align-items:center;" 
+              <div style="background:var(--card-bg); border:1px solid var(--card-border); border-radius:6px; padding:8px 10px; margin-bottom:4px; cursor:pointer;" 
                    onclick="selectRoutinePickerEx('${name.replace(/'/g, "\'")}')">
-                <strong style="color:${isSelected ? 'var(--green)' : '#fff'}; font-size:0.88rem;">${name}</strong>
-                ${isSelected ? '<span style="color:var(--green); font-weight:bold;">✓</span>' : ''}
+                <strong style="color:#fff; font-size:0.9rem;">${name}</strong>
               </div>
             `;
           });
@@ -4375,29 +4372,19 @@
       container.innerHTML = html;
     }
 
+    // Al tocar un ejercicio del listado, pasamos directamente a la pantalla 2
     function selectRoutinePickerEx(name) {
-      selectedRoutineExName = name;
-      const isIso = isIsometricEx(name);
-      
-      const stdDiv = document.getElementById('routine-mod-standard-fields');
-      const isoDiv = document.getElementById('routine-mod-iso-fields');
+      closeModal('modal-routine-ex-picker');
+      openAddToRoutineModal(name, addingTargetDayId);
+    }
 
-      if (isIso) {
-        if (stdDiv) stdDiv.classList.add('hidden');
-        if (isoDiv) isoDiv.classList.remove('hidden');
-        gearParamsState.workTime = gearParamsState.workTime || 15;
-        gearParamsState.rest = gearParamsState.rest || 30;
-      } else {
-        if (stdDiv) stdDiv.classList.remove('hidden');
-        if (isoDiv) isoDiv.classList.add('hidden');
-      }
-
-      updateGearParamsUI('routine-mod');
-      renderRoutineExercisePicker();
+    function backToRoutineExPicker() {
+      closeModal('modal-add-to-routine');
+      openRoutinePickerModal(addingTargetDayId);
     }
 
     function openExerciseModalForRoutineCreation() {
-      closeModal('modal-add-to-routine');
+      closeModal('modal-routine-ex-picker');
       openExerciseModal('', [], 'routine');
     }
 
@@ -4487,7 +4474,7 @@
                    onclick="if(!catalogLongPressTriggered) editCatalogExercise('${safeExName}')"
                    style="user-select:none; -webkit-user-select:none; cursor:pointer;">
                 <div>
-                  <strong>${getExerciseEquipmentIcon(exName)} ${exName}</strong><br>
+                  <strong>${exName}</strong><br>
                   <small style="color:var(--text-dim);">${musclesList}</small>
                 </div>
                 <button class="btn btn-secondary btn-small" style="font-size:0.75rem; padding:4px 8px;" onclick="event.stopPropagation(); handleCatalogExPointerCancel(); editCatalogExercise('${safeExName}')">Editar</button>
@@ -4806,7 +4793,10 @@
     function renderSetEditor(prefix) {
       const el = document.getElementById(prefix + '-setedit');
       if (!el) return;
-      const tabs = [['reps', '🔁', 'Repeticiones'], ['rest', '⏱️', 'Descanso'], ['note', '📝', 'Notas']];
+      const svgReps = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 2l4 4-4 4"></path><path d="M3 11V9a4 4 0 0 1 4-4h14"></path><path d="M7 22l-4-4 4-4"></path><path d="M21 13v2a4 4 0 0 1-4 4H3"></path></svg>`;
+      const svgRest = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13" r="8"></circle><path d="M12 9v4l3 2"></path><path d="M9 2h6"></path></svg>`;
+      const svgNote = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><path d="M14 2v6h6"></path><path d="M8 13h8"></path><path d="M8 17h5"></path></svg>`;
+      const tabs = [['reps', svgReps, 'Repeticiones'], ['rest', svgRest, 'Descanso'], ['note', svgNote, 'Notas']];
       const btn = 'width:30px; height:30px; font-size:1.1rem; flex-shrink:0; padding:0;';
       const inp = 'flex:1; min-width:0; padding:6px 2px; text-align:center; font-size:0.95rem; margin-top:0;';
       const stepper = (i, field, step, val) => `
@@ -4973,7 +4963,7 @@
         container.innerHTML = `
           <div class="card" style="text-align:center; padding:25px 15px;">
             <p style="color:var(--text-dim); margin-bottom:12px;">Esta sesión no tiene ejercicios aún.</p>
-            <button class="btn btn-secondary btn-small" onclick="openAddToRoutineModal()">+ Añadir Ejercicio</button>
+            <button class="btn btn-secondary btn-small" onclick="openRoutinePickerModal()">+ Añadir Ejercicio</button>
           </div>
         `;
         return;
