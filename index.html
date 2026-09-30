@@ -11,7 +11,7 @@
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%230b132b'/%3E%3Cpath d='M20 35h12v30H20zM68 35h12v30H68z' fill='%232ec4b6'/%3E%3Cpath d='M32 42h36v16H32z' fill='%23ff6b35'/%3E%3Cpath d='M14 42h6v16h-6zM80 42h6v16h-6z' fill='%23ffd166'/%3E%3C/svg%3E">
   <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%230b132b'/%3E%3Cpath d='M20 35h12v30H20zM68 35h12v30H68z' fill='%232ec4b6'/%3E%3Cpath d='M32 42h36v16H32z' fill='%23ff6b35'/%3E%3Cpath d='M14 42h6v16h-6zM80 42h6v16h-6z' fill='%23ffd166'/%3E%3C/svg%3E">
   
-  <title>Mi Gym App V4.38</title>
+  <title>Mi Gym App V4.39</title>
   <style>
     :root {
       --bg-color: #0b132b;    /* Azul oscuro profundo */
@@ -538,7 +538,7 @@
   <!-- VISTA 1: INICIO (ENTRENAMIENTO) -->
   <div id="view-routines">
     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
-      <h1 style="margin-bottom:0; color:var(--text); font-size:1.6rem; letter-spacing:0.5px;">MiGymApp <span style="font-size:0.75rem; color:var(--green); font-weight:bold;">V4.38</span></h1>
+      <h1 style="margin-bottom:0; color:var(--text); font-size:1.6rem; letter-spacing:0.5px;">MiGymApp <span style="font-size:0.75rem; color:var(--green); font-weight:bold;">V4.39</span></h1>
       <button onclick="openAppSettingsModal()" style="background:none; border:none; color:var(--text-dim); padding:6px; cursor:pointer; display:flex; align-items:center; transition:color 0.2s;" title="Ajustes de la App">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
       </button>
@@ -1090,8 +1090,7 @@
   <!-- MODAL EDITAR PARÁMETROS DE EJERCICIO EN RUTINA -->
   <div id="modal-edit-routine-ex-params" class="modal-overlay hidden">
     <div class="modal-box">
-      <h2 style="text-align:center; margin-bottom:6px;">Editar Parámetros</h2>
-      <h3 id="edit-ex-params-name" style="color:var(--accent); text-align:center; margin-bottom:15px;"></h3>
+      <h2 id="edit-ex-params-name" style="color:var(--accent); text-align:center; margin-bottom:15px;"></h2>
 
       <label style="display:flex; align-items:center; justify-content:center; gap:8px; margin-bottom:12px; font-weight:bold; color:var(--green); font-size:0.9rem; cursor:pointer; user-select:none;">
         <input type="checkbox" id="edit-ex-mod-iso-chk" onchange="toggleIsometricModeModal('edit-ex-mod', this.checked)" style="width:18px; height:18px; accent-color:var(--green);">
@@ -1164,7 +1163,7 @@
 
       <div id="routine-ex-picker-container" style="flex:1; overflow-y:auto; padding-right:2px; margin-bottom:15px; border:1px solid var(--card-border); border-radius:8px; padding:8px; background:var(--surface-1);"></div>
 
-      <button class="btn btn-danger" style="background-color: var(--red); color: white;" onclick="closeModal('modal-routine-ex-picker')">Cancelar</button>
+      <button class="btn btn-danger" style="background-color: var(--red); color: white;" onclick="replacingRoutineExCtx = null; closeModal('modal-routine-ex-picker')">Cancelar</button>
     </div>
   </div>
 
@@ -1430,6 +1429,15 @@
   </div>
 
   <!-- MODAL CUSTOM CONFIRMACIÓN DE BORRADO -->
+  <!-- MODAL CUSTOM MENÚ DE ACCIONES -->
+  <div id="modal-action-sheet" class="modal-overlay hidden">
+    <div class="modal-box" style="text-align:center; padding:20px;">
+      <p id="action-sheet-title" style="font-size:1.05rem; font-weight:bold; margin-bottom:15px; color:var(--accent); line-height:1.4;"></p>
+      <div id="action-sheet-buttons" style="display:flex; flex-direction:column; gap:10px;"></div>
+      <button class="btn btn-secondary" style="margin-top:12px;" onclick="closeModal('modal-action-sheet')">Cancelar</button>
+    </div>
+  </div>
+
   <div id="modal-custom-confirm" class="modal-overlay hidden">
     <div class="modal-box" style="text-align:center; padding:25px 20px;">
       <p id="custom-confirm-text" style="font-size:1.1rem; font-weight:bold; margin-bottom:20px; color:var(--text); line-height:1.4;"></p>
@@ -2549,6 +2557,26 @@
       };
 
       openModal('modal-custom-confirm');
+    }
+
+    // options: [{ label, action, danger }]
+    function customActionSheet(title, options) {
+      document.getElementById('action-sheet-title').innerText = title;
+      const container = document.getElementById('action-sheet-buttons');
+      container.innerHTML = '';
+      options.forEach(opt => {
+        const btn = document.createElement('button');
+        btn.className = 'btn';
+        btn.style.background = opt.danger ? 'var(--red)' : 'var(--card-border)';
+        btn.style.color = '#fff';
+        btn.innerText = opt.label;
+        btn.onclick = function() {
+          closeModal('modal-action-sheet');
+          if (opt.action) opt.action();
+        };
+        container.appendChild(btn);
+      });
+      openModal('modal-action-sheet');
     }
 
     function customPrompt(title, defaultVal, callback, inputType = 'text') {
@@ -3674,22 +3702,59 @@
         let routineExLongPressTimer = null;
     let routineExLongPressTriggered = false;
 
-    function handleRoutineExPointerDown(dayId, exIdx) {
+    function handleRoutineExPointerDown(event, dayId, exIdx) {
+      event.stopPropagation();
       routineExLongPressTriggered = false;
       routineExLongPressTimer = setTimeout(() => {
         routineExLongPressTriggered = true;
         if ('vibrate' in navigator) navigator.vibrate(60);
-        customConfirm("¿Eliminar este ejercicio de la rutina?", function() {
-          deleteExFromEditingRoutineDay(dayId, exIdx);
-        });
+        openRoutineExLongPressMenu(dayId, exIdx);
       }, LONG_PRESS_DELAY);
     }
 
-    function handleRoutineExPointerCancel() {
+    function handleRoutineExPointerCancel(event) {
+      if (event) event.stopPropagation();
       if (routineExLongPressTimer) {
         clearTimeout(routineExLongPressTimer);
         routineExLongPressTimer = null;
       }
+    }
+
+    // Menú al mantener pulsado un ejercicio dentro de un día: eliminar o reemplazar
+    function openRoutineExLongPressMenu(dayId, exIdx) {
+      const day = currentEditingRoutineObj && currentEditingRoutineObj.days.find(d => d.id === dayId);
+      const ex = day && day.exercises[exIdx];
+      if (!ex) return;
+      customActionSheet(ex.name, [
+        { label: 'Reemplazar ejercicio', action: () => openReplaceExerciseInRoutineDay(dayId, exIdx) },
+        { label: 'Eliminar ejercicio', danger: true, action: () => {
+            customConfirm("¿Eliminar este ejercicio de la rutina?", function() {
+              deleteExFromEditingRoutineDay(dayId, exIdx);
+            });
+          } }
+      ]);
+    }
+
+    let replacingRoutineExCtx = null;
+
+    // Reemplaza el ejercicio manteniendo series, descanso y rango de repeticiones
+    function openReplaceExerciseInRoutineDay(dayId, exIdx) {
+      const day = currentEditingRoutineObj && currentEditingRoutineObj.days.find(d => d.id === dayId);
+      if (!day || !day.exercises[exIdx]) return;
+      replacingRoutineExCtx = { dayId, exIdx };
+      addingTargetDayId = null;
+      openRoutinePickerModal(null);
+    }
+
+    function confirmReplaceRoutineEx(newName) {
+      if (!replacingRoutineExCtx) return;
+      const { dayId, exIdx } = replacingRoutineExCtx;
+      const day = currentEditingRoutineObj && currentEditingRoutineObj.days.find(d => d.id === dayId);
+      if (day && day.exercises[exIdx]) {
+        day.exercises[exIdx].name = newName;
+      }
+      replacingRoutineExCtx = null;
+      renderEditingRoutineDays();
     }
 
     
@@ -3856,10 +3921,10 @@
             dayExHtml += `
               <div class="routine-ex-drag-card" data-day-id="${day.id}" data-ex-index="${exIdx}"
                    style="display:flex; justify-content:space-between; align-items:center; background:var(--card-bg); padding:8px 10px; border-radius:6px; font-size:0.85rem; user-select:none; -webkit-user-select:none; margin-bottom:4px;"
-                   onpointerdown="handleRoutineExPointerDown(${day.id}, ${exIdx})"
-                   onpointerup="handleRoutineExPointerCancel()"
-                   onpointercancel="handleRoutineExPointerCancel()"
-                   onpointermove="handleRoutineExPointerCancel()">
+                   onpointerdown="handleRoutineExPointerDown(event, ${day.id}, ${exIdx})"
+                   onpointerup="handleRoutineExPointerCancel(event)"
+                   onpointercancel="handleRoutineExPointerCancel(event)"
+                   onpointermove="handleRoutineExPointerCancel(event)">
                 <div style="display:flex; align-items:center; gap:6px; flex:1;">
                   <span class="routine-ex-drag-handle" title="Arrastra para reordenar" style="color:var(--text-dim); font-size:1.3rem; cursor:grab; touch-action:none; padding:2px 4px;" onclick="event.stopPropagation(); handleRoutineExPointerCancel();">⋮</span>
                   <span onclick="if(!routineExLongPressTriggered) editExerciseInRoutineDay(${day.id}, ${exIdx})" style="cursor:pointer; flex:1; padding-right:8px;" title="Toca para editar series, repes y descansos">
@@ -4375,7 +4440,11 @@
     // Al tocar un ejercicio del listado, pasamos directamente a la pantalla 2
     function selectRoutinePickerEx(name) {
       closeModal('modal-routine-ex-picker');
-      openAddToRoutineModal(name, addingTargetDayId);
+      if (replacingRoutineExCtx) {
+        confirmReplaceRoutineEx(name);
+      } else {
+        openAddToRoutineModal(name, addingTargetDayId);
+      }
     }
 
     function backToRoutineExPicker() {
