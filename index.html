@@ -11,7 +11,7 @@
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%230b132b'/%3E%3Cpath d='M20 35h12v30H20zM68 35h12v30H68z' fill='%232ec4b6'/%3E%3Cpath d='M32 42h36v16H32z' fill='%23ff6b35'/%3E%3Cpath d='M14 42h6v16h-6zM80 42h6v16h-6z' fill='%23ffd166'/%3E%3C/svg%3E">
   <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%230b132b'/%3E%3Cpath d='M20 35h12v30H20zM68 35h12v30H68z' fill='%232ec4b6'/%3E%3Cpath d='M32 42h36v16H32z' fill='%23ff6b35'/%3E%3Cpath d='M14 42h6v16h-6zM80 42h6v16h-6z' fill='%23ffd166'/%3E%3C/svg%3E">
   
-  <title>Mi Gym App V4.39</title>
+  <title>Mi Gym App V4.40</title>
   <style>
     :root {
       --bg-color: #0b132b;    /* Azul oscuro profundo */
@@ -538,7 +538,7 @@
   <!-- VISTA 1: INICIO (ENTRENAMIENTO) -->
   <div id="view-routines">
     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
-      <h1 style="margin-bottom:0; color:var(--text); font-size:1.6rem; letter-spacing:0.5px;">MiGymApp <span style="font-size:0.75rem; color:var(--green); font-weight:bold;">V4.39</span></h1>
+      <h1 style="margin-bottom:0; color:var(--text); font-size:1.6rem; letter-spacing:0.5px;">MiGymApp <span style="font-size:0.75rem; color:var(--green); font-weight:bold;">V4.40</span></h1>
       <button onclick="openAppSettingsModal()" style="background:none; border:none; color:var(--text-dim); padding:6px; cursor:pointer; display:flex; align-items:center; transition:color 0.2s;" title="Ajustes de la App">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
       </button>
@@ -7102,21 +7102,25 @@ function openEditHistorySetModal(type, idx) {
     let currentStatsExName = '';
 
     function openStatsModal(preselectedEx = '') {
-      ensureCatalogSync();
-      const allExNames = Object.keys(db.exerciseCatalog || {}).sort((a,b) => a.localeCompare(b, 'es', {sensitivity: 'base'}));
-      
-      if (allExNames.length === 0) {
-        customAlert("Aún no tienes ejercicios creados.");
-        return;
+      try {
+        ensureCatalogSync();
+        const allExNames = Object.keys(db.exerciseCatalog || {}).sort((a,b) => a.localeCompare(b, 'es', {sensitivity: 'base'}));
+
+        if (allExNames.length === 0) {
+          customAlert("Aún no tienes ejercicios creados.");
+          return;
+        }
+
+        currentStatsExName = (preselectedEx && allExNames.includes(preselectedEx)) ? preselectedEx : (allExNames[0] || '');
+
+        const lblSelected = document.getElementById('stats-selected-ex-name');
+        if (lblSelected) lblSelected.innerText = currentStatsExName;
+
+        openModal('modal-stats');
+        renderStatsView();
+      } catch (err) {
+        customAlert("No se pudo abrir Estadísticas. Error: " + (err && err.message ? err.message : err) + (err && err.stack ? ("\n" + err.stack.split('\n').slice(0,3).join(' | ')) : ''));
       }
-
-      currentStatsExName = (preselectedEx && allExNames.includes(preselectedEx)) ? preselectedEx : (allExNames[0] || '');
-
-      const lblSelected = document.getElementById('stats-selected-ex-name');
-      if (lblSelected) lblSelected.innerText = currentStatsExName;
-
-      openModal('modal-stats');
-      renderStatsView();
     }
 
     function openStatsExPickerModal() {
@@ -7256,6 +7260,7 @@ function openEditHistorySetModal(type, idx) {
 
     function renderStatsView() {
       if (!currentStatsExName) return;
+      try {
 
       const stats = getExerciseStatsData(currentStatsExName);
 
@@ -7281,6 +7286,9 @@ function openEditHistorySetModal(type, idx) {
 
       // Detailed History Log View
       renderStatsHistoryLog(currentStatsExName);
+      } catch (err) {
+        customAlert("Error mostrando las estadísticas de '" + currentStatsExName + "'. Error: " + (err && err.message ? err.message : err) + (err && err.stack ? ("\n" + err.stack.split('\n').slice(0,3).join(' | ')) : ''));
+      }
     }
 
     function getExerciseStatsData(exName) {
