@@ -11,7 +11,7 @@
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%230b132b'/%3E%3Cpath d='M20 35h12v30H20zM68 35h12v30H68z' fill='%232ec4b6'/%3E%3Cpath d='M32 42h36v16H32z' fill='%23ff6b35'/%3E%3Cpath d='M14 42h6v16h-6zM80 42h6v16h-6z' fill='%23ffd166'/%3E%3C/svg%3E">
   <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%230b132b'/%3E%3Cpath d='M20 35h12v30H20zM68 35h12v30H68z' fill='%232ec4b6'/%3E%3Cpath d='M32 42h36v16H32z' fill='%23ff6b35'/%3E%3Cpath d='M14 42h6v16h-6zM80 42h6v16h-6z' fill='%23ffd166'/%3E%3C/svg%3E">
   
-  <title>Mi Gym App V4.45</title>
+  <title>Mi Gym App V4.46</title>
   <style>
     :root {
       --bg-color: #0b132b;    /* Azul oscuro profundo */
@@ -338,6 +338,10 @@
     #mini-timer { width: 150px; box-sizing: border-box; text-align: center; white-space: nowrap; font-variant-numeric: tabular-nums; position: fixed; bottom: 20px; right: 20px; background: var(--green); color: #000; padding: 12px 0; border-radius: 30px; font-weight: bold; font-size: 1.2rem; box-shadow: 0 4px 15px rgba(0,0,0,0.6); z-index: 999; display: flex; align-items: center; gap: 10px; }
     #mini-timer.warning { background: var(--accent); color: white; }
     #mini-timer.overtime { background: var(--yellow); color: #000; }
+
+    .mini-inline { position: absolute; right: 0; top: 50%; transform: translateY(-50%); width: calc(50% - 44px); max-width: 130px; box-sizing: border-box; background: var(--green); color: #000; padding: 10px 0; border-radius: 30px; font-weight: bold; font-size: 1.05rem; display: flex; align-items: center; justify-content: center; gap: 6px; font-variant-numeric: tabular-nums; white-space: nowrap; cursor: pointer; box-shadow: 0 2px 10px rgba(0,0,0,0.5); }
+    .mini-inline.warning { background: var(--accent); color: #fff; }
+    .mini-inline.overtime { background: var(--yellow); color: #000; }
     
     .history-item { font-size: 0.85rem; color: var(--text-dim); border-bottom: 1px solid var(--card-border); padding: 10px 0; }
   
@@ -660,8 +664,9 @@
           </div>
         </div>
 
-        <div style="display:flex; justify-content:center;">
+        <div style="display:flex; justify-content:center; position:relative;">
           <button class="btn-tick" onclick="completeSet()">✓</button>
+          <div id="mini-timer-inline" class="mini-inline hidden" onclick="maximizeTimer()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13" r="8"></circle><path d="M12 9v4l2 2"></path><path d="M12 2v2"></path><path d="M10 2h4"></path></svg><span id="mini-timer-inline-text">00:00</span></div>
         </div>
       </div>
 
@@ -982,6 +987,9 @@
       <label style="margin-top:12px;">Grupos musculares</label>
       <div id="modal-muscles-chips" style="display:flex; flex-wrap:wrap; gap:6px; margin-top:6px; margin-bottom:12px;"></div>
 
+      <label>Tipo</label>
+      <div id="modal-equip-chips" style="display:flex; flex-wrap:wrap; gap:6px; margin-top:6px; margin-bottom:12px;"></div>
+
       <div style="display: flex; gap:12px; margin-top:20px;">
         <button class="btn btn-secondary" style="flex:1; margin-top:0;" onclick="closeExerciseModal()">Cancelar</button>
         <button class="btn btn-ok" style="flex:1;" onclick="saveExerciseModal()">Aceptar</button>
@@ -990,13 +998,23 @@
   </div>
 
       <!-- MODAL AJUSTAR EJERCICIO EN SESIÓN ACTIVA (GEAR ⚙️) -->
+  <!-- MODAL HISTORIAL DE ENTRENAMIENTOS -->
+  <div id="modal-workouts" class="modal-overlay hidden">
+    <div class="modal-box" style="max-height:88vh; display:flex; flex-direction:column;">
+      <button class="modal-close" aria-label="Cerrar" onclick="closeModal('modal-workouts')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
+      <h2>Historial</h2>
+      <div id="workouts-summary" style="display:flex; gap:10px; margin-bottom:12px;"></div>
+      <div id="workouts-list" style="overflow-y:auto; flex:1; min-height:0;"></div>
+    </div>
+  </div>
+
   <!-- MODAL EDITAR PARÁMETROS DE EJERCICIO EN RUTINA -->
   <div id="modal-edit-routine-ex-params" class="modal-overlay hidden">
     <div class="modal-box">
       <h2 id="edit-ex-params-name" style="color:var(--accent); margin-bottom:15px;"></h2>
       <div id="edit-ex-mod-session-extra" class="hidden">
         <div class="swap-add-btn" style="margin-bottom:12px;" onclick="openSwapModalFromGear()">
-        ${svgSwapGreen}Sustituir por otro ejercicio
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle; display:inline-block; margin-right:6px;"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>Sustituir por otro ejercicio
       </div>
         <div style="margin-bottom:12px;">
         <input type="text" id="edit-ex-mod-block-input" placeholder="Ej. Pecho, Tríceps, Hombros..." style="margin-top:3px; padding:10px; border-radius:8px; background:var(--surface-2); color:#fff; font-weight:bold;">
@@ -1011,7 +1029,8 @@
       <!-- CAMPOS ESTÁNDAR -->
       <div id="edit-ex-mod-standard-fields">
         <div id="edit-ex-mod-setedit"></div>
-        <div style="display:flex; align-items:center; justify-content:space-between; background:var(--surface-1); border:1px solid var(--card-border); padding:8px 12px; border-radius:10px; margin:10px 0 15px;">
+        <label id="edit-ex-mod-weighted-row" class="hidden" style="display:flex; align-items:center; justify-content:space-between; background:var(--surface-1); border:1px solid var(--card-border); padding:10px 12px; border-radius:10px; margin-bottom:10px; font-weight:bold; font-size:0.9rem; cursor:pointer;"><span>Con lastre</span><input type="checkbox" id="edit-ex-mod-weighted-chk" style="width:20px; height:20px; accent-color:var(--green);"></label>
+        <div id="edit-ex-mod-bar-row" style="display:flex; align-items:center; justify-content:space-between; background:var(--surface-1); border:1px solid var(--card-border); padding:8px 12px; border-radius:10px; margin:10px 0 15px;">
           <span style="font-size:0.8rem; color:var(--text-dim); font-weight:bold;">Peso de la barra (kg)</span>
           <div style="display:flex; align-items:center; gap:6px;">
             <button class="num-btn" style="width:32px; height:32px; font-size:1.1rem;" onclick="adjustGearParam('bar', -2.5, 'edit-ex-mod')">-</button>
@@ -1206,7 +1225,7 @@
           <input type="checkbox" id="chk-amoled-mode" onchange="toggleAmoledModeSetting(this.checked)" style="width:20px; height:20px; accent-color:var(--green); cursor:pointer;">
         </label>
       </div>
-      <p style="text-align:center; font-size:0.75rem; color:var(--text-dim); margin-top:4px;">MiGymApp V4.45</p>
+      <p style="text-align:center; font-size:0.75rem; color:var(--text-dim); margin-top:4px;">MiGymApp V4.46</p>
     </div>
   </div>
 
@@ -3979,6 +3998,7 @@
 
       updateGearParamsUI('edit-ex-mod');
       initSetEditor('edit-ex-mod', ex);
+      applyEquipToEditModal(ex);
 
       openModal('modal-edit-routine-ex-params');
     }
@@ -4010,6 +4030,7 @@
         ex.setConfigs = setEditor.sets.map(s => ({ min: s.min, max: s.max, rest: s.rest, note: s.note || '' }));
       }
       if (isIso) delete ex.setConfigs;
+      applyEquipFromEditModal(ex);
 
       closeModal('modal-edit-routine-ex-params');
       renderEditingRoutineDays();
@@ -4144,6 +4165,8 @@
       document.getElementById('modal-name').value = defaultName;
       
       renderMuscleChips(preSelectedMuscles.length > 0 ? preSelectedMuscles : ["Pecho"]);
+      selectedEquipForModal = getExEquip(defaultName) || '';
+      renderEquipChips();
       openModal('modal-overlay');
     }
 
@@ -4278,6 +4301,7 @@
       }
       db.exerciseCatalog[newName] = assignedMuscles;
       if (!db.exerciseEquipment) db.exerciseEquipment = {};
+      if (selectedEquipForModal) db.exerciseEquipment[newName] = selectedEquipForModal;
 
       saveDB();
       saveSession();
@@ -4922,6 +4946,7 @@
       };
       updateGearParamsUI('edit-ex-mod');
       initSetEditor('edit-ex-mod', ex);
+      applyEquipToEditModal(ex);
       document.getElementById('edit-ex-mod-session-extra').classList.remove('hidden');
       openModal('modal-edit-routine-ex-params');
     }
@@ -5645,6 +5670,12 @@ function startWorkout(exIndex, isInternalSupersetNav) {
         const wEl = document.getElementById('val-weight');
         const bEl = document.getElementById('val-bar');
         const rEl = document.getElementById('val-reps');
+        const usesW = exUsesWeight(state.activeExObj), usesB = exUsesBar(state.activeExObj);
+        if (!usesW) state.weight = 0;
+        if (!usesB) state.barWeight = 0;
+        const wg = wEl && wEl.closest('.control-group'), bg = bEl && bEl.closest('.control-group');
+        if (wg) wg.classList.toggle('hidden', !usesW);
+        if (bg) bg.classList.toggle('hidden', !usesB);
         if (wEl) wEl.innerText = state.weight;
         if (bEl) bEl.innerText = state.barWeight;
         if (rEl) rEl.innerText = state.reps;
@@ -6142,7 +6173,7 @@ function openEditHistorySetModal(type, idx) {
               }
 
               const safeNote = log.note ? log.note.replace(/'/g, "\'") : '';
-              const noteBtn = log.note ? `<span onclick="event.stopPropagation(); customAlert('Nota Serie ${i}: ${safeNote}')" style="cursor:pointer; vertical-align:middle; display:inline-block;">${svgNoteDim}</span>` : '';
+              const noteBtn = log.note ? `<span onclick="event.stopPropagation(); customAlert('${safeNote}')" style="cursor:pointer; vertical-align:middle; display:inline-block;">${svgNoteDim}</span>` : '';
               const restText = (log.restTime !== undefined && log.restTime > 0) ? `${log.restTime}s` : '-';
 
               html += `
@@ -6234,7 +6265,7 @@ function openEditHistorySetModal(type, idx) {
                 const totW = h.weight + bW;
                 const setRM = get1RMd(totW, h.reps);
                 const safeNote = h.note ? h.note.replace(/'/g, "\'") : '';
-                const noteBtn = h.note ? `<span onclick="event.stopPropagation(); customAlert('Nota Serie ${h.set}: ${safeNote}')" style="cursor:pointer; vertical-align:middle; display:inline-block;">${svgNoteDim}</span>` : '';
+                const noteBtn = h.note ? `<span onclick="event.stopPropagation(); customAlert('${safeNote}')" style="cursor:pointer; vertical-align:middle; display:inline-block;">${svgNoteDim}</span>` : '';
                 const restText = (h.restTime !== undefined && h.restTime > 0) ? `${h.restTime}s` : '-';
 
                 let repsColor = '#ffffff';
@@ -6287,7 +6318,7 @@ function openEditHistorySetModal(type, idx) {
           const log = currentLogs[i - 1];
           if (log) {
             const safeNote = log.note ? log.note.replace(/'/g, "\'") : '';
-            const noteBtn = log.note ? `<span onclick="event.stopPropagation(); customAlert('Nota Serie ${i}: ${safeNote}')" style="cursor:pointer; margin-left:auto; vertical-align:middle; display:inline-block;">${svgNoteDim}</span>` : '';
+            const noteBtn = log.note ? `<span onclick="event.stopPropagation(); customAlert('${safeNote}')" style="cursor:pointer; margin-left:auto; vertical-align:middle; display:inline-block;">${svgNoteDim}</span>` : '';
 
             if (isIso) {
               // VISTA TARJETA ISOMÉTRICA (LIMPIA: Serie i: XXs | ⏱ XXs - Sin RIR, RPE, Téc, RM ni 0kg)
@@ -6424,7 +6455,7 @@ function openEditHistorySetModal(type, idx) {
 
               sessSets.forEach(h => {
                 const safeNote = h.note ? h.note.replace(/'/g, "\'") : '';
-                const noteBtn = h.note ? `<span onclick="event.stopPropagation(); customAlert('Nota Serie ${h.set}: ${safeNote}')" style="cursor:pointer; margin-left:auto; vertical-align:middle; display:inline-block;">${svgNoteDim}</span>` : '';
+                const noteBtn = h.note ? `<span onclick="event.stopPropagation(); customAlert('${safeNote}')" style="cursor:pointer; margin-left:auto; vertical-align:middle; display:inline-block;">${svgNoteDim}</span>` : '';
 
                 const dbIdx = hist.indexOf(h);
                 html += `
@@ -6478,7 +6509,7 @@ function openEditHistorySetModal(type, idx) {
                 const setRM = get1RMd(totW, h.reps);
                 const barText = bW > 0 ? `<small style="color:var(--text-dim); font-weight:normal;"> (${h.weight}+${bW})</small>` : '';
                 const safeNote = h.note ? h.note.replace(/'/g, "\'") : '';
-                const noteBtn = h.note ? `<span onclick="event.stopPropagation(); customAlert('Nota Serie ${h.set}: ${safeNote}')" style="cursor:pointer; margin-left:auto; vertical-align:middle; display:inline-block;">${svgNoteDim}</span>` : '';
+                const noteBtn = h.note ? `<span onclick="event.stopPropagation(); customAlert('${safeNote}')" style="cursor:pointer; margin-left:auto; vertical-align:middle; display:inline-block;">${svgNoteDim}</span>` : '';
 
                 let repsColor = '#ffffff';
                 if (h.reps < minReps) repsColor = 'var(--accent)';
@@ -7025,7 +7056,7 @@ function openEditHistorySetModal(type, idx) {
     }
 
 
-    // ===== V4.45: utilidades =====
+    // ===== V4.46: utilidades =====
     const XSVG = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>';
     let editingParamsCtx = 'routine';
 
@@ -7164,6 +7195,7 @@ function openEditHistorySetModal(type, idx) {
         const idx = session.exercises.findIndex(e => e.name === t.exName);
         if (idx < 0) { localStorage.removeItem('gym_rest_timer'); return; }
         startWorkout(idx, false);
+        localStorage.setItem('gym_rest_timer', raw);
         const logs = session.logs[t.exName] || [];
         const last = logs[logs.length - 1];
         if (t.pending && last) {
@@ -7210,6 +7242,7 @@ function openEditHistorySetModal(type, idx) {
       }
       const bi = document.getElementById('edit-ex-mod-block-input');
       if (bi) ex.block = bi.value.trim() || getExerciseBlock(ex);
+      applyEquipFromEditModal(ex);
       saveSession();
       renderExercises();
       closeModal('modal-edit-routine-ex-params');
@@ -7221,11 +7254,11 @@ function openEditHistorySetModal(type, idx) {
     function showDropPanel() {
       try {
         const panel = document.getElementById('drop-weight-panel'); if (!panel) return;
-        if (!state.activeExObj || isIsometricEx(state.activeExObj) || state.timerIsTransition) { panel.classList.add('hidden'); return; }
+        if (!state.activeExObj || isIsometricEx(state.activeExObj) || !exUsesWeight(state.activeExObj) || state.timerIsTransition) { panel.classList.add('hidden'); return; }
         const logs = (session && session.logs && session.logs[state.activeExObj.name]) || [];
         const last = logs[logs.length - 1];
         if (!last) { panel.classList.add('hidden'); return; }
-        dropCtx = { total: (+last.weight || 0) + (+last.barWeight || 0), bar: +last.barWeight || 0, orig: state.weight, pct: 0 };
+        dropCtx = { total: +last.weight || 0, bar: 0, orig: state.weight, pct: 0 };
         document.getElementById('drop-pct-input').value = 0;
         document.getElementById('drop-weight-preview').innerText = '';
         panel.classList.remove('hidden');
@@ -7248,6 +7281,49 @@ function openEditHistorySetModal(type, idx) {
       updateWorkoutUI();
     }
     function adjustDropPct(d) { if (dropCtx) setDropPct(dropCtx.pct + d); }
+
+
+    function syncMiniTimer() {
+      const mini = document.getElementById('mini-timer'), inl = document.getElementById('mini-timer-inline');
+      if (!mini || !inl) return;
+      const active = !mini.classList.contains('hidden');
+      const wv = document.getElementById('view-workout'), std = document.getElementById('standard-workout-controls');
+      const inWorkout = !!(wv && !wv.classList.contains('hidden') && std && !std.classList.contains('hidden'));
+      const useInline = active && inWorkout;
+      inl.classList.toggle('hidden', !useInline);
+      mini.style.visibility = useInline ? 'hidden' : '';
+      if (useInline) {
+        const t = document.getElementById('mini-timer-text'), it = document.getElementById('mini-timer-inline-text');
+        if (t && it) it.innerText = t.innerText;
+        inl.classList.toggle('warning', mini.classList.contains('warning'));
+        inl.classList.toggle('overtime', mini.classList.contains('overtime'));
+      }
+    }
+
+    // ===== Tipo de ejercicio: peso corporal / máquina / mancuernas / barra =====
+    const EQUIP_TYPES = [['bodyweight', 'Peso corporal'], ['machine', 'Máquina'], ['dumbbell', 'Mancuernas'], ['barbell', 'Barra']];
+    let selectedEquipForModal = '';
+    function getExEquip(name) {
+      const t = db && db.exerciseEquipment ? db.exerciseEquipment[name] : null;
+      return EQUIP_TYPES.some(e => e[0] === t) ? t : null;
+    }
+    function exUsesBar(ex) { const t = getExEquip(ex && ex.name); return t === null ? true : t === 'barbell'; }
+    function exUsesWeight(ex) { const t = getExEquip(ex && ex.name); return t === 'bodyweight' ? !!(ex && ex.weighted) : true; }
+    function renderEquipChips() {
+      const el = document.getElementById('modal-equip-chips'); if (!el) return;
+      el.innerHTML = EQUIP_TYPES.map(e => `<button type="button" class="chip-btn ${selectedEquipForModal === e[0] ? 'selected' : ''}" onclick="selectedEquipForModal='${e[0]}'; renderEquipChips();">${e[1]}</button>`).join('');
+    }
+    function applyEquipToEditModal(ex) {
+      const t = getExEquip(ex.name);
+      const bar = document.getElementById('edit-ex-mod-bar-row'); if (bar) bar.classList.toggle('hidden', !exUsesBar(ex));
+      const wr = document.getElementById('edit-ex-mod-weighted-row'); if (wr) wr.classList.toggle('hidden', t !== 'bodyweight');
+      const chk = document.getElementById('edit-ex-mod-weighted-chk'); if (chk) chk.checked = !!ex.weighted;
+    }
+    function applyEquipFromEditModal(ex) {
+      const wc = document.getElementById('edit-ex-mod-weighted-chk');
+      if (getExEquip(ex.name) === 'bodyweight') ex.weighted = !!(wc && wc.checked);
+      if (!exUsesBar(ex)) ex.barWeight = 0;
+    }
 
     // ===== Menús ⋯ =====
     function openCatalogExMenu(name) {
@@ -7321,11 +7397,6 @@ function openEditHistorySetModal(type, idx) {
       openModal('modal-workouts');
     }
 
-    initApp();
-    restoreRestTimer();
-    try { if (navigator.storage && navigator.storage.persist) navigator.storage.persist(); } catch(e) {}
-    setTimeout(checkBackupReminder, 1500);
-    setTimeout(function() { if (window.__dbRecoveryNotice) customAlert('No se pudieron leer tus datos guardados. Se ha conservado una copia interna de seguridad. Si tienes un respaldo exportado, impórtalo desde Respaldos.'); }, 900);
   
 
     // SECCIÓN DE ESTADÍSTICAS Y GRÁFICOS
@@ -7748,6 +7819,7 @@ function openEditHistorySetModal(type, idx) {
       });
     }
 
+
 </script>
 
   <script>
@@ -7883,6 +7955,15 @@ function openEditHistorySetModal(type, idx) {
         }
       }
     }, { passive: false });
+
+    // ===== ARRANQUE (al final, cuando ya existe todo lo anterior) =====
+    try { initApp(); } catch (e) { console.log('initApp', e); }
+    try { restoreRestTimer(); } catch (e) { console.log('restoreRestTimer', e); }
+    try { if (navigator.storage && navigator.storage.persist) navigator.storage.persist(); } catch (e) {}
+    setTimeout(checkBackupReminder, 1500);
+    setTimeout(function() { if (window.__dbRecoveryNotice) customAlert('No se pudieron leer tus datos guardados. Se ha conservado una copia interna de seguridad. Si tienes un respaldo exportado, impórtalo desde Respaldos.'); }, 900);
+    setInterval(function() { try { syncMiniTimer(); } catch (e) {} }, 500);
+
 </script>
 
 </body>
