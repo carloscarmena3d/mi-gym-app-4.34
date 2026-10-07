@@ -11,7 +11,7 @@
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%230b132b'/%3E%3Cpath d='M20 35h12v30H20zM68 35h12v30H68z' fill='%232ec4b6'/%3E%3Cpath d='M32 42h36v16H32z' fill='%23ff6b35'/%3E%3Cpath d='M14 42h6v16h-6zM80 42h6v16h-6z' fill='%23ffd166'/%3E%3C/svg%3E">
   <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%230b132b'/%3E%3Cpath d='M20 35h12v30H20zM68 35h12v30H68z' fill='%232ec4b6'/%3E%3Cpath d='M32 42h36v16H32z' fill='%23ff6b35'/%3E%3Cpath d='M14 42h6v16h-6zM80 42h6v16h-6z' fill='%23ffd166'/%3E%3C/svg%3E">
   
-  <title>Mi Gym App V4.46</title>
+  <title>Mi Gym App V4.47</title>
   <style>
     :root {
       --bg-color: #0b132b;    /* Azul oscuro profundo */
@@ -609,14 +609,6 @@
       </div>
       
       <h2 id="workout-ex-title" style="margin-bottom: 8px; font-size: 1.25rem; flex-shrink: 0;"></h2>
-
-      <!-- CABECERA CON CONMUTADOR DE VISTA DE HISTORIAL -->
-      <div class="history-header-bar" style="flex-shrink: 0;">
-        <span></span>
-        <button class="view-switch-btn" onclick="toggleHistoryViewMode()">
-          <span id="switch-label">Tabla</span>
-        </button>
-      </div>
       
       <div class="history-scroll-box" id="exercise-history"></div>
     </div>
@@ -729,8 +721,8 @@
     <div class="modal-box">
       <h2 id="edit-set-modal-title" style="margin-bottom:12px;">Editar serie</h2>
       
-      <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:10px;">
-        <div style="background:var(--surface-1); border:1px solid var(--card-border); padding:8px; border-radius:10px; text-align:center;">
+      <div id="edit-set-top-grid" style="display:grid; grid-template-columns:repeat(2, minmax(0, 1fr)); gap:10px; margin-bottom:10px;">
+        <div id="edit-set-weight-box" style="background:var(--surface-1); border:1px solid var(--card-border); padding:8px; border-radius:10px; text-align:center;">
           <div style="font-size:0.8rem; color:var(--text-dim); margin-bottom:6px; font-weight:bold;">Discos (kg)</div>
           <div style="display:flex; align-items:center; justify-content:center; gap:4px;">
             <button class="num-btn" style="width:34px; height:34px; font-size:1.2rem;" onclick="adjustEditSetParam('weight', -2.5)">-</button>
@@ -739,7 +731,7 @@
           </div>
         </div>
 
-        <div style="background:var(--surface-1); border:1px solid var(--card-border); padding:8px; border-radius:10px; text-align:center;">
+        <div id="edit-set-bar-box" style="background:var(--surface-1); border:1px solid var(--card-border); padding:8px; border-radius:10px; text-align:center;">
           <div style="font-size:0.8rem; color:var(--text-dim); margin-bottom:6px; font-weight:bold;">Barra (kg)</div>
           <div style="display:flex; align-items:center; justify-content:center; gap:4px;">
             <button class="num-btn" style="width:34px; height:34px; font-size:1.2rem;" onclick="adjustEditSetParam('bar', -2.5)">-</button>
@@ -749,31 +741,31 @@
         </div>
       </div>
 
-      <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:6px; margin-bottom:12px;">
+      <div style="display:grid; grid-template-columns:repeat(3, minmax(0, 1fr)); gap:6px; margin-bottom:12px;">
         <div style="background:var(--surface-1); border:1px solid var(--card-border); padding:8px 4px; border-radius:10px; text-align:center;">
           <div style="font-size:0.8rem; color:var(--text-dim); margin-bottom:6px; font-weight:bold;">Reps</div>
           <div style="display:flex; align-items:center; justify-content:center; gap:2px;">
-            <button class="num-btn" style="width:30px; height:30px; font-size:1rem;" onclick="adjustEditSetParam('reps', -1)">-</button>
-            <span class="num-val-text" style="font-size:1.1rem; width:34px;" id="edit-set-reps-val" onclick="promptEditSetParam('reps')">10</span>
-            <button class="num-btn" style="width:30px; height:30px; font-size:1rem;" onclick="adjustEditSetParam('reps', 1)">+</button>
+            <button class="num-btn" style="width:28px; height:28px; font-size:1rem; flex-shrink:0;" onclick="adjustEditSetParam('reps', -1)">-</button>
+            <span class="num-val-text" style="font-size:1.1rem; width:28px; min-width:0;" id="edit-set-reps-val" onclick="promptEditSetParam('reps')">10</span>
+            <button class="num-btn" style="width:28px; height:28px; font-size:1rem; flex-shrink:0;" onclick="adjustEditSetParam('reps', 1)">+</button>
           </div>
         </div>
 
         <div style="background:var(--surface-1); border:1px solid var(--card-border); padding:8px 4px; border-radius:10px; text-align:center;">
           <div style="font-size:0.8rem; color:var(--text-dim); margin-bottom:6px; font-weight:bold;">RIR</div>
           <div style="display:flex; align-items:center; justify-content:center; gap:2px;">
-            <button class="num-btn" style="width:30px; height:30px; font-size:1rem;" onclick="adjustEditSetParam('rir', -1)">-</button>
-            <span class="num-val-text" style="font-size:1.1rem; width:34px;" id="edit-set-rir-val" onclick="promptEditSetParam('rir')">-</span>
-            <button class="num-btn" style="width:30px; height:30px; font-size:1rem;" onclick="adjustEditSetParam('rir', 1)">+</button>
+            <button class="num-btn" style="width:28px; height:28px; font-size:1rem; flex-shrink:0;" onclick="adjustEditSetParam('rir', -1)">-</button>
+            <span class="num-val-text" style="font-size:1.1rem; width:28px; min-width:0;" id="edit-set-rir-val" onclick="promptEditSetParam('rir')">-</span>
+            <button class="num-btn" style="width:28px; height:28px; font-size:1rem; flex-shrink:0;" onclick="adjustEditSetParam('rir', 1)">+</button>
           </div>
         </div>
 
         <div style="background:var(--surface-1); border:1px solid var(--card-border); padding:8px 4px; border-radius:10px; text-align:center;">
           <div style="font-size:0.8rem; color:var(--text-dim); margin-bottom:6px; font-weight:bold;">RPE</div>
           <div style="display:flex; align-items:center; justify-content:center; gap:2px;">
-            <button class="num-btn" style="width:30px; height:30px; font-size:1rem;" onclick="adjustEditSetParam('rpe', -1)">-</button>
-            <span class="num-val-text" style="font-size:1.1rem; width:34px;" id="edit-set-rpe-val" onclick="promptEditSetParam('rpe')">-</span>
-            <button class="num-btn" style="width:30px; height:30px; font-size:1rem;" onclick="adjustEditSetParam('rpe', 1)">+</button>
+            <button class="num-btn" style="width:28px; height:28px; font-size:1rem; flex-shrink:0;" onclick="adjustEditSetParam('rpe', -1)">-</button>
+            <span class="num-val-text" style="font-size:1.1rem; width:28px; min-width:0;" id="edit-set-rpe-val" onclick="promptEditSetParam('rpe')">-</span>
+            <button class="num-btn" style="width:28px; height:28px; font-size:1rem; flex-shrink:0;" onclick="adjustEditSetParam('rpe', 1)">+</button>
           </div>
         </div>
       </div>
@@ -788,10 +780,10 @@
       <label style="font-size:0.85rem; font-weight:bold; color:var(--text-dim);">Nota de la serie</label>
       <input type="text" id="edit-set-note" placeholder="Nota opcional" style="margin-top:4px;">
       
-      <div style="display:flex; gap:8px; margin-top:20px;">
-        <button class="btn btn-danger btn-small" style="flex:1;" onclick="deleteEditingSet()">Borrar</button>
-        <button class="btn btn-secondary btn-small" style="flex:1;" onclick="closeModal('modal-edit-set')">Cancelar</button>
-        <button class="btn btn-small btn-ok" style="flex:1;" onclick="saveEditingSet()">Guardar</button>
+      <div style="display:flex; gap:8px; margin-top:16px; align-items:stretch;">
+        <button class="btn btn-danger btn-small" style="flex:1; margin-top:0;" onclick="deleteEditingSet()">Borrar</button>
+        <button class="btn btn-secondary btn-small" style="flex:1; margin-top:0;" onclick="closeModal('modal-edit-set')">Cancelar</button>
+        <button class="btn btn-small btn-ok" style="flex:1; margin-top:0;" onclick="saveEditingSet()">Guardar</button>
       </div>
     </div>
   </div>
@@ -998,6 +990,19 @@
   </div>
 
       <!-- MODAL AJUSTAR EJERCICIO EN SESIÓN ACTIVA (GEAR ⚙️) -->
+  <!-- MODAL NOTA DEL DÍA (por ejercicio) -->
+  <div id="modal-day-note" class="modal-overlay hidden">
+    <div class="modal-box">
+      <button class="modal-close" aria-label="Cerrar" onclick="closeModal('modal-day-note')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
+      <h2 id="day-note-title">Nota</h2>
+      <textarea id="day-note-text" rows="5" placeholder="Escribe una nota para este día…" style="width:100%; min-height:120px; background:var(--surface-1); color:var(--text); border:1px solid var(--card-border); border-radius:10px; padding:10px; font-family:inherit; font-size:1rem; box-sizing:border-box; resize:none;"></textarea>
+      <div style="display:flex; gap:8px; margin-top:16px;">
+        <button class="btn btn-secondary" style="flex:1; margin-top:0;" onclick="closeModal('modal-day-note')">Cancelar</button>
+        <button class="btn btn-ok" style="flex:1;" onclick="saveDayNote()">Guardar</button>
+      </div>
+    </div>
+  </div>
+
   <!-- MODAL HISTORIAL DE ENTRENAMIENTOS -->
   <div id="modal-workouts" class="modal-overlay hidden">
     <div class="modal-box" style="max-height:88vh; display:flex; flex-direction:column;">
@@ -1225,7 +1230,7 @@
           <input type="checkbox" id="chk-amoled-mode" onchange="toggleAmoledModeSetting(this.checked)" style="width:20px; height:20px; accent-color:var(--green); cursor:pointer;">
         </label>
       </div>
-      <p style="text-align:center; font-size:0.75rem; color:var(--text-dim); margin-top:4px;">MiGymApp V4.46</p>
+      <p style="text-align:center; font-size:0.75rem; color:var(--text-dim); margin-top:4px;">MiGymApp V4.47</p>
     </div>
   </div>
 
@@ -2720,13 +2725,15 @@
       renderHistory();
     }
 
+    function viewModeIconHtml() {
+      const a = 'width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"';
+      return historyViewMode === 'table'
+        ? `<svg ${a}><rect x="3" y="3" width="18" height="7" rx="1.5"></rect><rect x="3" y="14" width="18" height="7" rx="1.5"></rect></svg>`
+        : `<svg ${a}><rect x="3" y="3" width="18" height="18" rx="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="3" y1="15" x2="21" y2="15"></line><line x1="9" y1="3" x2="9" y2="21"></line></svg>`;
+    }
     function updateSwitchBtnUI() {
-      const labelEl = document.getElementById('switch-label');
-      if (historyViewMode === 'table') {
-        labelEl.innerText = 'Tabla';
-      } else {
-        labelEl.innerText = 'Tarjetas';
-      }
+      const chip = document.getElementById('view-toggle-chip');
+      if (chip) chip.innerHTML = viewModeIconHtml();
     }
 
     function showView(viewId) { pushAppState(viewId); 
@@ -5237,6 +5244,7 @@
 
       const hasExNote = !!(db.exerciseNotes && db.exerciseNotes[exName] && db.exerciseNotes[exName].trim() !== '');
       const noteBadgeHtml = `<span onclick="openExerciseNoteModal()" title="Nota del ejercicio" style="background:var(--surface-1); border:1px solid ${hasExNote ? 'var(--green)' : 'var(--card-border)'}; padding:4px 9px; border-radius:12px; cursor:pointer; display:inline-flex; align-items:center;">${svgNoteIcon(hasExNote)}</span>`;
+      const viewToggleChip = `<span id="view-toggle-chip" onclick="toggleHistoryViewMode()" title="Cambiar vista" style="background:var(--surface-1); border:1px solid var(--card-border); padding:4px 9px; border-radius:12px; cursor:pointer; display:inline-flex; align-items:center;">${viewModeIconHtml()}</span>`;
 
       if (isIsometricEx(state.activeExObj)) {
         const workSec = state.isoWorkTime || state.activeExObj.workTime || state.activeExObj.min || 15;
@@ -5249,6 +5257,7 @@
               <span style="background:var(--surface-1); border:1px solid var(--card-border); color:var(--text-dim); padding:4px 10px; border-radius:12px; font-size:0.8rem; font-weight:bold;">${sets} series × ${workSec}s</span>
               <span onclick="promptChangeRestTime()" style="background:var(--surface-1); border:1px solid var(--card-border); color:var(--accent); padding:4px 10px; border-radius:12px; font-size:0.8rem; font-weight:bold; cursor:pointer;">${svgTimerDim}${restSec}s</span>
               ${noteBadgeHtml}
+              ${viewToggleChip}
               <span style="margin-left:auto; background:var(--surface-1); border:1px solid var(--card-border); color:var(--green); padding:4px 10px; border-radius:12px; font-size:0.8rem; font-weight:bold; display:flex; align-items:center;">${svgHourglass}<span id="header-session-timer-text">00:00</span></span>
             </div>
           </div>
@@ -5266,6 +5275,7 @@
               <span style="background:var(--surface-1); border:1px solid var(--card-border); color:var(--text-dim); padding:4px 10px; border-radius:12px; font-size:0.8rem; font-weight:bold;">${sets} × ${repsLabel(minR, maxR)}</span>
               <span onclick="promptChangeRestTime()" style="background:var(--surface-1); border:1px solid var(--card-border); color:var(--accent); padding:4px 10px; border-radius:12px; font-size:0.8rem; font-weight:bold; cursor:pointer;">${svgTimerDim}${restS}s</span>
               ${noteBadgeHtml}
+              ${viewToggleChip}
               <span style="margin-left:auto; background:var(--surface-1); border:1px solid var(--card-border); color:var(--green); padding:4px 10px; border-radius:12px; font-size:0.8rem; font-weight:bold; display:flex; align-items:center;">${svgHourglass}<span id="header-session-timer-text">00:00</span></span>
             </div>
           </div>
@@ -6000,7 +6010,7 @@ function openEditHistorySetModal(type, idx) {
                          onpointercancel="handlePointerCancel()"
                          onpointermove="handlePointerCancel()"
                          onclick="if(!longPressTriggered) showDateInfo('${todayDateStr}')"
-                         title="Mantén pulsado para borrar todas las series de hoy">Hoy${currentLogs.length > 0 ? ' <small style="font-size:0.65rem; color:var(--green);">(activa)</small>' : ''}</span>
+                         title="Mantén pulsado para borrar todas las series de hoy">Hoy${currentLogs.length > 0 ? ' <small style="font-size:0.65rem; color:var(--green);">(activa)</small>' : ''}</span><div style="margin-top:4px; text-align:center;">${dayNoteBtn(dayNoteKeyToday()).replace('margin-right:8px;', '')}</div>
                 </td>
               `;
             }
@@ -6050,7 +6060,7 @@ function openEditHistorySetModal(type, idx) {
                 if (isFirst) {
                   dayTdPast = `
                     <td rowspan="${sessSets.length}" style="vertical-align:middle; border-right:1px solid var(--card-border); background:var(--surface-1); padding:2px; border-top:2px solid var(--card-border);">
-                      <span class="rel-day-tag is-past" onclick="showDateInfo('${dateStr}')">${relInfo.label}</span>
+                      <span class="rel-day-tag is-past" onclick="showDateInfo('${dateStr}')">${relInfo.label}</span><div style="margin-top:4px; text-align:center;">${dayNoteBtn(normalizeDate(dateStr)).replace('margin-right:8px;', '')}</div>
                     </td>
                   `;
                 }
@@ -6125,7 +6135,7 @@ function openEditHistorySetModal(type, idx) {
                          onpointercancel="handlePointerCancel()"
                          onpointermove="handlePointerCancel()"
                          onclick="if(!longPressTriggered) showDateInfo('${todayDateStr}')"
-                         title="Mantén pulsado para borrar todas las series de hoy">Hoy${currentLogs.length > 0 ? ' <small style="font-size:0.65rem; color:var(--green);">(activa)</small>' : ''}</span>
+                         title="Mantén pulsado para borrar todas las series de hoy">Hoy${currentLogs.length > 0 ? ' <small style="font-size:0.65rem; color:var(--green);">(activa)</small>' : ''}</span><div style="margin-top:4px; text-align:center;">${dayNoteBtn(dayNoteKeyToday()).replace('margin-right:8px;', '')}</div>
                   ${rmBadge}
                   ${ieBadge}
                 </td>
@@ -6249,7 +6259,7 @@ function openEditHistorySetModal(type, idx) {
                 if (isFirst) {
                   dayTdPast = `
                     <td rowspan="${sessSets.length}" style="vertical-align:middle; border-right:1px solid var(--card-border); background:var(--surface-1); padding:2px; border-top:2px solid var(--card-border);">
-                      <span class="rel-day-tag is-past" onclick="showDateInfo('${dateStr}')">${relInfo.label}</span><br>
+                      <span class="rel-day-tag is-past" onclick="showDateInfo('${dateStr}')">${relInfo.label}</span><div style="margin-top:4px; text-align:center;">${dayNoteBtn(normalizeDate(dateStr)).replace('margin-right:8px;', '')}</div><br>
                       <span style="font-size:0.65rem; color:var(--green); font-weight:bold;">${avgRM}kg</span><br>
                       <span style="font-size:0.62rem; color:var(--accent); font-weight:bold;">Efic. ${ieScore}</span>
                     </td>
@@ -6309,7 +6319,7 @@ function openEditHistorySetModal(type, idx) {
                              onpointercancel="handlePointerCancel()" 
                              onpointermove="handlePointerCancel()" 
                              title="Mantén pulsado para borrar todas las series de hoy">HOY${currentLogs.length > 0 ? ' (Sesión Activa)' : ''}</strong>
-              <span style="color:var(--text-dim); font-size:0.8rem;">${currentLogs.length} / ${targetSets} series</span>
+              <span style="color:var(--text-dim); font-size:0.8rem;">${dayNoteBtn(dayNoteKeyToday())}${currentLogs.length} / ${targetSets} series</span>
             </div>
             <div style="padding: 0 14px;">
         `;
@@ -6448,7 +6458,7 @@ function openEditHistorySetModal(type, idx) {
                 <div style="background:var(--card-bg); border-radius:14px; margin-bottom:12px; border:1px solid var(--card-border); border-left:6px solid var(--red); overflow:hidden;">
                   <div style="background:var(--surface-1); padding:10px 14px; display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--card-border);">
                     <strong class="rel-day-tag is-past" onclick="showDateInfo('${dateStr}')">${relInfo.label}</strong>
-                    <span style="color:var(--text-dim); font-size:0.8rem;">${sessSets.length} series</span>
+                    <span style="color:var(--text-dim); font-size:0.8rem;">${dayNoteBtn(normalizeDate(dateStr))}${sessSets.length} series</span>
                   </div>
                   <div style="padding: 0 14px;">
               `;
@@ -7056,7 +7066,7 @@ function openEditHistorySetModal(type, idx) {
     }
 
 
-    // ===== V4.46: utilidades =====
+    // ===== V4.47: utilidades =====
     const XSVG = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>';
     let editingParamsCtx = 'routine';
 
@@ -7194,7 +7204,8 @@ function openEditHistorySetModal(type, idx) {
         if (!session || !t || !t.restStart || Date.now() - t.restStart > 3 * 3600 * 1000) { localStorage.removeItem('gym_rest_timer'); return; }
         const idx = session.exercises.findIndex(e => e.name === t.exName);
         if (idx < 0) { localStorage.removeItem('gym_rest_timer'); return; }
-        startWorkout(idx, false);
+        window.__restoringTimer = true;
+        try { startWorkout(idx, false); } finally { window.__restoringTimer = false; }
         localStorage.setItem('gym_rest_timer', raw);
         const logs = session.logs[t.exName] || [];
         const last = logs[logs.length - 1];
@@ -7294,7 +7305,7 @@ function openEditHistorySetModal(type, idx) {
       mini.style.visibility = useInline ? 'hidden' : '';
       if (useInline) {
         const t = document.getElementById('mini-timer-text'), it = document.getElementById('mini-timer-inline-text');
-        if (t && it) it.innerText = t.innerText;
+        if (t && it) it.textContent = t.textContent;
         inl.classList.toggle('warning', mini.classList.contains('warning'));
         inl.classList.toggle('overtime', mini.classList.contains('overtime'));
       }
@@ -7324,6 +7335,66 @@ function openEditHistorySetModal(type, idx) {
       if (getExEquip(ex.name) === 'bodyweight') ex.weighted = !!(wc && wc.checked);
       if (!exUsesBar(ex)) ex.barWeight = 0;
     }
+
+
+    // ===== Notas por ejercicio y día =====
+    let dayNoteCtx = null;
+    function dayNoteKeyToday() { return todayISO(); }
+    function getDayNoteObj(ex, key) { return (db.exerciseDayNotes && db.exerciseDayNotes[ex] && db.exerciseDayNotes[ex][key]) || null; }
+    function dayNoteBtn(key) {
+      const has = !!(state.activeExObj && getDayNoteObj(state.activeExObj.name, key));
+      return `<span onclick="event.stopPropagation(); openDayNote('${key}')" title="Nota del día" style="cursor:pointer; display:inline-flex; align-items:center; margin-right:8px; color:${has ? 'var(--green)' : 'var(--text-dim)'};"><svg width="16" height="16" viewBox="0 0 24 24" fill="${has ? 'rgba(46,196,182,0.25)' : 'none'}" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path><polyline points="14 3 14 9 20 9"></polyline><line x1="8" y1="13" x2="16" y2="13"></line><line x1="8" y1="17" x2="14" y2="17"></line></svg></span>`;
+    }
+    function openDayNote(key, title) {
+      if (!state.activeExObj) return;
+      dayNoteCtx = { ex: state.activeExObj.name, key: String(key) };
+      const o = getDayNoteObj(dayNoteCtx.ex, dayNoteCtx.key);
+      document.getElementById('day-note-title').innerText = title || 'Nota del día';
+      document.getElementById('day-note-text').value = o ? o.text : '';
+      openModal('modal-day-note');
+    }
+    function saveDayNote() {
+      if (!dayNoteCtx) return;
+      const txt = document.getElementById('day-note-text').value.trim();
+      if (!db.exerciseDayNotes) db.exerciseDayNotes = {};
+      if (!db.exerciseDayNotes[dayNoteCtx.ex]) db.exerciseDayNotes[dayNoteCtx.ex] = {};
+      const cur = db.exerciseDayNotes[dayNoteCtx.ex][dayNoteCtx.key];
+      if (!txt) { delete db.exerciseDayNotes[dayNoteCtx.ex][dayNoteCtx.key]; }
+      else db.exerciseDayNotes[dayNoteCtx.ex][dayNoteCtx.key] = { text: txt, date: (cur && cur.date) || todayISO(), shown: cur ? !!cur.shown : false };
+      saveDB();
+      closeModal('modal-day-note');
+      try { renderHistory(); } catch (e) {}
+    }
+    function maybeShowPreviousDayNote() {
+      try {
+        if (window.__restoringTimer || !session || !state.activeExObj) return;
+        const ex = state.activeExObj.name, notes = (db.exerciseDayNotes && db.exerciseDayNotes[ex]) || {};
+        const cur = dayNoteKeyToday();
+        const keys = Object.keys(notes).filter(k => k !== cur && !notes[k].shown);
+        if (!keys.length) return;
+        keys.sort((a, b) => String(notes[a].date + a) < String(notes[b].date + b) ? 1 : -1);
+        const k = keys[0];
+        notes[k].shown = true; saveDB();
+        openDayNote(k, 'Nota de la última vez');
+      } catch (e) {}
+    }
+    (function() {
+      const _sw = startWorkout;
+      startWorkout = function() { const r = _sw.apply(this, arguments); maybeShowPreviousDayNote(); return r; };
+      const _eh = openEditHistorySetModal;
+      openEditHistorySetModal = function() {
+        const r = _eh.apply(this, arguments);
+        try {
+          const ex = state.activeExObj, w = document.getElementById('edit-set-weight-box'), b = document.getElementById('edit-set-bar-box'), g = document.getElementById('edit-set-top-grid');
+          const uw = ex ? exUsesWeight(ex) : true, ub = ex ? exUsesBar(ex) : true;
+          if (w) w.classList.toggle('hidden', !uw);
+          if (b) b.classList.toggle('hidden', !ub);
+          if (g) g.style.gridTemplateColumns = (uw && ub) ? 'repeat(2, minmax(0, 1fr))' : 'minmax(0, 1fr)';
+          if (g) g.classList.toggle('hidden', !uw && !ub);
+        } catch (e) {}
+        return r;
+      };
+    })();
 
     // ===== Menús ⋯ =====
     function openCatalogExMenu(name) {
@@ -7842,7 +7913,7 @@ function openEditHistorySetModal(type, idx) {
       backTrapArmed = true;
       try { history.pushState({ trap: 1 }, ''); } catch(e) {}
     }
-    window.addEventListener('pointerdown', armBackTrap, { once: true, passive: true });
+    ['click', 'touchend', 'keydown'].forEach(ev => window.addEventListener(ev, armBackTrap, { once: true, passive: true }));
 
     window.addEventListener('popstate', function() {
       let handled = false;
