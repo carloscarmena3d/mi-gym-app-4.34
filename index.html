@@ -11,7 +11,7 @@
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%230b132b'/%3E%3Cpath d='M20 35h12v30H20zM68 35h12v30H68z' fill='%232ec4b6'/%3E%3Cpath d='M32 42h36v16H32z' fill='%23ff6b35'/%3E%3Cpath d='M14 42h6v16h-6zM80 42h6v16h-6z' fill='%23ffd166'/%3E%3C/svg%3E">
   <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%230b132b'/%3E%3Cpath d='M20 35h12v30H20zM68 35h12v30H68z' fill='%232ec4b6'/%3E%3Cpath d='M32 42h36v16H32z' fill='%23ff6b35'/%3E%3Cpath d='M14 42h6v16h-6zM80 42h6v16h-6z' fill='%23ffd166'/%3E%3C/svg%3E">
   
-  <title>Mi Gym App V4.47</title>
+  <title>Mi Gym App V4.48</title>
   <style>
     :root {
       --bg-color: #0b132b;    /* Azul oscuro profundo */
@@ -58,6 +58,8 @@
     .card { background-color: var(--card-bg); padding: 15px; border-radius: 14px; margin-bottom: 12px; border: 1px solid var(--card-border); }
     .flex-between { display: flex; justify-content: space-between; align-items: center; }
     .hidden { display: none !important; }
+
+    [onpointerdown] { -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; -webkit-tap-highlight-color: transparent; }
 
     .view-close { width: 32px; height: 32px; padding: 0; border-radius: 50%; border: 1px solid var(--card-border); background: var(--surface-2); color: var(--text-dim); display: flex; align-items: center; justify-content: center; margin-left: auto; cursor: pointer; flex-shrink: 0; }
     .view-close:active { background: var(--card-border); color: var(--text); }
@@ -534,6 +536,7 @@
   </div>
   <script>
     (function() {
+      try { if (localStorage.getItem('gym_session')) { var sp = document.getElementById('pwa-splash'); if (sp) sp.style.display = 'none'; return; } } catch (e) {}
       function hideSplash() {
         var el = document.getElementById('pwa-splash');
         if (!el) return;
@@ -1230,7 +1233,7 @@
           <input type="checkbox" id="chk-amoled-mode" onchange="toggleAmoledModeSetting(this.checked)" style="width:20px; height:20px; accent-color:var(--green); cursor:pointer;">
         </label>
       </div>
-      <p style="text-align:center; font-size:0.75rem; color:var(--text-dim); margin-top:4px;">MiGymApp V4.47</p>
+      <p style="text-align:center; font-size:0.75rem; color:var(--text-dim); margin-top:4px;">MiGymApp V4.48</p>
     </div>
   </div>
 
@@ -2599,7 +2602,7 @@
     // MODO DE HISTORIAL: 'table' ó 'cards'
     let historyViewMode = localStorage.getItem('gym_view_mode') || 'cards';
 
-    const LONG_PRESS_DELAY = 500; // 0.5 segundos para todas las pulsaciones largas
+    const LONG_PRESS_DELAY = 450; // 0.5 segundos para todas las pulsaciones largas
     
     let expandedBlocks = {};
 
@@ -3597,7 +3600,7 @@
                onpointerdown="handleRoutinePointerDown(${r.id})"
                onpointerup="handleRoutinePointerCancel()"
                onpointercancel="handleRoutinePointerCancel()"
-               onpointermove="handleRoutinePointerCancel()"
+               onpointermove="lpMove(event, handleRoutinePointerCancel)"
                onclick="if(!routineLongPressTriggered) openEditRoutineModal(${r.id})">
             <div style="flex:1; padding-right:12px;">
               <div style="margin-bottom:4px;">
@@ -3885,7 +3888,7 @@
                    onpointerdown="handleEditingBlockPointerDown(${day.id}, '${safeBlock}')"
                    onpointerup="handleEditingBlockPointerCancel()"
                    onpointercancel="handleEditingBlockPointerCancel()"
-                   onpointermove="handleEditingBlockPointerCancel()"
+                   onpointermove="lpMove(event, handleEditingBlockPointerCancel)"
                    onclick="if(!editingBlockLongPressTriggered) toggleBlockCollapse('${editBlockKey}')">
                 <span style="font-size:0.8rem; font-weight:bold; color:var(--accent); letter-spacing:0.5px;">
                   ${b} <small style="color:var(--text-dim); font-weight:normal;">(${tot} ej)</small>
@@ -3923,7 +3926,7 @@
                onpointerdown="handleEditingDayPointerDown(${day.id})"
                onpointerup="handleEditingDayPointerCancel()"
                onpointercancel="handleEditingDayPointerCancel()"
-               onpointermove="handleEditingDayPointerCancel()">
+               onpointermove="lpMove(event, handleEditingDayPointerCancel)">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
               <div style="display:flex; align-items:center; gap:8px;">
                 <span class="day-drag-handle" title="Arrastra para reordenar días" style="color:var(--text-dim); font-size:1.4rem; cursor:grab; touch-action:none; padding:2px 4px;" onclick="event.stopPropagation(); handleEditingDayPointerCancel();">⋮</span>
@@ -4526,7 +4529,7 @@
                    onpointerdown="handleCatalogExPointerDown('${safeExName}')"
                    onpointerup="handleCatalogExPointerCancel()"
                    onpointercancel="handleCatalogExPointerCancel()"
-                   onpointermove="handleCatalogExPointerCancel()"
+                   onpointermove="lpMove(event, handleCatalogExPointerCancel)"
                    onclick="if(!catalogLongPressTriggered) editCatalogExercise('${safeExName}')"
                    style="user-select:none; -webkit-user-select:none; cursor:pointer;">
                 <div>
@@ -4892,7 +4895,7 @@
 
     // Objetivo de una serie concreta (con valores generales como respaldo)
     function getSetConfig(ex, setNum) {
-      const base = { min: parseInt(ex.min) || 8, max: parseInt(ex.max) || 12, rest: parseInt(ex.rest) || 90, note: '' };
+      const base = { min: numOr(ex.min, 8), max: numOr(ex.max, 12), rest: parseInt(ex.rest) || 90, note: '' };
       if (ex && Array.isArray(ex.setConfigs) && ex.setConfigs.length > 0) {
         const c = ex.setConfigs[Math.min(Math.max(1, setNum), ex.setConfigs.length) - 1];
         if (c) return { min: c.min, max: c.max, rest: c.rest, note: c.note || '' };
@@ -5050,7 +5053,7 @@
                  onpointerdown="handleSessionBlockPointerDown('${safeBlock}')"
                  onpointerup="handleSessionBlockPointerCancel()"
                  onpointercancel="handleSessionBlockPointerCancel()"
-                 onpointermove="handleSessionBlockPointerCancel()"
+                 onpointermove="lpMove(event, handleSessionBlockPointerCancel)"
                  onclick="if(!sessionBlockLongPressTriggered) toggleBlockCollapse('${blockKey}')">
               <div style="display:flex; align-items:center; gap:8px;">
                 <span style="font-size:0.92rem; font-weight:bold; color:${blockTitleColor}; letter-spacing:0.5px;">
@@ -5095,13 +5098,13 @@
             ? `<span onclick="event.stopPropagation(); handleSessionExPointerCancel(); toggleSupersetWithNext('session', ${idx}, null);" title="${ex.supersetWith ? 'Vinculado con: ' + ex.supersetWith : 'Vincular con el siguiente ejercicio (superserie)'}" style="padding:6px 4px; cursor:pointer; display:inline-flex; align-items:center;">${svgLinkIcon(!!ex.supersetWith)}</span>`
             : '';
 
-          html += isFullyCompleted ? `<div class="card flex-between ex-drag-card" data-index="${idx}" onpointerdown="handleSessionExPointerDown(${idx})" onpointerup="handleSessionExPointerCancel()" onpointercancel="handleSessionExPointerCancel()" onpointermove="handleSessionExPointerCancel()" onclick="if(!sessionExLongPressTriggered) startWorkout(${idx})" style="border:1px solid var(--green); border-left:6px solid var(--green); background:var(--surface-1); user-select:none; -webkit-user-select:none; cursor:pointer; padding:8px 14px; margin-bottom:6px;"><div style="display:flex; align-items:center; gap:8px; flex:1; min-width:0;"><span class="drag-handle" title="Toca y arrastra para reordenar" onclick="event.stopPropagation(); handleSessionExPointerCancel();">⋮</span><strong style="font-size:1rem; color:var(--green); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${ex.name}</strong></div><span style="color:var(--green); font-weight:bold; font-size:1.1rem;">✓</span>${linkIconHtml}<span class="icon-gear" onclick="event.stopPropagation(); handleSessionExPointerCancel(); openSessionExGearModal(${idx});" title="Ajustar ejercicio" style="padding:6px 2px 6px 10px; cursor:pointer; display:inline-flex; align-items:center;">${svgGearDark}</span></div>` : `
+          html += isFullyCompleted ? `<div class="card flex-between ex-drag-card" data-index="${idx}" onpointerdown="handleSessionExPointerDown(${idx})" onpointerup="handleSessionExPointerCancel()" onpointercancel="handleSessionExPointerCancel()" onpointermove="lpMove(event, handleSessionExPointerCancel)" onclick="if(!sessionExLongPressTriggered) startWorkout(${idx})" style="border:1px solid var(--green); border-left:6px solid var(--green); background:var(--surface-1); user-select:none; -webkit-user-select:none; cursor:pointer; padding:8px 14px; margin-bottom:6px;"><div style="display:flex; align-items:center; gap:8px; flex:1; min-width:0;"><span class="drag-handle" title="Toca y arrastra para reordenar" onclick="event.stopPropagation(); handleSessionExPointerCancel();">⋮</span><strong style="font-size:1rem; color:var(--green); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${ex.name}</strong></div><span style="color:var(--green); font-weight:bold; font-size:1.1rem;">✓</span>${linkIconHtml}<span class="icon-gear" onclick="event.stopPropagation(); handleSessionExPointerCancel(); openSessionExGearModal(${idx});" title="Ajustar ejercicio" style="padding:6px 2px 6px 10px; cursor:pointer; display:inline-flex; align-items:center;">${svgGearDark}</span></div>` : `
             <div class="card flex-between ex-drag-card" 
                  data-index="${idx}" 
                  onpointerdown="handleSessionExPointerDown(${idx})"
                  onpointerup="handleSessionExPointerCancel()"
                  onpointercancel="handleSessionExPointerCancel()"
-                 onpointermove="handleSessionExPointerCancel()"
+                 onpointermove="lpMove(event, handleSessionExPointerCancel)"
                  onclick="if(!sessionExLongPressTriggered) startWorkout(${idx})"
                  style="${cardStyle} user-select:none; -webkit-user-select:none; cursor:pointer; padding:14px 16px;">
               <div style="display:flex; align-items:center; gap:8px; flex:1;">
@@ -5255,10 +5258,10 @@
             ${supersetBadge}
             <div style="display:flex; align-items:center; gap:8px;">
               <span style="background:var(--surface-1); border:1px solid var(--card-border); color:var(--text-dim); padding:4px 10px; border-radius:12px; font-size:0.8rem; font-weight:bold;">${sets} series × ${workSec}s</span>
-              <span onclick="promptChangeRestTime()" style="background:var(--surface-1); border:1px solid var(--card-border); color:var(--accent); padding:4px 10px; border-radius:12px; font-size:0.8rem; font-weight:bold; cursor:pointer;">${svgTimerDim}${restSec}s</span>
+              <span onclick="promptChangeRestTime()" style="background:var(--surface-1); border:1px solid var(--card-border); color:var(--accent); padding:4px 10px; border-radius:12px; font-size:0.8rem; font-weight:bold; cursor:pointer;">${svgTimerDim}${restSec}</span>
               ${noteBadgeHtml}
               ${viewToggleChip}
-              <span style="margin-left:auto; background:var(--surface-1); border:1px solid var(--card-border); color:var(--green); padding:4px 10px; border-radius:12px; font-size:0.8rem; font-weight:bold; display:flex; align-items:center;">${svgHourglass}<span id="header-session-timer-text">00:00</span></span>
+              <span style="margin-left:auto; flex-shrink:0; background:var(--surface-1); border:1px solid var(--card-border); color:var(--green); padding:4px 0; border-radius:12px; font-size:0.8rem; font-weight:bold; display:flex; align-items:center; justify-content:center; gap:4px; width:84px; box-sizing:border-box; white-space:nowrap; font-variant-numeric:tabular-nums;">${svgHourglass}<span id="header-session-timer-text">00:00</span></span>
             </div>
           </div>
         `;
@@ -5273,10 +5276,10 @@
             ${supersetBadge}
             <div style="display:flex; align-items:center; gap:8px;">
               <span style="background:var(--surface-1); border:1px solid var(--card-border); color:var(--text-dim); padding:4px 10px; border-radius:12px; font-size:0.8rem; font-weight:bold;">${sets} × ${repsLabel(minR, maxR)}</span>
-              <span onclick="promptChangeRestTime()" style="background:var(--surface-1); border:1px solid var(--card-border); color:var(--accent); padding:4px 10px; border-radius:12px; font-size:0.8rem; font-weight:bold; cursor:pointer;">${svgTimerDim}${restS}s</span>
+              <span onclick="promptChangeRestTime()" style="background:var(--surface-1); border:1px solid var(--card-border); color:var(--accent); padding:4px 10px; border-radius:12px; font-size:0.8rem; font-weight:bold; cursor:pointer;">${svgTimerDim}${restS}</span>
               ${noteBadgeHtml}
               ${viewToggleChip}
-              <span style="margin-left:auto; background:var(--surface-1); border:1px solid var(--card-border); color:var(--green); padding:4px 10px; border-radius:12px; font-size:0.8rem; font-weight:bold; display:flex; align-items:center;">${svgHourglass}<span id="header-session-timer-text">00:00</span></span>
+              <span style="margin-left:auto; flex-shrink:0; background:var(--surface-1); border:1px solid var(--card-border); color:var(--green); padding:4px 0; border-radius:12px; font-size:0.8rem; font-weight:bold; display:flex; align-items:center; justify-content:center; gap:4px; width:84px; box-sizing:border-box; white-space:nowrap; font-variant-numeric:tabular-nums;">${svgHourglass}<span id="header-session-timer-text">00:00</span></span>
             </div>
           </div>
         `;
@@ -5356,6 +5359,17 @@ function startWorkout(exIndex, isInternalSupersetNav) {
       } else {
         state.barWeight = 0;
       }
+      {
+        const _todayLogs = (session.logs && session.logs[exName]) || [];
+        const _past = ((db.history && db.history[exName]) || []).filter(h => h.sessionId !== session.startTime);
+        const _last = _past.length ? _past[_past.length - 1] : null;
+        const _ps = getPastSetData(_past, state.currentSet);
+        const _b = (_ps && _ps.barWeight !== undefined) ? _ps.barWeight : (_last ? _last.barWeight : undefined);
+        if (_todayLogs.length === 0 && _b !== undefined) {
+          state.barWeight = _b;
+          state.activeExObj.barWeight = state.barWeight;
+        }
+      }
 
       // Salto de peso (+/-) persistente por ejercicio
       if (db.lastWeightSteps && db.lastWeightSteps[exName] !== undefined) {
@@ -5373,9 +5387,6 @@ function startWorkout(exIndex, isInternalSupersetNav) {
       renderWorkoutTitle();
       updateSwitchBtnUI();
       
-      if(db.history && db.history[exName] && db.history[exName].length > 0) {
-        state.weight = db.history[exName][db.history[exName].length-1].weight;
-      }
       
       const fullHist = (db.history && db.history[exName]) ? db.history[exName] : [];
       const pastHist = fullHist.filter(h => h.sessionId !== session.startTime);
@@ -6008,7 +6019,7 @@ function openEditHistorySetModal(type, idx) {
                          onpointerdown="handlePointerDown('today_header', 0)"
                          onpointerup="handlePointerCancel()"
                          onpointercancel="handlePointerCancel()"
-                         onpointermove="handlePointerCancel()"
+                         onpointermove="lpMove(event, handlePointerCancel)"
                          onclick="if(!longPressTriggered) showDateInfo('${todayDateStr}')"
                          title="Mantén pulsado para borrar todas las series de hoy">Hoy${currentLogs.length > 0 ? ' <small style="font-size:0.65rem; color:var(--green);">(activa)</small>' : ''}</span><div style="margin-top:4px; text-align:center;">${dayNoteBtn(dayNoteKeyToday()).replace('margin-right:8px;', '')}</div>
                 </td>
@@ -6022,7 +6033,7 @@ function openEditHistorySetModal(type, idx) {
                     onpointerdown="handlePointerDown('session', ${i - 1})" 
                     onpointerup="handlePointerCancel()" 
                     onpointercancel="handlePointerCancel()" 
-                    onpointermove="handlePointerCancel()">
+                    onpointermove="lpMove(event, handlePointerCancel)">
                   ${dayTd}
                   <td style="font-weight:bold;">${i}</td>
                   <td><strong style="color:var(--green); font-size:0.95rem;">${log.reps}s</strong></td>
@@ -6073,7 +6084,7 @@ function openEditHistorySetModal(type, idx) {
                       onpointerdown="handlePointerDown('history', ${dbIdx})" 
                       onpointerup="handlePointerCancel()" 
                       onpointercancel="handlePointerCancel()" 
-                      onpointermove="handlePointerCancel()">
+                      onpointermove="lpMove(event, handlePointerCancel)">
                     ${dayTdPast}
                     <td style="font-weight:bold;">${h.set}</td>
                     <td><strong style="color:var(--green); font-size:0.95rem;">${h.reps}s</strong></td>
@@ -6133,7 +6144,7 @@ function openEditHistorySetModal(type, idx) {
                          onpointerdown="handlePointerDown('today_header', 0)"
                          onpointerup="handlePointerCancel()"
                          onpointercancel="handlePointerCancel()"
-                         onpointermove="handlePointerCancel()"
+                         onpointermove="lpMove(event, handlePointerCancel)"
                          onclick="if(!longPressTriggered) showDateInfo('${todayDateStr}')"
                          title="Mantén pulsado para borrar todas las series de hoy">Hoy${currentLogs.length > 0 ? ' <small style="font-size:0.65rem; color:var(--green);">(activa)</small>' : ''}</span><div style="margin-top:4px; text-align:center;">${dayNoteBtn(dayNoteKeyToday()).replace('margin-right:8px;', '')}</div>
                   ${rmBadge}
@@ -6191,7 +6202,7 @@ function openEditHistorySetModal(type, idx) {
                     onpointerdown="handlePointerDown('session', ${i - 1})" 
                     onpointerup="handlePointerCancel()" 
                     onpointercancel="handlePointerCancel()" 
-                    onpointermove="handlePointerCancel()">
+                    onpointermove="lpMove(event, handlePointerCancel)">
                   ${dayTd}
                   <td style="font-weight:bold;">${i}</td>
                   <td><strong onclick="if(!longPressTriggered){ event.stopPropagation(); showWeightBreakdown(${log.weight}, ${bWeight}); }" style="cursor:pointer;">${totalSetW}</strong></td>
@@ -6206,19 +6217,13 @@ function openEditHistorySetModal(type, idx) {
               `;
             } else {
               const pastSetStd = getPastSetData(pastHist, i);
-              let pendW, pendReps;
-              if (pastSetStd) {
-                pendW = pastSetStd.weight + (pastSetStd.barWeight || 0);
-                pendReps = pastSetStd.reps;
-              } else {
-                pendW = state.weight + state.barWeight;
-                pendReps = state.reps;
-              }
+              const pendCfg = getSetConfig(state.activeExObj, i);
+              const pendReps = repsRangeText(pendCfg.min, pendCfg.max);
               html += `
                 <tr style="opacity: 0.35; color: var(--text-dim);">
                   ${dayTd}
                   <td>${i}</td>
-                  <td><strong onclick="event.stopPropagation(); showWeightBreakdown(${pendW}, ${state.barWeight})" style="cursor:pointer;">${pendW}</strong></td>
+                  <td>-</td>
                   <td style="font-weight:bold;">${pendReps}</td>
                   <td>-</td>
                   <td>-</td>
@@ -6288,7 +6293,7 @@ function openEditHistorySetModal(type, idx) {
                       onpointerdown="handlePointerDown('history', ${dbIdx})" 
                       onpointerup="handlePointerCancel()" 
                       onpointercancel="handlePointerCancel()" 
-                      onpointermove="handlePointerCancel()">
+                      onpointermove="lpMove(event, handlePointerCancel)">
                     ${dayTdPast}
                     <td style="font-weight:bold;">${h.set}</td>
                     <td><strong onclick="event.stopPropagation(); showWeightBreakdown(${h.weight}, ${bW})" style="cursor:pointer;">${totW}</strong></td>
@@ -6317,7 +6322,7 @@ function openEditHistorySetModal(type, idx) {
                              onpointerdown="handlePointerDown('today_header', 0)" 
                              onpointerup="handlePointerCancel()" 
                              onpointercancel="handlePointerCancel()" 
-                             onpointermove="handlePointerCancel()" 
+                             onpointermove="lpMove(event, handlePointerCancel)" 
                              title="Mantén pulsado para borrar todas las series de hoy">HOY${currentLogs.length > 0 ? ' (Sesión Activa)' : ''}</strong>
               <span style="color:var(--text-dim); font-size:0.8rem;">${dayNoteBtn(dayNoteKeyToday())}${currentLogs.length} / ${targetSets} series</span>
             </div>
@@ -6338,7 +6343,7 @@ function openEditHistorySetModal(type, idx) {
                      onpointerdown="handlePointerDown('session', ${i - 1})" 
                      onpointerup="handlePointerCancel()" 
                     onpointercancel="handlePointerCancel()" 
-                    onpointermove="handlePointerCancel()">
+                    onpointermove="lpMove(event, handlePointerCancel)">
                   <div style="display:flex; justify-content:space-between; align-items:center; padding:6px 0;">
                     <strong style="font-size: 1rem; color:#ffffff;">Serie ${i}: <span style="color:var(--green); font-weight:bold;">${wSec}s</span></strong>
                     <span style="color:var(--text-dim); font-size:0.85rem;">${svgTimerDim}${log.restTime || 30}s ${noteBtn}</span>
@@ -6392,7 +6397,7 @@ function openEditHistorySetModal(type, idx) {
                      onpointerdown="handlePointerDown('session', ${i - 1})" 
                      onpointerup="handlePointerCancel()" 
                     onpointercancel="handlePointerCancel()" 
-                    onpointermove="handlePointerCancel()"
+                    onpointermove="lpMove(event, handlePointerCancel)"
                     onclick="if(!longPressTriggered) toggleSetDetailsAll()">
                   <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
                     <strong style="font-size: 1rem; color:#ffffff;">Serie ${i}: ${totalSetW}kg${barText} × <span style="color:${repsColor}; font-weight:bold;">${log.reps}</span>${trendBadge}${noteBtn.replace('margin-left:auto; ', 'margin-left:6px; ')}</strong>
@@ -6421,19 +6426,13 @@ function openEditHistorySetModal(type, idx) {
               `;
             } else {
               const pastSetStd = getPastSetData(pastHist, i);
-              let pendW, pendReps;
-              if (pastSetStd) {
-                pendW = pastSetStd.weight + (pastSetStd.barWeight || 0);
-                pendReps = pastSetStd.reps;
-              } else {
-                pendW = state.weight + state.barWeight;
-                pendReps = state.reps;
-              }
+              const pendCfg = getSetConfig(state.activeExObj, i);
+              const pendReps = repsRangeText(pendCfg.min, pendCfg.max);
               html += `
                 <div class="set-row-clean pending">
                   <div style="display:flex; justify-content:space-between;">
                     <span style="font-size: 0.95rem;">Serie ${i} (Pendiente)</span>
-                    <span style="font-size: 0.85rem; font-weight:bold;">${pendW}kg × ${pendReps}</span>
+                    <span style="font-size: 0.85rem; font-weight:bold;">${pendReps}</span>
                   </div>
                 </div>
               `;
@@ -6473,7 +6472,7 @@ function openEditHistorySetModal(type, idx) {
                        onpointerdown="handlePointerDown('history', ${dbIdx})" 
                        onpointerup="handlePointerCancel()" 
                        onpointercancel="handlePointerCancel()" 
-                       onpointermove="handlePointerCancel()">
+                       onpointermove="lpMove(event, handlePointerCancel)">
                     <div style="display:flex; justify-content:space-between; align-items:center; padding:6px 0;">
                       <strong style="font-size: 0.95rem;">Serie ${h.set}: <span style="color:var(--green);">${h.reps}s</span></strong>
                       <span style="color:var(--text-dim); font-size:0.85rem;">${svgTimerDim}${h.restTime}s ${noteBtn}</span>
@@ -6531,7 +6530,7 @@ function openEditHistorySetModal(type, idx) {
                        onpointerdown="handlePointerDown('history', ${dbIdx})" 
                        onpointerup="handlePointerCancel()" 
                        onpointercancel="handlePointerCancel()" 
-                       onpointermove="handlePointerCancel()"
+                       onpointermove="lpMove(event, handlePointerCancel)"
                        onclick="if(!longPressTriggered) toggleSetDetailsAll()">
                     <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
                       <strong style="font-size: 0.95rem;">Serie ${h.set}: ${totW}kg${barText} × <span style="color:${repsColor}; font-weight:bold;">${h.reps}</span>${noteBtn.replace('margin-left:auto; ', 'margin-left:6px; ')}</strong>
@@ -7066,13 +7065,13 @@ function openEditHistorySetModal(type, idx) {
     }
 
 
-    // ===== V4.47: utilidades =====
+    // ===== V4.48: utilidades =====
     const XSVG = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>';
     let editingParamsCtx = 'routine';
 
     function numOr(v, d) { const n = parseInt(v); return isNaN(n) ? d : n; }
     function repsRangeText(min, max) { return (parseInt(min) === 0 || parseInt(max) === 0) ? 'Fallo' : `${min}-${max}`; }
-    function repsLabel(min, max) { return (parseInt(min) === 0 || parseInt(max) === 0) ? 'Fallo' : `${min}-${max} reps`; }
+    function repsLabel(min, max) { return (parseInt(min) === 0 || parseInt(max) === 0) ? 'Fallo' : `${min}-${max}`; }
 
     function showToast(msg) {
       let t = document.getElementById('app-toast');
@@ -7395,6 +7394,17 @@ function openEditHistorySetModal(type, idx) {
         return r;
       };
     })();
+
+
+    // ===== Pulsación larga: solo se cancela si el dedo se mueve de verdad =====
+    let lpStart = { x: 0, y: 0 };
+    window.addEventListener('pointerdown', e => { lpStart = { x: e.clientX, y: e.clientY }; }, true);
+    function lpMove(ev, fn) {
+      if (Math.abs(ev.clientX - lpStart.x) > 14 || Math.abs(ev.clientY - lpStart.y) > 14) fn();
+    }
+    document.addEventListener('contextmenu', e => {
+      if (e.target && e.target.closest && e.target.closest('[onpointerdown]') && !e.target.closest('input, textarea')) e.preventDefault();
+    });
 
     // ===== Menús ⋯ =====
     function openCatalogExMenu(name) {
@@ -7903,36 +7913,45 @@ function openEditHistorySetModal(type, idx) {
 
   <script>
     // NAVEGACIÓN Y GESTOS ANDROID (POPSTATE)
-    let backTrapArmed = false;
-    let lastBackAtHome = 0;
-
-    function pushAppState() { /* ya no se apila historial por cada pantalla */ }
-
-    function armBackTrap() {
-      if (backTrapArmed) return;
-      backTrapArmed = true;
-      try { history.pushState({ trap: 1 }, ''); } catch(e) {}
+    let histDepth = 0;
+    function pushAppState() { /* el historial se sincroniza con syncHistoryDepth() */ }
+    function viewDepth() {
+      const vis = id => { const e = document.getElementById(id); return !!e && !e.classList.contains('hidden'); };
+      if (vis('view-workout')) return 2;
+      if (vis('view-exercises') || vis('view-summary')) return 1;
+      return 0;
     }
-    ['click', 'touchend', 'keydown'].forEach(ev => window.addEventListener(ev, armBackTrap, { once: true, passive: true }));
-
-    window.addEventListener('popstate', function() {
-      let handled = false;
-      if (activeModalStack.length > 0) {
-        closeModal(activeModalStack[activeModalStack.length - 1]); handled = true;
-      } else {
-        const timerScreen = document.getElementById('timer-screen');
-        const vis = id => { const e = document.getElementById(id); return e && !e.classList.contains('hidden'); };
-        if (timerScreen && !timerScreen.classList.contains('hidden')) { minimizeTimer(); handled = true; }
-        else if (vis('view-workout')) { backToExercisesList(); handled = true; }
-        else if (vis('view-exercises') || vis('view-summary')) { showView('view-routines'); handled = true; }
+    function appDepth() {
+      const ts = document.getElementById('timer-screen');
+      return viewDepth() + activeModalStack.length + ((ts && !ts.classList.contains('hidden')) ? 1 : 0);
+    }
+    function syncHistoryDepth() {
+      try {
+        const cur = appDepth();
+        while (histDepth < cur) { histDepth++; history.pushState({ d: histDepth }, ''); }
+      } catch (e) {}
+    }
+    function closeTopLayer() {
+      const ts = document.getElementById('timer-screen');
+      const vis = id => { const e = document.getElementById(id); return !!e && !e.classList.contains('hidden'); };
+      if (activeModalStack.length > 0) closeModal(activeModalStack[activeModalStack.length - 1]);
+      else if (ts && !ts.classList.contains('hidden')) minimizeTimer();
+      else if (vis('view-workout')) backToExercisesList();
+      else if (vis('view-exercises') || vis('view-summary')) showView('view-routines');
+    }
+    try { history.replaceState({ d: 0 }, ''); } catch (e) {}
+    window.addEventListener('popstate', function(ev) {
+      const target = (ev.state && typeof ev.state.d === 'number') ? ev.state.d : 0;
+      histDepth = target;
+      let guard = 0;
+      if (appDepth() > target) {
+        while (appDepth() > target && guard++ < 4) closeTopLayer();
+      } else if (target > 0) {
+        history.back(); // entrada sobrante (la pantalla se cerró con una X): saltarla
       }
-      if (handled) { try { history.pushState({ trap: 1 }, ''); } catch(e) {} return; }
-      const now = Date.now();
-      if (now - lastBackAtHome < 2000) { backTrapArmed = false; history.back(); return; }
-      lastBackAtHome = now;
-      showToast('Pulsa atrás otra vez para salir');
-      try { history.pushState({ trap: 1 }, ''); } catch(e) {}
     });
+    ['click', 'touchend'].forEach(ev => window.addEventListener(ev, () => setTimeout(syncHistoryDepth, 0), true));
+    setInterval(syncHistoryDepth, 700);
   
 
     // Screen Wake Lock API & Visibility Handler
