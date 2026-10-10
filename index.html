@@ -11,7 +11,7 @@
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%230b132b'/%3E%3Cpath d='M20 35h12v30H20zM68 35h12v30H68z' fill='%232ec4b6'/%3E%3Cpath d='M32 42h36v16H32z' fill='%23ff6b35'/%3E%3Cpath d='M14 42h6v16h-6zM80 42h6v16h-6z' fill='%23ffd166'/%3E%3C/svg%3E">
   <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%230b132b'/%3E%3Cpath d='M20 35h12v30H20zM68 35h12v30H68z' fill='%232ec4b6'/%3E%3Cpath d='M32 42h36v16H32z' fill='%23ff6b35'/%3E%3Cpath d='M14 42h6v16h-6zM80 42h6v16h-6z' fill='%23ffd166'/%3E%3C/svg%3E">
   
-  <title>Mi Gym App V4.48</title>
+  <title>Mi Gym App V4.50</title>
   <style>
     :root {
       --bg-color: #0b132b;    /* Azul oscuro profundo */
@@ -337,7 +337,7 @@
     #timer-display { font-size: 5rem; font-weight: bold; color: var(--green); margin: 5px 0; }
     #timer-display.warning { color: var(--accent); }
     #timer-display.overtime { color: var(--yellow); }
-    #mini-timer { width: 150px; box-sizing: border-box; text-align: center; white-space: nowrap; font-variant-numeric: tabular-nums; position: fixed; bottom: 20px; right: 20px; background: var(--green); color: #000; padding: 12px 0; border-radius: 30px; font-weight: bold; font-size: 1.2rem; box-shadow: 0 4px 15px rgba(0,0,0,0.6); z-index: 999; display: flex; align-items: center; gap: 10px; }
+    #mini-timer { box-sizing: border-box; text-align: center; white-space: nowrap; font-variant-numeric: tabular-nums; position: fixed; bottom: 31px; left: calc(50% + 44px); right: 20px; background: var(--green); color: #000; padding: 10px 0; border-radius: 30px; font-weight: bold; font-size: 1.2rem; box-shadow: 0 4px 15px rgba(0,0,0,0.6); z-index: 999; display: flex; align-items: center; justify-content: center; gap: 10px; }
     #mini-timer.warning { background: var(--accent); color: white; }
     #mini-timer.overtime { background: var(--yellow); color: #000; }
 
@@ -557,7 +557,7 @@
   <div id="view-routines">
     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
       <h1 style="margin-bottom:0; color:var(--text); font-size:1.6rem; letter-spacing:0.5px;">MiGymApp</h1>
-      <button onclick="openAppSettingsModal()" style="background:none; border:none; color:var(--text-dim); padding:6px; cursor:pointer; display:flex; align-items:center; transition:color 0.2s;" title="Ajustes">
+      <button onclick="openAppSettingsModal()" style="background:none; border:none; color:var(--text-dim); padding:6px; cursor:pointer; display:flex; align-items:center; transition:color 0.2s;" aria-label="Ajustes">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
       </button>
     </div>
@@ -628,7 +628,7 @@
             <span id="lbl-weight-title" style="font-size: 1.05rem; font-weight: bold;">
               Peso (kg)
             </span>
-            <span class="icon-gear" onclick="event.stopPropagation(); promptSelectStep();" title="Cambiar salto de peso" style="cursor:pointer; display:inline-flex; align-items:center;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#5c6b89" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg></span>
+            <span class="icon-gear" onclick="event.stopPropagation(); promptSelectStep();" aria-label="Cambiar salto de peso" style="cursor:pointer; display:inline-flex; align-items:center;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#5c6b89" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg></span>
           </div>
           <div style="display: flex; align-items: center;">
             <button class="num-btn" onclick="adjustVal('weight', -1)">-</button>
@@ -701,7 +701,7 @@
         </div>
 
         <div style="display:flex; justify-content:center;">
-          <button class="btn-tick" style="background:var(--green); color:#000; font-size:1.8rem; line-height:1;" onclick="startIsometricWorkPhase()" title="Iniciar Serie">▶</button>
+          <button class="btn-tick" style="background:var(--green); color:#000; font-size:1.8rem; line-height:1;" onclick="startIsometricWorkPhase()" aria-label="Iniciar Serie">▶</button>
         </div>
       </div>
     </div>
@@ -722,6 +722,7 @@
   <!-- MODAL EDITAR SERIE REGISTRADA (HOY) -->
   <div id="modal-edit-set" class="modal-overlay hidden">
     <div class="modal-box">
+      <button class="modal-close" aria-label="Cerrar" onclick="closeModal('modal-edit-set')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
       <h2 id="edit-set-modal-title" style="margin-bottom:12px;">Editar serie</h2>
       
       <div id="edit-set-top-grid" style="display:grid; grid-template-columns:repeat(2, minmax(0, 1fr)); gap:10px; margin-bottom:10px;">
@@ -783,10 +784,9 @@
       <label style="font-size:0.85rem; font-weight:bold; color:var(--text-dim);">Nota de la serie</label>
       <input type="text" id="edit-set-note" placeholder="Nota opcional" style="margin-top:4px;">
       
-      <div style="display:flex; gap:8px; margin-top:16px; align-items:stretch;">
-        <button class="btn btn-danger btn-small" style="flex:1; margin-top:0;" onclick="deleteEditingSet()">Borrar</button>
-        <button class="btn btn-secondary btn-small" style="flex:1; margin-top:0;" onclick="closeModal('modal-edit-set')">Cancelar</button>
-        <button class="btn btn-small btn-ok" style="flex:1; margin-top:0;" onclick="saveEditingSet()">Guardar</button>
+      <div style="display:flex; gap:12px; margin-top:16px; align-items:stretch;">
+        <button class="btn btn-danger" aria-label="Borrar serie" style="flex:1; margin-top:0; height:48px; display:flex; align-items:center; justify-content:center;" onclick="deleteEditingSet()"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path><path d="M10 11v6"></path><path d="M14 11v6"></path><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"></path></svg></button>
+        <button class="btn btn-ok" aria-label="Guardar" style="flex:1; margin-top:0; height:48px; display:flex; align-items:center; justify-content:center;" onclick="saveEditingSet()"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></button>
       </div>
     </div>
   </div>
@@ -890,7 +890,7 @@
       <div id="mw-tab-peso" style="flex:1; display:flex; flex-direction:column; min-height:0;">
         <div style="display: flex; gap: 12px; align-items: center; margin-top: 5px; margin-bottom:15px;">
           <input type="number" id="bw-input" step="0.1" placeholder="Peso hoy (kg)" style="margin-top: 0; flex:1;">
-          <button onclick="saveBodyWeight()" style="width:48px; height:48px; border-radius:50%; background:var(--accent); color:#ffffff; border:none; font-size:1.5rem; font-weight:bold; cursor:pointer; display:flex; align-items:center; justify-content:center; flex-shrink:0;" title="Guardar Peso">✓</button>
+          <button onclick="saveBodyWeight()" style="width:48px; height:48px; border-radius:50%; background:var(--accent); color:#ffffff; border:none; font-size:1.5rem; font-weight:bold; cursor:pointer; display:flex; align-items:center; justify-content:center; flex-shrink:0;" aria-label="Guardar Peso">✓</button>
         </div>
 
         <canvas id="bw-chart-canvas" style="width:100%; height:150px; background:var(--surface-1); border-radius:12px; border:1px solid var(--card-border); margin-bottom:10px; display:block;"></canvas>
@@ -1233,7 +1233,7 @@
           <input type="checkbox" id="chk-amoled-mode" onchange="toggleAmoledModeSetting(this.checked)" style="width:20px; height:20px; accent-color:var(--green); cursor:pointer;">
         </label>
       </div>
-      <p style="text-align:center; font-size:0.75rem; color:var(--text-dim); margin-top:4px;">MiGymApp V4.48</p>
+      <p style="text-align:center; font-size:0.75rem; color:var(--text-dim); margin-top:4px;">MiGymApp V4.50</p>
     </div>
   </div>
 
@@ -1280,7 +1280,7 @@
     </div>
   </div>
 
-<button id="btn-finish-floating" class="hidden" onclick="finishWorkout()" title="Finalizar Entrenamiento">
+<button id="btn-finish-floating" class="hidden" onclick="finishWorkout()" aria-label="Finalizar Entrenamiento">
     <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#000000" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
       <path d="M18.36 6.64a9 9 0 1 1-12.73 0"></path>
       <line x1="12" y1="2" x2="12" y2="12"></line>
@@ -1302,7 +1302,7 @@
 
     <!-- BOTÓN CIRCULAR RESET -->
     <div style="display:flex; justify-content:center; margin-top:-8px; margin-bottom:15px;">
-      <button class="btn-time-adj" onclick="promptResetRestTimer()" style="width:48px; height:48px; border-radius:50%; padding:0; display:flex; align-items:center; justify-content:center; font-size:1.5rem; border-color:var(--yellow); color:var(--yellow); background:var(--surface-1);" title="Resetear temporizador">↺</button>
+      <button class="btn-time-adj" onclick="promptResetRestTimer()" style="width:48px; height:48px; border-radius:50%; padding:0; display:flex; align-items:center; justify-content:center; font-size:1.5rem; border-color:var(--yellow); color:var(--yellow); background:var(--surface-1);" aria-label="Resetear temporizador">↺</button>
     </div>
 
     <div id="record-banner" class="hidden"></div>
@@ -3611,7 +3611,7 @@
             <button class="dots-btn" aria-label="Opciones" onclick="event.stopPropagation(); handleRoutinePointerCancel(); openRoutineMenu(${r.id})">⋯</button>
             <div style="width:32px; height:32px; border-radius:8px; border:2px solid ${isActive ? 'var(--green)' : 'var(--card-border)'}; background:${isActive ? 'var(--green)' : 'transparent'}; color:#000; display:flex; align-items:center; justify-content:center; font-weight:bold; font-size:1.15rem; cursor:pointer;"
                  onclick="event.stopPropagation(); handleRoutinePointerCancel(); setActiveRoutine(${r.id});"
-                 title="${isActive ? 'Rutina Activa' : 'Activar Rutina'}">
+                 aria-label="${isActive ? 'Rutina Activa' : 'Activar Rutina'}">
               ${isActive ? '✓' : ''}
             </div>
           </div>
@@ -3908,12 +3908,12 @@
                    onpointercancel="handleRoutineExPointerCancel(event)"
                    onpointermove="handleRoutineExPointerCancel(event)">
                 <div style="display:flex; align-items:center; gap:6px; flex:1;">
-                  <span class="routine-ex-drag-handle" title="Arrastra para reordenar" style="color:var(--text-dim); font-size:1.3rem; cursor:grab; touch-action:none; padding:2px 4px;" onclick="event.stopPropagation(); handleRoutineExPointerCancel();">⋮</span>
-                  <span onclick="if(!routineExLongPressTriggered) editExerciseInRoutineDay(${day.id}, ${exIdx})" style="cursor:pointer; flex:1; padding-right:8px;" title="Toca para editar series, repes y descansos">
+                  <span class="routine-ex-drag-handle" style="color:var(--text-dim); font-size:1.3rem; cursor:grab; touch-action:none; padding:2px 4px;" onclick="event.stopPropagation(); handleRoutineExPointerCancel();">⋮</span>
+                  <span onclick="if(!routineExLongPressTriggered) editExerciseInRoutineDay(${day.id}, ${exIdx})" style="cursor:pointer; flex:1; padding-right:8px;">
                     <strong>${ex.name}</strong> <small style="color:var(--green); font-weight:bold;">(${isIsometricEx(ex) ? `${ex.sets} series × ${ex.workTime || ex.min}s` : `${ex.sets}×${repsRangeText(ex.min, ex.max)}`} | ${svgTimerDim}${ex.rest}s)</small>
                     ${ex.supersetWith ? `<br><small style="color:var(--accent); font-weight:bold;">🔗 Superserie con: ${ex.supersetWith}</small>` : ''}
                   </span>
-                  ${exIdx < exList.length - 1 ? `<span onclick="event.stopPropagation(); handleRoutineExPointerCancel(); toggleSupersetWithNext('routine', ${exIdx}, ${day.id});" title="Vincular con el siguiente ejercicio (superserie)" style="cursor:pointer; padding:2px 6px; flex-shrink:0; display:inline-flex; align-items:center;">${svgLinkIcon(!!ex.supersetWith)}</span>` : ''}
+                  ${exIdx < exList.length - 1 ? `<span onclick="event.stopPropagation(); handleRoutineExPointerCancel(); toggleSupersetWithNext('routine', ${exIdx}, ${day.id});" aria-label="Vincular con el siguiente ejercicio (superserie)" style="cursor:pointer; padding:2px 6px; flex-shrink:0; display:inline-flex; align-items:center;">${svgLinkIcon(!!ex.supersetWith)}</span>` : ''}
                 </div>
               </div>
             `;
@@ -3929,8 +3929,8 @@
                onpointermove="lpMove(event, handleEditingDayPointerCancel)">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
               <div style="display:flex; align-items:center; gap:8px;">
-                <span class="day-drag-handle" title="Arrastra para reordenar días" style="color:var(--text-dim); font-size:1.4rem; cursor:grab; touch-action:none; padding:2px 4px;" onclick="event.stopPropagation(); handleEditingDayPointerCancel();">⋮</span>
-                <strong style="color:var(--accent); font-size:1.05rem; cursor:pointer;" onclick="if(!editingDayLongPressTriggered) renameDayInEditingRoutine(${day.id})" title="Toca para cambiar nombre">
+                <span class="day-drag-handle" style="color:var(--text-dim); font-size:1.4rem; cursor:grab; touch-action:none; padding:2px 4px;" onclick="event.stopPropagation(); handleEditingDayPointerCancel();">⋮</span>
+                <strong style="color:var(--accent); font-size:1.05rem; cursor:pointer;" onclick="if(!editingDayLongPressTriggered) renameDayInEditingRoutine(${day.id})">
                   ${day.name}
                 </strong>
               </div>
@@ -4880,7 +4880,7 @@
 
       el.innerHTML = `
         <div style="display:flex; gap:6px; margin-bottom:10px;">
-          ${tabs.map(t => `<button type="button" class="chart-tab-btn ${setEditor.tab === t[0] ? 'active' : ''}" style="font-size:1.1rem; padding:8px 4px;" onclick="setEditorTab('${prefix}', '${t[0]}')" title="${t[2]}">${t[1]}</button>`).join('')}
+          ${tabs.map(t => `<button type="button" class="chart-tab-btn ${setEditor.tab === t[0] ? 'active' : ''}" style="font-size:1.1rem; padding:8px 4px;" onclick="setEditorTab('${prefix}', '${t[0]}')" aria-label="${t[2]}">${t[1]}</button>`).join('')}
         </div>
         <div style="display:flex; align-items:center; justify-content:space-between; background:var(--surface-1); border:1px solid var(--card-border); padding:8px 12px; border-radius:10px; margin-bottom:10px;">
           <span style="font-size:0.9rem; font-weight:bold; color:var(--text);">Series</span>
@@ -5095,10 +5095,10 @@
 
           const hasNextEx = idx < session.exercises.length - 1;
           const linkIconHtml = hasNextEx 
-            ? `<span onclick="event.stopPropagation(); handleSessionExPointerCancel(); toggleSupersetWithNext('session', ${idx}, null);" title="${ex.supersetWith ? 'Vinculado con: ' + ex.supersetWith : 'Vincular con el siguiente ejercicio (superserie)'}" style="padding:6px 4px; cursor:pointer; display:inline-flex; align-items:center;">${svgLinkIcon(!!ex.supersetWith)}</span>`
+            ? `<span onclick="event.stopPropagation(); handleSessionExPointerCancel(); toggleSupersetWithNext('session', ${idx}, null);" aria-label="${ex.supersetWith ? 'Vinculado con: ' + ex.supersetWith : 'Vincular con el siguiente ejercicio (superserie)'}" style="padding:6px 4px; cursor:pointer; display:inline-flex; align-items:center;">${svgLinkIcon(!!ex.supersetWith)}</span>`
             : '';
 
-          html += isFullyCompleted ? `<div class="card flex-between ex-drag-card" data-index="${idx}" onpointerdown="handleSessionExPointerDown(${idx})" onpointerup="handleSessionExPointerCancel()" onpointercancel="handleSessionExPointerCancel()" onpointermove="lpMove(event, handleSessionExPointerCancel)" onclick="if(!sessionExLongPressTriggered) startWorkout(${idx})" style="border:1px solid var(--green); border-left:6px solid var(--green); background:var(--surface-1); user-select:none; -webkit-user-select:none; cursor:pointer; padding:8px 14px; margin-bottom:6px;"><div style="display:flex; align-items:center; gap:8px; flex:1; min-width:0;"><span class="drag-handle" title="Toca y arrastra para reordenar" onclick="event.stopPropagation(); handleSessionExPointerCancel();">⋮</span><strong style="font-size:1rem; color:var(--green); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${ex.name}</strong></div><span style="color:var(--green); font-weight:bold; font-size:1.1rem;">✓</span>${linkIconHtml}<span class="icon-gear" onclick="event.stopPropagation(); handleSessionExPointerCancel(); openSessionExGearModal(${idx});" title="Ajustar ejercicio" style="padding:6px 2px 6px 10px; cursor:pointer; display:inline-flex; align-items:center;">${svgGearDark}</span></div>` : `
+          html += isFullyCompleted ? `<div class="card flex-between ex-drag-card" data-index="${idx}" onpointerdown="handleSessionExPointerDown(${idx})" onpointerup="handleSessionExPointerCancel()" onpointercancel="handleSessionExPointerCancel()" onpointermove="lpMove(event, handleSessionExPointerCancel)" onclick="if(!sessionExLongPressTriggered) startWorkout(${idx})" style="border:1px solid var(--green); border-left:6px solid var(--green); background:var(--surface-1); user-select:none; -webkit-user-select:none; cursor:pointer; padding:8px 14px; margin-bottom:6px;"><div style="display:flex; align-items:center; gap:8px; flex:1; min-width:0;"><span class="drag-handle" onclick="event.stopPropagation(); handleSessionExPointerCancel();">⋮</span><strong style="font-size:1rem; color:var(--green); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${ex.name}</strong></div><span style="color:var(--green); font-weight:bold; font-size:1.1rem;">✓</span>${linkIconHtml}<span class="icon-gear" onclick="event.stopPropagation(); handleSessionExPointerCancel(); openSessionExGearModal(${idx});" aria-label="Ajustar ejercicio" style="padding:6px 2px 6px 10px; cursor:pointer; display:inline-flex; align-items:center;">${svgGearDark}</span></div>` : `
             <div class="card flex-between ex-drag-card" 
                  data-index="${idx}" 
                  onpointerdown="handleSessionExPointerDown(${idx})"
@@ -5108,7 +5108,7 @@
                  onclick="if(!sessionExLongPressTriggered) startWorkout(${idx})"
                  style="${cardStyle} user-select:none; -webkit-user-select:none; cursor:pointer; padding:14px 16px;">
               <div style="display:flex; align-items:center; gap:8px; flex:1;">
-                <span class="drag-handle" title="Toca y arrastra para reordenar" onclick="event.stopPropagation(); handleSessionExPointerCancel();">⋮</span>
+                <span class="drag-handle" onclick="event.stopPropagation(); handleSessionExPointerCancel();">⋮</span>
                 <div style="flex:1;">
                   <div style="margin-bottom:4px;">
                     <strong style="font-size:1.1rem; color:${titleColor};">${ex.name}</strong>
@@ -5120,7 +5120,7 @@
                 </div>
               </div>
               ${linkIconHtml}
-              <span class="icon-gear" onclick="event.stopPropagation(); handleSessionExPointerCancel(); openSessionExGearModal(${idx});" title="Ajustar ejercicio" style="padding:6px 2px 6px 10px; cursor:pointer; display:inline-flex; align-items:center;">${svgGearDark}</span>
+              <span class="icon-gear" onclick="event.stopPropagation(); handleSessionExPointerCancel(); openSessionExGearModal(${idx});" aria-label="Ajustar ejercicio" style="padding:6px 2px 6px 10px; cursor:pointer; display:inline-flex; align-items:center;">${svgGearDark}</span>
             </div>
           `;
         }
@@ -5246,8 +5246,8 @@
         : '';
 
       const hasExNote = !!(db.exerciseNotes && db.exerciseNotes[exName] && db.exerciseNotes[exName].trim() !== '');
-      const noteBadgeHtml = `<span onclick="openExerciseNoteModal()" title="Nota del ejercicio" style="background:var(--surface-1); border:1px solid ${hasExNote ? 'var(--green)' : 'var(--card-border)'}; padding:4px 9px; border-radius:12px; cursor:pointer; display:inline-flex; align-items:center;">${svgNoteIcon(hasExNote)}</span>`;
-      const viewToggleChip = `<span id="view-toggle-chip" onclick="toggleHistoryViewMode()" title="Cambiar vista" style="background:var(--surface-1); border:1px solid var(--card-border); padding:4px 9px; border-radius:12px; cursor:pointer; display:inline-flex; align-items:center;">${viewModeIconHtml()}</span>`;
+      const noteBadgeHtml = `<span onclick="openExerciseNoteModal()" aria-label="Nota del ejercicio" style="background:var(--surface-1); border:1px solid ${hasExNote ? 'var(--green)' : 'var(--card-border)'}; padding:4px 9px; border-radius:12px; cursor:pointer; display:inline-flex; align-items:center;">${svgNoteIcon(hasExNote)}</span>`;
+      const viewToggleChip = `<span id="view-toggle-chip" onclick="toggleHistoryViewMode()" aria-label="Cambiar vista" style="background:var(--surface-1); border:1px solid var(--card-border); padding:4px 9px; border-radius:12px; cursor:pointer; display:inline-flex; align-items:center;">${viewModeIconHtml()}</span>`;
 
       if (isIsometricEx(state.activeExObj)) {
         const workSec = state.isoWorkTime || state.activeExObj.workTime || state.activeExObj.min || 15;
@@ -5927,14 +5927,20 @@ function openEditHistorySetModal(type, idx) {
 
         if (editingSetTarget.type === 'session') {
           const currentLogs = session.logs[exName] || [];
+          const target = currentLogs[editingSetTarget.index];
           currentLogs.splice(editingSetTarget.index, 1);
-          currentLogs.forEach((l, idx) => l.set = idx + 1);
-
-          if (db.history[exName]) {
-            db.history[exName] = db.history[exName].filter(h => !(h.sessionId === session.startTime && h.set === (editingSetTarget.index + 1)));
-            const todayDbLogs = db.history[exName].filter(h => h.sessionId === session.startTime);
-            todayDbLogs.forEach((l, idx) => l.set = idx + 1);
+          if (target && db.history[exName]) {
+            let removed = false;
+            db.history[exName] = db.history[exName].filter(h => {
+              if (!removed && (h === target || (h.sessionId === target.sessionId && h.set === target.set && h.date === target.date))) { removed = true; return false; }
+              return true;
+            });
           }
+          currentLogs.forEach((l, idx) => l.set = idx + 1);
+          if (db.history[exName]) {
+            db.history[exName].filter(h => h.sessionId === session.startTime).forEach((l, idx) => l.set = idx + 1);
+          }
+          if (state.currentSavedSet === target) state.currentSavedSet = null;
           state.currentSet = currentLogs.length + 1;
           loadLastSessionValuesForSet(state.currentSet);
 
@@ -5942,10 +5948,11 @@ function openEditHistorySetModal(type, idx) {
           const hist = db.history[exName] || [];
           const targetLog = hist[editingSetTarget.dbIndex];
           if (targetLog) {
+            const sessKey = targetLog.sessionId || targetLog.date;
             const targetSessionId = targetLog.sessionId;
             hist.splice(editingSetTarget.dbIndex, 1);
 
-            const sessDbLogs = hist.filter(h => (h.sessionId || h.date) === targetSessionId);
+            const sessDbLogs = hist.filter(h => (h.sessionId || h.date) === sessKey);
             sessDbLogs.forEach((l, idx) => l.set = idx + 1);
 
             if (session && session.logs && session.logs[exName] && targetSessionId === session.startTime) {
@@ -6020,8 +6027,7 @@ function openEditHistorySetModal(type, idx) {
                          onpointerup="handlePointerCancel()"
                          onpointercancel="handlePointerCancel()"
                          onpointermove="lpMove(event, handlePointerCancel)"
-                         onclick="if(!longPressTriggered) showDateInfo('${todayDateStr}')"
-                         title="Mantén pulsado para borrar todas las series de hoy">Hoy${currentLogs.length > 0 ? ' <small style="font-size:0.65rem; color:var(--green);">(activa)</small>' : ''}</span><div style="margin-top:4px; text-align:center;">${dayNoteBtn(dayNoteKeyToday()).replace('margin-right:8px;', '')}</div>
+                         onclick="if(!longPressTriggered) showDateInfo('${todayDateStr}')">Hoy${currentLogs.length > 0 ? ' <small style="font-size:0.65rem; color:var(--green);">(activa)</small>' : ''}</span><div style="margin-top:4px; text-align:center;">${dayNoteBtn(dayNoteKeyToday()).replace('margin-right:8px;', '')}</div>
                 </td>
               `;
             }
@@ -6145,8 +6151,7 @@ function openEditHistorySetModal(type, idx) {
                          onpointerup="handlePointerCancel()"
                          onpointercancel="handlePointerCancel()"
                          onpointermove="lpMove(event, handlePointerCancel)"
-                         onclick="if(!longPressTriggered) showDateInfo('${todayDateStr}')"
-                         title="Mantén pulsado para borrar todas las series de hoy">Hoy${currentLogs.length > 0 ? ' <small style="font-size:0.65rem; color:var(--green);">(activa)</small>' : ''}</span><div style="margin-top:4px; text-align:center;">${dayNoteBtn(dayNoteKeyToday()).replace('margin-right:8px;', '')}</div>
+                         onclick="if(!longPressTriggered) showDateInfo('${todayDateStr}')">Hoy${currentLogs.length > 0 ? ' <small style="font-size:0.65rem; color:var(--green);">(activa)</small>' : ''}</span><div style="margin-top:4px; text-align:center;">${dayNoteBtn(dayNoteKeyToday()).replace('margin-right:8px;', '')}</div>
                   ${rmBadge}
                   ${ieBadge}
                 </td>
@@ -6178,17 +6183,17 @@ function openEditHistorySetModal(type, idx) {
 
               let trendBadge = '';
               if (isAllTimePR) {
-                trendBadge = '<span title="¡Récord Personal Absoluto!" style="margin-left:2px; vertical-align:middle; display:inline-block;">' + svgTrophyYellow + '</span>';
+                trendBadge = '<span aria-label="¡Récord Personal Absoluto!" style="margin-left:2px; vertical-align:middle; display:inline-block;">' + svgTrophyYellow + '</span>';
               } else {
                 const pastSetStd = getPastSetData(pastHist, i);
                 if (pastSetStd) {
                   const pastSetRM = get1RMd(pastSetStd.weight + (pastSetStd.barWeight || 0), pastSetStd.reps);
                   if (setRM > pastSetRM) {
-                    trendBadge = ' <span style="color:var(--green); font-weight:bold;" title="Superado respecto al último entrenamiento">↑</span>';
+                    trendBadge = ' <span style="color:var(--green); font-weight:bold;" aria-label="Superado respecto al último entrenamiento">↑</span>';
                   } else if (setRM < pastSetRM) {
-                    trendBadge = ' <span style="color:var(--red); font-weight:bold;" title="Por debajo del último entrenamiento">↓</span>';
+                    trendBadge = ' <span style="color:var(--red); font-weight:bold;" aria-label="Por debajo del último entrenamiento">↓</span>';
                   } else {
-                    trendBadge = ' <span style="color:#ffffff; font-weight:bold;" title="Igual al último entrenamiento">-</span>';
+                    trendBadge = ' <span style="color:#ffffff; font-weight:bold;" aria-label="Igual al último entrenamiento">-</span>';
                   }
                 }
               }
@@ -6322,8 +6327,7 @@ function openEditHistorySetModal(type, idx) {
                              onpointerdown="handlePointerDown('today_header', 0)" 
                              onpointerup="handlePointerCancel()" 
                              onpointercancel="handlePointerCancel()" 
-                             onpointermove="lpMove(event, handlePointerCancel)" 
-                             title="Mantén pulsado para borrar todas las series de hoy">HOY${currentLogs.length > 0 ? ' (Sesión Activa)' : ''}</strong>
+                             onpointermove="lpMove(event, handlePointerCancel)">HOY${currentLogs.length > 0 ? ' (Sesión Activa)' : ''}</strong>
               <span style="color:var(--text-dim); font-size:0.8rem;">${dayNoteBtn(dayNoteKeyToday())}${currentLogs.length} / ${targetSets} series</span>
             </div>
             <div style="padding: 0 14px;">
@@ -6377,17 +6381,17 @@ function openEditHistorySetModal(type, idx) {
 
               let trendBadge = '';
               if (isAllTimePR) {
-                trendBadge = ' <span title="¡Récord Personal Absoluto!" style="margin-left:2px; vertical-align:middle; display:inline-block;">' + svgTrophyYellow + '</span>';
+                trendBadge = ' <span aria-label="¡Récord Personal Absoluto!" style="margin-left:2px; vertical-align:middle; display:inline-block;">' + svgTrophyYellow + '</span>';
               } else {
                 const pastSetStd = getPastSetData(pastHist, i);
                 if (pastSetStd) {
                   const pastSetRM = get1RMd(pastSetStd.weight + (pastSetStd.barWeight || 0), pastSetStd.reps);
                   if (setRM > pastSetRM) {
-                    trendBadge = ' <span style="color:var(--green); font-weight:bold;" title="Superado respecto al último entrenamiento">↑</span>';
+                    trendBadge = ' <span style="color:var(--green); font-weight:bold;" aria-label="Superado respecto al último entrenamiento">↑</span>';
                   } else if (setRM < pastSetRM) {
-                    trendBadge = ' <span style="color:var(--red); font-weight:bold;" title="Por debajo del último entrenamiento">↓</span>';
+                    trendBadge = ' <span style="color:var(--red); font-weight:bold;" aria-label="Por debajo del último entrenamiento">↓</span>';
                   } else {
-                    trendBadge = ' <span style="color:#ffffff; font-weight:bold;" title="Igual al último entrenamiento">-</span>';
+                    trendBadge = ' <span style="color:#ffffff; font-weight:bold;" aria-label="Igual al último entrenamiento">-</span>';
                   }
                 }
               }
@@ -7065,7 +7069,7 @@ function openEditHistorySetModal(type, idx) {
     }
 
 
-    // ===== V4.48: utilidades =====
+    // ===== V4.50: utilidades =====
     const XSVG = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>';
     let editingParamsCtx = 'routine';
 
@@ -7342,7 +7346,7 @@ function openEditHistorySetModal(type, idx) {
     function getDayNoteObj(ex, key) { return (db.exerciseDayNotes && db.exerciseDayNotes[ex] && db.exerciseDayNotes[ex][key]) || null; }
     function dayNoteBtn(key) {
       const has = !!(state.activeExObj && getDayNoteObj(state.activeExObj.name, key));
-      return `<span onclick="event.stopPropagation(); openDayNote('${key}')" title="Nota del día" style="cursor:pointer; display:inline-flex; align-items:center; margin-right:8px; color:${has ? 'var(--green)' : 'var(--text-dim)'};"><svg width="16" height="16" viewBox="0 0 24 24" fill="${has ? 'rgba(46,196,182,0.25)' : 'none'}" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path><polyline points="14 3 14 9 20 9"></polyline><line x1="8" y1="13" x2="16" y2="13"></line><line x1="8" y1="17" x2="14" y2="17"></line></svg></span>`;
+      return `<span onclick="event.stopPropagation(); openDayNote('${key}')" aria-label="Nota del día" style="cursor:pointer; display:inline-flex; align-items:center; margin-right:8px; color:${has ? 'var(--green)' : 'var(--text-dim)'};"><svg width="16" height="16" viewBox="0 0 24 24" fill="${has ? 'rgba(46,196,182,0.25)' : 'none'}" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path><polyline points="14 3 14 9 20 9"></polyline><line x1="8" y1="13" x2="16" y2="13"></line><line x1="8" y1="17" x2="14" y2="17"></line></svg></span>`;
     }
     function openDayNote(key, title) {
       if (!state.activeExObj) return;
