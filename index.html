@@ -11,7 +11,7 @@
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%230b132b'/%3E%3Cpath d='M20 35h12v30H20zM68 35h12v30H68z' fill='%232ec4b6'/%3E%3Cpath d='M32 42h36v16H32z' fill='%23ff6b35'/%3E%3Cpath d='M14 42h6v16h-6zM80 42h6v16h-6z' fill='%23ffd166'/%3E%3C/svg%3E">
   <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%230b132b'/%3E%3Cpath d='M20 35h12v30H20zM68 35h12v30H68z' fill='%232ec4b6'/%3E%3Cpath d='M32 42h36v16H32z' fill='%23ff6b35'/%3E%3Cpath d='M14 42h6v16h-6zM80 42h6v16h-6z' fill='%23ffd166'/%3E%3C/svg%3E">
   
-  <title>Mi Gym App V4.50</title>
+  <title>Mi Gym App V4.51</title>
   <style>
     :root {
       --bg-color: #0b132b;    /* Azul oscuro profundo */
@@ -1233,7 +1233,7 @@
           <input type="checkbox" id="chk-amoled-mode" onchange="toggleAmoledModeSetting(this.checked)" style="width:20px; height:20px; accent-color:var(--green); cursor:pointer;">
         </label>
       </div>
-      <p style="text-align:center; font-size:0.75rem; color:var(--text-dim); margin-top:4px;">MiGymApp V4.50</p>
+      <p style="text-align:center; font-size:0.75rem; color:var(--text-dim); margin-top:4px;">MiGymApp V4.51</p>
     </div>
   </div>
 
@@ -1404,6 +1404,14 @@
     <div class="modal-box" style="text-align:center; padding:22px 18px;">
       <h3 id="custom-prompt-title" style="margin-bottom:15px; font-size:1.15rem; color:#fff;"></h3>
       <input type="text" id="custom-prompt-input" style="font-size:1.2rem; text-align:center; font-weight:bold; margin-bottom:20px; padding:12px; border-radius:10px; background:var(--surface-2); color:#fff; border:1px solid var(--card-border);">
+      <div id="custom-prompt-pct" class="hidden" style="margin:-6px 0 18px;">
+        <div style="font-size:0.8rem; color:var(--text-dim); margin-bottom:6px;">Porcentaje</div>
+        <div style="display:flex; align-items:center; justify-content:center; gap:10px;">
+          <button class="btn btn-secondary" style="width:48px; height:44px; padding:0; margin:0; font-size:1.4rem;" onclick="adjustPromptPct(-5)">−</button>
+          <span id="custom-prompt-pct-val" style="min-width:76px; font-size:1.2rem; font-weight:bold;">0%</span>
+          <button class="btn btn-secondary" style="width:48px; height:44px; padding:0; margin:0; font-size:1.4rem;" onclick="adjustPromptPct(5)">+</button>
+        </div>
+      </div>
       <div style="display:flex; gap:12px; justify-content:center;">
         <button class="btn btn-secondary" style="flex:1; margin-top:0;" onclick="closeModal('modal-custom-prompt')">Cancelar</button>
         <button class="btn btn-ok" id="custom-prompt-confirm-btn" style="flex:1;">Aceptar</button>
@@ -2532,6 +2540,8 @@
       const inputEl = document.getElementById('custom-prompt-input');
       inputEl.type = inputType;
       inputEl.value = defaultVal !== undefined && defaultVal !== null ? defaultVal : '';
+      inputEl.oninput = null; promptPct = null;
+      const _pr = document.getElementById('custom-prompt-pct'); if (_pr) _pr.classList.add('hidden');
       
       const confirmBtn = document.getElementById('custom-prompt-confirm-btn');
       confirmBtn.onclick = function() {
@@ -5439,6 +5449,7 @@ function startWorkout(exIndex, isInternalSupersetNav) {
             updateWorkoutUI();
           }
         }, 'number');
+        showPromptPct();
       }
       if (type === 'bar') {
         customPrompt("Escribe el peso de la barra (kg):", state.barWeight, function(res) {
@@ -7069,7 +7080,7 @@ function openEditHistorySetModal(type, idx) {
     }
 
 
-    // ===== V4.50: utilidades =====
+    // ===== V4.51: utilidades =====
     const XSVG = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>';
     let editingParamsCtx = 'routine';
 
@@ -7409,6 +7420,29 @@ function openEditHistorySetModal(type, idx) {
     document.addEventListener('contextmenu', e => {
       if (e.target && e.target.closest && e.target.closest('[onpointerdown]') && !e.target.closest('input, textarea')) e.preventDefault();
     });
+
+
+    // ===== Porcentaje dentro del pop-up de escribir el peso =====
+    let promptPct = null;
+    function showPromptPct() {
+      const inp = document.getElementById('custom-prompt-input');
+      promptPct = { base: parseFloat(inp.value) || 0, pct: 0 };
+      document.getElementById('custom-prompt-pct-val').innerText = '0%';
+      document.getElementById('custom-prompt-pct').classList.remove('hidden');
+      inp.oninput = function() {
+        if (!promptPct) return;
+        promptPct.base = parseFloat(inp.value) || 0; promptPct.pct = 0;
+        document.getElementById('custom-prompt-pct-val').innerText = '0%';
+      };
+    }
+    function adjustPromptPct(d) {
+      if (!promptPct) return;
+      promptPct.pct = Math.max(-90, Math.min(100, promptPct.pct + d));
+      const step = state.weightStep || 2.5;
+      const w = promptPct.pct === 0 ? promptPct.base : Math.max(0, Math.round(promptPct.base * (1 + promptPct.pct / 100) / step) * step);
+      document.getElementById('custom-prompt-input').value = Math.round(w * 100) / 100;
+      document.getElementById('custom-prompt-pct-val').innerText = (promptPct.pct > 0 ? '+' : '') + promptPct.pct + '%';
+    }
 
     // ===== Menús ⋯ =====
     function openCatalogExMenu(name) {
