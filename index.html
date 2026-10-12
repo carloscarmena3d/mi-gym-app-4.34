@@ -11,7 +11,7 @@
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%230b132b'/%3E%3Cpath d='M20 35h12v30H20zM68 35h12v30H68z' fill='%232ec4b6'/%3E%3Cpath d='M32 42h36v16H32z' fill='%23ff6b35'/%3E%3Cpath d='M14 42h6v16h-6zM80 42h6v16h-6z' fill='%23ffd166'/%3E%3C/svg%3E">
   <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%230b132b'/%3E%3Cpath d='M20 35h12v30H20zM68 35h12v30H68z' fill='%232ec4b6'/%3E%3Cpath d='M32 42h36v16H32z' fill='%23ff6b35'/%3E%3Cpath d='M14 42h6v16h-6zM80 42h6v16h-6z' fill='%23ffd166'/%3E%3C/svg%3E">
   
-  <title>Mi Gym App V4.51</title>
+  <title>Mi Gym App V4.52</title>
   <style>
     :root {
       --bg-color: #0b132b;    /* Azul oscuro profundo */
@@ -887,9 +887,14 @@
         <button class="chart-tab-btn" id="btn-mwtab-medidas" onclick="switchMeasurementsModalTab('medidas')">Medidas</button>
       </div>
 
+      <div style="display:flex; align-items:center; gap:10px; margin-top:12px;">
+        <span style="font-size:0.85rem; color:var(--text-dim);">Fecha</span>
+        <input type="date" id="mw-date" style="margin-top:0; flex:1;">
+      </div>
+
       <div id="mw-tab-peso" style="flex:1; display:flex; flex-direction:column; min-height:0;">
         <div style="display: flex; gap: 12px; align-items: center; margin-top: 5px; margin-bottom:15px;">
-          <input type="number" id="bw-input" step="0.1" placeholder="Peso hoy (kg)" style="margin-top: 0; flex:1;">
+          <input type="number" id="bw-input" step="0.1" placeholder="Peso (kg)" style="margin-top: 0; flex:1;">
           <button onclick="saveBodyWeight()" style="width:48px; height:48px; border-radius:50%; background:var(--accent); color:#ffffff; border:none; font-size:1.5rem; font-weight:bold; cursor:pointer; display:flex; align-items:center; justify-content:center; flex-shrink:0;" aria-label="Guardar Peso">✓</button>
         </div>
 
@@ -1233,7 +1238,7 @@
           <input type="checkbox" id="chk-amoled-mode" onchange="toggleAmoledModeSetting(this.checked)" style="width:20px; height:20px; accent-color:var(--green); cursor:pointer;">
         </label>
       </div>
-      <p style="text-align:center; font-size:0.75rem; color:var(--text-dim); margin-top:4px;">MiGymApp V4.51</p>
+      <p style="text-align:center; font-size:0.75rem; color:var(--text-dim); margin-top:4px;">MiGymApp V4.52</p>
     </div>
   </div>
 
@@ -3038,7 +3043,8 @@
       const val = parseFloat(document.getElementById('bw-input').value);
       if (!val || val <= 0) return;
       if (!db.bodyWeight) db.bodyWeight = [];
-      db.bodyWeight.push({ date: todayISO(), weight: val });
+      db.bodyWeight.push({ date: getMwDate(), weight: val });
+      sortBodyWeightByDate();
       saveDB();
       document.getElementById('bw-input').value = '';
       renderBodyWeight();
@@ -3103,6 +3109,7 @@
 
       db.bodyWeight[editingBwIdx].date = normalizeDate(newDate);
       db.bodyWeight[editingBwIdx].weight = newWeight;
+      sortBodyWeightByDate();
 
       saveDB();
       closeModal('modal-edit-bw');
@@ -3298,6 +3305,7 @@
     }
 
     function openMeasurementsModal() {
+      resetMwDate();
       switchMeasurementsModalTab('peso');
       openModal('modal-weight');
     }
@@ -3320,7 +3328,7 @@
       const cat = MEASURE_CATEGORIES.find(c => c.id === catId);
       if (!cat) return;
       const keys = getCategoryFieldKeys(cat);
-      const entry = { date: todayISO() };
+      const entry = { date: getMwDate() };
       let hasAny = false;
       keys.forEach(k => {
         const el = document.getElementById('msf-' + k);
@@ -7080,7 +7088,7 @@ function openEditHistorySetModal(type, idx) {
     }
 
 
-    // ===== V4.51: utilidades =====
+    // ===== V4.52: utilidades =====
     const XSVG = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>';
     let editingParamsCtx = 'routine';
 
@@ -7442,6 +7450,24 @@ function openEditHistorySetModal(type, idx) {
       const w = promptPct.pct === 0 ? promptPct.base : Math.max(0, Math.round(promptPct.base * (1 + promptPct.pct / 100) / step) * step);
       document.getElementById('custom-prompt-input').value = Math.round(w * 100) / 100;
       document.getElementById('custom-prompt-pct-val').innerText = (promptPct.pct > 0 ? '+' : '') + promptPct.pct + '%';
+    }
+
+
+    // ===== Fecha de las métricas (peso y medidas) =====
+    function resetMwDate() {
+      const el = document.getElementById('mw-date'); if (!el) return;
+      el.max = todayISO(); el.value = todayISO();
+    }
+    function getMwDate() {
+      const el = document.getElementById('mw-date');
+      const v = el ? String(el.value || '') : '';
+      return (/^\d{4}-\d{2}-\d{2}$/.test(v) && v <= todayISO()) ? v : todayISO();
+    }
+    function sortBodyWeightByDate() {
+      if (!db.bodyWeight) return;
+      db.bodyWeight = db.bodyWeight.map((x, i) => ({ x, i }))
+        .sort((a, b) => (String(normalizeDate(a.x.date)) < String(normalizeDate(b.x.date)) ? -1 : String(normalizeDate(a.x.date)) > String(normalizeDate(b.x.date)) ? 1 : a.i - b.i))
+        .map(o => o.x);
     }
 
     // ===== Menús ⋯ =====
