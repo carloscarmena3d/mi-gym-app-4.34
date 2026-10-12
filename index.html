@@ -11,7 +11,7 @@
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%230b132b'/%3E%3Cpath d='M20 35h12v30H20zM68 35h12v30H68z' fill='%232ec4b6'/%3E%3Cpath d='M32 42h36v16H32z' fill='%23ff6b35'/%3E%3Cpath d='M14 42h6v16h-6zM80 42h6v16h-6z' fill='%23ffd166'/%3E%3C/svg%3E">
   <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%230b132b'/%3E%3Cpath d='M20 35h12v30H20zM68 35h12v30H68z' fill='%232ec4b6'/%3E%3Cpath d='M32 42h36v16H32z' fill='%23ff6b35'/%3E%3Cpath d='M14 42h6v16h-6zM80 42h6v16h-6z' fill='%23ffd166'/%3E%3C/svg%3E">
   
-  <title>Mi Gym App V4.52</title>
+  <title>Mi Gym App V4.53</title>
   <style>
     :root {
       --bg-color: #0b132b;    /* Azul oscuro profundo */
@@ -887,13 +887,15 @@
         <button class="chart-tab-btn" id="btn-mwtab-medidas" onclick="switchMeasurementsModalTab('medidas')">Medidas</button>
       </div>
 
-      <div style="display:flex; align-items:center; gap:10px; margin-top:12px;">
-        <span style="font-size:0.85rem; color:var(--text-dim);">Fecha</span>
-        <input type="date" id="mw-date" style="margin-top:0; flex:1;">
-      </div>
+      <label id="mw-date-pill" style="position:relative; display:flex; align-items:center; gap:10px; margin-top:12px; height:46px; padding:0 14px; background:var(--surface-1); border:1px solid var(--card-border); border-radius:12px; cursor:pointer; overflow:hidden;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><rect x="3" y="4" width="18" height="18" rx="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+        <span id="mw-date-text" style="font-weight:bold; font-size:0.95rem; color:var(--text);">Hoy</span>
+        <span id="mw-date-sub" style="margin-left:auto; font-size:0.8rem; color:var(--text-dim);"></span>
+        <input type="date" id="mw-date" aria-label="Fecha" onchange="updateMwDateLabel()" onclick="try { this.showPicker(); } catch (e) {}" style="position:absolute; top:0; left:0; width:100%; height:100%; margin:0; padding:0; border:0; background:transparent; opacity:0; cursor:pointer; color-scheme:dark;">
+      </label>
 
       <div id="mw-tab-peso" style="flex:1; display:flex; flex-direction:column; min-height:0;">
-        <div style="display: flex; gap: 12px; align-items: center; margin-top: 5px; margin-bottom:15px;">
+        <div style="display: flex; gap: 12px; align-items: center; margin-top: 12px; margin-bottom:15px;">
           <input type="number" id="bw-input" step="0.1" placeholder="Peso (kg)" style="margin-top: 0; flex:1;">
           <button onclick="saveBodyWeight()" style="width:48px; height:48px; border-radius:50%; background:var(--accent); color:#ffffff; border:none; font-size:1.5rem; font-weight:bold; cursor:pointer; display:flex; align-items:center; justify-content:center; flex-shrink:0;" aria-label="Guardar Peso">✓</button>
         </div>
@@ -1238,7 +1240,7 @@
           <input type="checkbox" id="chk-amoled-mode" onchange="toggleAmoledModeSetting(this.checked)" style="width:20px; height:20px; accent-color:var(--green); cursor:pointer;">
         </label>
       </div>
-      <p style="text-align:center; font-size:0.75rem; color:var(--text-dim); margin-top:4px;">MiGymApp V4.52</p>
+      <p style="text-align:center; font-size:0.75rem; color:var(--text-dim); margin-top:4px;">MiGymApp V4.53</p>
     </div>
   </div>
 
@@ -7088,7 +7090,7 @@ function openEditHistorySetModal(type, idx) {
     }
 
 
-    // ===== V4.52: utilidades =====
+    // ===== V4.53: utilidades =====
     const XSVG = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>';
     let editingParamsCtx = 'routine';
 
@@ -7457,6 +7459,20 @@ function openEditHistorySetModal(type, idx) {
     function resetMwDate() {
       const el = document.getElementById('mw-date'); if (!el) return;
       el.max = todayISO(); el.value = todayISO();
+      updateMwDateLabel();
+    }
+    function updateMwDateLabel() {
+      const el = document.getElementById('mw-date'), t = document.getElementById('mw-date-text'), sub = document.getElementById('mw-date-sub');
+      if (!el || !t || !sub) return;
+      const v = getMwDate();
+      const d = parseDateStr(v), now = new Date();
+      const diff = Math.round((new Date(now.getFullYear(), now.getMonth(), now.getDate()) - new Date(d.getFullYear(), d.getMonth(), d.getDate())) / 86400000);
+      let label;
+      if (diff === 0) label = 'Hoy';
+      else if (diff === 1) label = 'Ayer';
+      else { label = d.toLocaleDateString('es-ES', { weekday: 'long' }); label = label.charAt(0).toUpperCase() + label.slice(1); }
+      t.textContent = label; sub.textContent = formatDate(v);
+      if (el.value !== v) el.value = v;
     }
     function getMwDate() {
       const el = document.getElementById('mw-date');
