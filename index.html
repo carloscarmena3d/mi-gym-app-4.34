@@ -11,7 +11,7 @@
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%230b132b'/%3E%3Cpath d='M20 35h12v30H20zM68 35h12v30H68z' fill='%232ec4b6'/%3E%3Cpath d='M32 42h36v16H32z' fill='%23ff6b35'/%3E%3Cpath d='M14 42h6v16h-6zM80 42h6v16h-6z' fill='%23ffd166'/%3E%3C/svg%3E">
   <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%230b132b'/%3E%3Cpath d='M20 35h12v30H20zM68 35h12v30H68z' fill='%232ec4b6'/%3E%3Cpath d='M32 42h36v16H32z' fill='%23ff6b35'/%3E%3Cpath d='M14 42h6v16h-6zM80 42h6v16h-6z' fill='%23ffd166'/%3E%3C/svg%3E">
   
-  <title>Mi Gym App V4.53</title>
+  <title>Mi Gym App V4.54</title>
   <style>
     :root {
       --bg-color: #0b132b;    /* Azul oscuro profundo */
@@ -1240,7 +1240,7 @@
           <input type="checkbox" id="chk-amoled-mode" onchange="toggleAmoledModeSetting(this.checked)" style="width:20px; height:20px; accent-color:var(--green); cursor:pointer;">
         </label>
       </div>
-      <p style="text-align:center; font-size:0.75rem; color:var(--text-dim); margin-top:4px;">MiGymApp V4.53</p>
+      <p style="text-align:center; font-size:0.75rem; color:var(--text-dim); margin-top:4px;">MiGymApp V4.54</p>
     </div>
   </div>
 
@@ -1314,16 +1314,6 @@
 
     <div id="record-banner" class="hidden"></div>
 
-    <!-- BAJAR PESO POR PORCENTAJE (solo con el cronómetro a solas) -->
-    <div id="drop-weight-panel" class="hidden" style="width:100%; max-width:340px; margin-bottom:14px; text-align:center;">
-      <div style="font-size:0.8rem; color:var(--text-dim); margin-bottom:6px;">Bajar peso</div>
-      <div style="display:flex; align-items:center; justify-content:center; gap:10px;">
-        <button class="btn btn-secondary" style="width:48px; height:44px; padding:0; margin:0; font-size:1.4rem;" onclick="adjustDropPct(-5)">−</button>
-        <input id="drop-pct-input" type="number" inputmode="numeric" value="0" min="0" max="90" style="width:90px; text-align:center; font-size:1.2rem; font-weight:bold; margin:0;" onchange="setDropPct(this.value)">
-        <button class="btn btn-secondary" style="width:48px; height:44px; padding:0; margin:0; font-size:1.4rem;" onclick="adjustDropPct(5)">+</button>
-      </div>
-      <div id="drop-weight-preview" style="font-size:0.8rem; color:var(--text-dim); margin-top:6px;"></div>
-    </div>
 
     <!-- PANEL DE DATOS DE LA SERIE -->
     <div id="timer-inputs-panel" style="width: 100%; max-width: 340px;">
@@ -5571,7 +5561,6 @@ function startWorkout(exIndex, isInternalSupersetNav) {
       }
       if (inputsPanel) {
         inputsPanel.classList.add('hidden'); // Ocultar panel de esfuerzo en isométrico
-        hideDropPanel();
       }
 
       screenEl.classList.remove('hidden');
@@ -6282,6 +6271,7 @@ function openEditHistorySetModal(type, idx) {
               const avgRM = Math.round(tRM / sessSets.length);
               const avgRest = Math.round(tRest / sessSets.length);
               const ieScore = calculateIE(avgRM, avgRest, state.activeExObj.rest);
+              const earlierS = earlierHistoryFor(pastHist, sessSets[0]);
 
               sessSets.forEach((h, sIdx) => {
                 const isFirst = (sIdx === 0);
@@ -6327,7 +6317,7 @@ function openEditHistorySetModal(type, idx) {
                     <td>${h.rir}</td>
                     <td>${formatRPE(h.rpe)}</td>
                     <td>${techDot}</td>
-                    <td style="color:#ffffff; font-weight:bold;">${fmtRM(setRM)}</td>
+                    <td style="color:#ffffff; font-weight:bold;">${fmtRM(setRM)}${trendBadgeFor(setRM, earlierS, h.set)}</td>
                     <td style="color:var(--text-dim); font-size:0.72rem;">${restText}</td>
                     <td>${noteBtn}</td>
                   </tr>
@@ -6423,12 +6413,12 @@ function openEditHistorySetModal(type, idx) {
                      onpointerup="handlePointerCancel()" 
                     onpointercancel="handlePointerCancel()" 
                     onpointermove="lpMove(event, handlePointerCancel)"
-                    onclick="if(!longPressTriggered) toggleSetDetailsAll()">
+                    onclick="if(!longPressTriggered) toggleSetDetailsRow(this)">
                   <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
                     <strong style="font-size: 1rem; color:#ffffff;">Serie ${i}: ${totalSetW}kg${barText} × <span style="color:${repsColor}; font-weight:bold;">${log.reps}</span>${trendBadge}${noteBtn.replace('margin-left:auto; ', 'margin-left:6px; ')}</strong>
                     <span style="color:var(--text-dim); font-size:0.85rem;">${svgTimerDim}${log.restTime}s</span>
                   </div>
-                  <div class="set-details-line" style="display:${setDetailsExpanded ? 'flex' : 'none'}; gap:10px; color:#ccc; font-size:0.8rem; flex-wrap:wrap; align-items:center;">
+                  <div class="set-details-line" style="display:flex; gap:10px; color:#ccc; font-size:0.8rem; flex-wrap:wrap; align-items:center;">
                     <span>RIR: <span style="color:white;">${log.rir}</span></span>
                     <span>RPE: <span style="color:white;">${formatRPE(log.rpe)}</span></span>
                     <span>Téc: ${techDot}</span>
@@ -6532,6 +6522,7 @@ function openEditHistorySetModal(type, idx) {
                   <div style="padding: 0 14px;">
               `;
 
+              const earlierS = earlierHistoryFor(pastHist, sessSets[0]);
               sessSets.forEach(h => {
                 let techDot = '-';
                 if (h.technique === 'Bien') techDot = '<span style="color:var(--tech-green); font-size:1.1rem;">●</span>';
@@ -6556,12 +6547,12 @@ function openEditHistorySetModal(type, idx) {
                        onpointerup="handlePointerCancel()" 
                        onpointercancel="handlePointerCancel()" 
                        onpointermove="lpMove(event, handlePointerCancel)"
-                       onclick="if(!longPressTriggered) toggleSetDetailsAll()">
+                       onclick="if(!longPressTriggered) toggleSetDetailsRow(this)">
                     <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
-                      <strong style="font-size: 0.95rem;">Serie ${h.set}: ${totW}kg${barText} × <span style="color:${repsColor}; font-weight:bold;">${h.reps}</span>${noteBtn.replace('margin-left:auto; ', 'margin-left:6px; ')}</strong>
+                      <strong style="font-size: 0.95rem;">Serie ${h.set}: ${totW}kg${barText} × <span style="color:${repsColor}; font-weight:bold;">${h.reps}</span>${trendBadgeFor(setRM, earlierS, h.set)}${noteBtn.replace('margin-left:auto; ', 'margin-left:6px; ')}</strong>
                       <span style="color:var(--text-dim); font-size:0.85rem;">${svgTimerDim}${h.restTime}s</span>
                     </div>
-                    <div class="set-details-line" style="display:${setDetailsExpanded ? 'flex' : 'none'}; gap:10px; color:#ccc; font-size:0.8rem; flex-wrap:wrap; align-items:center;">
+                    <div class="set-details-line" style="display:none; gap:10px; color:#ccc; font-size:0.8rem; flex-wrap:wrap; align-items:center;">
                       <span>RIR: <span style="color:white;">${h.rir}</span></span>
                       <span>RPE: <span style="color:white;">${formatRPE(h.rpe)}</span></span>
                       <span>Téc: ${techDot}</span>
@@ -6796,7 +6787,6 @@ function openEditHistorySetModal(type, idx) {
       }
       if (inputsPanel) {
         inputsPanel.classList.remove('hidden');
-        hideDropPanel();
       }
       configureTimerBackBtn(isTransition);
 
@@ -6862,7 +6852,6 @@ function openEditHistorySetModal(type, idx) {
       requestWakeLock();
 
       document.getElementById('timer-inputs-panel').classList.add('hidden');
-      showDropPanel();
     }
 
     function minimizeTimer() { 
@@ -7090,7 +7079,7 @@ function openEditHistorySetModal(type, idx) {
     }
 
 
-    // ===== V4.53: utilidades =====
+    // ===== V4.54: utilidades =====
     const XSVG = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>';
     let editingParamsCtx = 'routine';
 
@@ -7253,7 +7242,6 @@ function openEditHistorySetModal(type, idx) {
         const disp = document.getElementById('timer-display'); if (disp) disp.style.color = '';
         configureTimerBackBtn(false);
         updateTimerDisplay(); startRestInterval();
-        if (!t.pending) showDropPanel();
         const max = t.maximized !== false;
         document.getElementById('timer-screen').classList.toggle('hidden', !max);
         document.getElementById('mini-timer').classList.toggle('hidden', max);
@@ -7284,38 +7272,6 @@ function openEditHistorySetModal(type, idx) {
     }
 
 
-    // ===== Bajar peso por porcentaje (equivale a pulsar el - del peso) =====
-    let dropCtx = null;
-    function showDropPanel() {
-      try {
-        const panel = document.getElementById('drop-weight-panel'); if (!panel) return;
-        if (!state.activeExObj || isIsometricEx(state.activeExObj) || !exUsesWeight(state.activeExObj) || state.timerIsTransition) { panel.classList.add('hidden'); return; }
-        const logs = (session && session.logs && session.logs[state.activeExObj.name]) || [];
-        const last = logs[logs.length - 1];
-        if (!last) { panel.classList.add('hidden'); return; }
-        dropCtx = { total: +last.weight || 0, bar: 0, orig: state.weight, pct: 0 };
-        document.getElementById('drop-pct-input').value = 0;
-        document.getElementById('drop-weight-preview').innerText = '';
-        panel.classList.remove('hidden');
-      } catch(e) {}
-    }
-    function hideDropPanel() { const p = document.getElementById('drop-weight-panel'); if (p) p.classList.add('hidden'); dropCtx = null; }
-    function setDropPct(v) {
-      if (!dropCtx) return;
-      let p = Math.round((parseFloat(v) || 0) / 5) * 5;
-      p = Math.max(0, Math.min(90, p));
-      dropCtx.pct = p;
-      document.getElementById('drop-pct-input').value = p;
-      if (p === 0) { state.weight = dropCtx.orig; document.getElementById('drop-weight-preview').innerText = ''; }
-      else {
-        const step = state.weightStep || 2.5;
-        const disc = dropCtx.total * (1 - p / 100) - dropCtx.bar;
-        state.weight = Math.max(0, Math.round(Math.round(disc / step) * step * 100) / 100);
-        document.getElementById('drop-weight-preview').innerText = 'Peso: ' + state.weight + ' kg';
-      }
-      updateWorkoutUI();
-    }
-    function adjustDropPct(d) { if (dropCtx) setDropPct(dropCtx.pct + d); }
 
 
     function syncMiniTimer() {
@@ -7484,6 +7440,29 @@ function openEditHistorySetModal(type, idx) {
       db.bodyWeight = db.bodyWeight.map((x, i) => ({ x, i }))
         .sort((a, b) => (String(normalizeDate(a.x.date)) < String(normalizeDate(b.x.date)) ? -1 : String(normalizeDate(a.x.date)) > String(normalizeDate(b.x.date)) ? 1 : a.i - b.i))
         .map(o => o.x);
+    }
+
+
+    // ===== Tendencia (↑ ↓ -) frente a la sesión anterior =====
+    function sessOrderVal(h) { return normalizeDate(h.date) + '|' + String(h.sessionId || 0).padStart(15, '0'); }
+    function earlierHistoryFor(list, firstSet) {
+      const k = firstSet.sessionId || firstSet.date, v = sessOrderVal(firstSet);
+      return list.filter(h => (h.sessionId || h.date) !== k && sessOrderVal(h) < v);
+    }
+    function trendBadgeFor(setRM, earlier, setNum) {
+      if (!earlier || earlier.length === 0) return '';
+      const maxPast = Math.max(...earlier.map(h => get1RMd((h.weight || 0) + (h.barWeight || 0), h.reps)));
+      if (setRM > maxPast) return ' <span aria-label="Récord Personal" style="margin-left:2px; vertical-align:middle; display:inline-block;">' + svgTrophyYellow + '</span>';
+      const p = getPastSetData(earlier, setNum);
+      if (!p) return '';
+      const pr = get1RMd((p.weight || 0) + (p.barWeight || 0), p.reps);
+      if (setRM > pr) return ' <span style="color:var(--green); font-weight:bold;">↑</span>';
+      if (setRM < pr) return ' <span style="color:var(--red); font-weight:bold;">↓</span>';
+      return ' <span style="color:#ffffff; font-weight:bold;">-</span>';
+    }
+    function toggleSetDetailsRow(row) {
+      const d = row && row.querySelector ? row.querySelector('.set-details-line') : null;
+      if (d) d.style.display = (d.style.display === 'none') ? 'flex' : 'none';
     }
 
     // ===== Menús ⋯ =====
