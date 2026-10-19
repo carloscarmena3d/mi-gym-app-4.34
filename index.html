@@ -11,7 +11,7 @@
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%230b132b'/%3E%3Cpath d='M20 35h12v30H20zM68 35h12v30H68z' fill='%232ec4b6'/%3E%3Cpath d='M32 42h36v16H32z' fill='%23ff6b35'/%3E%3Cpath d='M14 42h6v16h-6zM80 42h6v16h-6z' fill='%23ffd166'/%3E%3C/svg%3E">
   <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%230b132b'/%3E%3Cpath d='M20 35h12v30H20zM68 35h12v30H68z' fill='%232ec4b6'/%3E%3Cpath d='M32 42h36v16H32z' fill='%23ff6b35'/%3E%3Cpath d='M14 42h6v16h-6zM80 42h6v16h-6z' fill='%23ffd166'/%3E%3C/svg%3E">
   
-  <title>Mi Gym App V4.54</title>
+  <title>Mi Gym App V4.56</title>
   <style>
     :root {
       --bg-color: #0b132b;    /* Azul oscuro profundo */
@@ -1000,6 +1000,28 @@
   </div>
 
       <!-- MODAL AJUSTAR EJERCICIO EN SESIÓN ACTIVA (GEAR ⚙️) -->
+  <!-- MODAL SUBIR PESO (progresión) -->
+  <div id="modal-progress" class="modal-overlay hidden">
+    <div class="modal-box">
+      <button class="modal-close" aria-label="Cerrar" onclick="closeModal('modal-progress')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
+      <h2>Subir peso</h2>
+      <p style="margin:0 0 14px; font-size:0.9rem; color:var(--text-dim);">Has alcanzado el máximo del rango.</p>
+      <div id="progress-groups"></div>
+      <div style="display:flex; align-items:center; justify-content:space-between; margin-top:14px;">
+        <span style="font-size:0.9rem; color:var(--text-dim);">Salto de peso</span>
+        <div style="display:flex; align-items:center; gap:8px;">
+          <button class="btn btn-secondary" style="width:38px; height:38px; padding:0; margin:0; font-size:1.2rem;" onclick="adjustProgressStep(-1)">−</button>
+          <span id="progress-step-val" style="min-width:56px; text-align:center; font-size:1.05rem; font-weight:bold;">2.5</span>
+          <button class="btn btn-secondary" style="width:38px; height:38px; padding:0; margin:0; font-size:1.2rem;" onclick="adjustProgressStep(1)">+</button>
+        </div>
+      </div>
+      <div style="display:flex; gap:12px; margin-top:18px;">
+        <button class="btn btn-secondary" style="flex:1; margin-top:0;" onclick="closeModal('modal-progress')">Ignorar</button>
+        <button class="btn btn-ok" style="flex:1; margin-top:0;" onclick="confirmProgression()">Confirmar</button>
+      </div>
+    </div>
+  </div>
+
   <!-- MODAL NOTA DEL DÍA (por ejercicio) -->
   <div id="modal-day-note" class="modal-overlay hidden">
     <div class="modal-box">
@@ -1240,7 +1262,7 @@
           <input type="checkbox" id="chk-amoled-mode" onchange="toggleAmoledModeSetting(this.checked)" style="width:20px; height:20px; accent-color:var(--green); cursor:pointer;">
         </label>
       </div>
-      <p style="text-align:center; font-size:0.75rem; color:var(--text-dim); margin-top:4px;">MiGymApp V4.54</p>
+      <p style="text-align:center; font-size:0.75rem; color:var(--text-dim); margin-top:4px;">MiGymApp V4.56</p>
     </div>
   </div>
 
@@ -5346,6 +5368,8 @@
         if (pastSet.weight !== undefined) state.weight = pastSet.weight;
         if (pastSet.reps !== undefined) state.reps = pastSet.reps;
       }
+      const _ov = session && session.weightOverrides && session.weightOverrides[exName];
+      if (_ov && _ov[setNum] !== undefined) state.weight = _ov[setNum];
     }
 
 function startWorkout(exIndex, isInternalSupersetNav) {
@@ -6037,7 +6061,7 @@ function openEditHistorySetModal(type, idx) {
                          onpointerup="handlePointerCancel()"
                          onpointercancel="handlePointerCancel()"
                          onpointermove="lpMove(event, handlePointerCancel)"
-                         onclick="if(!longPressTriggered) showDateInfo('${todayDateStr}')">Hoy${currentLogs.length > 0 ? ' <small style="font-size:0.65rem; color:var(--green);">(activa)</small>' : ''}</span><div style="margin-top:4px; text-align:center;">${dayNoteBtn(dayNoteKeyToday()).replace('margin-right:8px;', '')}</div>
+                         onclick="if(!longPressTriggered) showDateInfo('${todayDateStr}')">Hoy${currentLogs.length > 0 ? ' <small style="font-size:0.65rem; color:var(--green);">(activa)</small>' : ''}</span><div style="margin-top:4px; text-align:center;">${trendDotsHtml().replace('margin-right:10px;', '')}</div><div style="margin-top:4px; text-align:center;">${dayNoteBtn(dayNoteKeyToday()).replace('margin-right:8px;', '')}</div>
                 </td>
               `;
             }
@@ -6161,7 +6185,7 @@ function openEditHistorySetModal(type, idx) {
                          onpointerup="handlePointerCancel()"
                          onpointercancel="handlePointerCancel()"
                          onpointermove="lpMove(event, handlePointerCancel)"
-                         onclick="if(!longPressTriggered) showDateInfo('${todayDateStr}')">Hoy${currentLogs.length > 0 ? ' <small style="font-size:0.65rem; color:var(--green);">(activa)</small>' : ''}</span><div style="margin-top:4px; text-align:center;">${dayNoteBtn(dayNoteKeyToday()).replace('margin-right:8px;', '')}</div>
+                         onclick="if(!longPressTriggered) showDateInfo('${todayDateStr}')">Hoy${currentLogs.length > 0 ? ' <small style="font-size:0.65rem; color:var(--green);">(activa)</small>' : ''}</span><div style="margin-top:4px; text-align:center;">${trendDotsHtml().replace('margin-right:10px;', '')}</div><div style="margin-top:4px; text-align:center;">${dayNoteBtn(dayNoteKeyToday()).replace('margin-right:8px;', '')}</div>
                   ${rmBadge}
                   ${ieBadge}
                 </td>
@@ -6203,7 +6227,7 @@ function openEditHistorySetModal(type, idx) {
                   } else if (setRM < pastSetRM) {
                     trendBadge = ' <span style="color:var(--red); font-weight:bold;" aria-label="Por debajo del último entrenamiento">↓</span>';
                   } else {
-                    trendBadge = ' <span style="color:#ffffff; font-weight:bold;" aria-label="Igual al último entrenamiento">-</span>';
+                    trendBadge = sameRmBadge(log.rpe, pastSetStd.rpe);
                   }
                 }
               }
@@ -6317,7 +6341,7 @@ function openEditHistorySetModal(type, idx) {
                     <td>${h.rir}</td>
                     <td>${formatRPE(h.rpe)}</td>
                     <td>${techDot}</td>
-                    <td style="color:#ffffff; font-weight:bold;">${fmtRM(setRM)}${trendBadgeFor(setRM, earlierS, h.set)}</td>
+                    <td style="color:#ffffff; font-weight:bold;">${fmtRM(setRM)}${trendBadgeFor(setRM, earlierS, h.set, h.rpe)}</td>
                     <td style="color:var(--text-dim); font-size:0.72rem;">${restText}</td>
                     <td>${noteBtn}</td>
                   </tr>
@@ -6339,7 +6363,7 @@ function openEditHistorySetModal(type, idx) {
                              onpointerup="handlePointerCancel()" 
                              onpointercancel="handlePointerCancel()" 
                              onpointermove="lpMove(event, handlePointerCancel)">HOY${currentLogs.length > 0 ? ' (Sesión Activa)' : ''}</strong>
-              <span style="color:var(--text-dim); font-size:0.8rem;">${dayNoteBtn(dayNoteKeyToday())}${currentLogs.length} / ${targetSets} series</span>
+              <span style="color:var(--text-dim); font-size:0.8rem;">${trendDotsHtml()}${dayNoteBtn(dayNoteKeyToday())}${currentLogs.length} / ${targetSets} series</span>
             </div>
             <div style="padding: 0 14px;">
         `;
@@ -6402,7 +6426,7 @@ function openEditHistorySetModal(type, idx) {
                   } else if (setRM < pastSetRM) {
                     trendBadge = ' <span style="color:var(--red); font-weight:bold;" aria-label="Por debajo del último entrenamiento">↓</span>';
                   } else {
-                    trendBadge = ' <span style="color:#ffffff; font-weight:bold;" aria-label="Igual al último entrenamiento">-</span>';
+                    trendBadge = sameRmBadge(log.rpe, pastSetStd.rpe);
                   }
                 }
               }
@@ -6549,7 +6573,7 @@ function openEditHistorySetModal(type, idx) {
                        onpointermove="lpMove(event, handlePointerCancel)"
                        onclick="if(!longPressTriggered) toggleSetDetailsRow(this)">
                     <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
-                      <strong style="font-size: 0.95rem;">Serie ${h.set}: ${totW}kg${barText} × <span style="color:${repsColor}; font-weight:bold;">${h.reps}</span>${trendBadgeFor(setRM, earlierS, h.set)}${noteBtn.replace('margin-left:auto; ', 'margin-left:6px; ')}</strong>
+                      <strong style="font-size: 0.95rem;">Serie ${h.set}: ${totW}kg${barText} × <span style="color:${repsColor}; font-weight:bold;">${h.reps}</span>${trendBadgeFor(setRM, earlierS, h.set, h.rpe)}${noteBtn.replace('margin-left:auto; ', 'margin-left:6px; ')}</strong>
                       <span style="color:var(--text-dim); font-size:0.85rem;">${svgTimerDim}${h.restTime}s</span>
                     </div>
                     <div class="set-details-line" style="display:none; gap:10px; color:#ccc; font-size:0.8rem; flex-wrap:wrap; align-items:center;">
@@ -7079,7 +7103,7 @@ function openEditHistorySetModal(type, idx) {
     }
 
 
-    // ===== V4.54: utilidades =====
+    // ===== V4.56: utilidades =====
     const XSVG = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>';
     let editingParamsCtx = 'routine';
 
@@ -7360,7 +7384,9 @@ function openEditHistorySetModal(type, idx) {
     }
     (function() {
       const _sw = startWorkout;
-      startWorkout = function() { const r = _sw.apply(this, arguments); maybeShowPreviousDayNote(); return r; };
+      startWorkout = function() { const r = _sw.apply(this, arguments); maybeShowProgression('open'); maybeShowPreviousDayNote(); return r; };
+      const _mt = minimizeTimer;
+      minimizeTimer = function() { const r = _mt.apply(this, arguments); setTimeout(function() { maybeShowProgression('return'); }, 0); return r; };
       const _eh = openEditHistorySetModal;
       openEditHistorySetModal = function() {
         const r = _eh.apply(this, arguments);
@@ -7449,7 +7475,7 @@ function openEditHistorySetModal(type, idx) {
       const k = firstSet.sessionId || firstSet.date, v = sessOrderVal(firstSet);
       return list.filter(h => (h.sessionId || h.date) !== k && sessOrderVal(h) < v);
     }
-    function trendBadgeFor(setRM, earlier, setNum) {
+    function trendBadgeFor(setRM, earlier, setNum, rpe) {
       if (!earlier || earlier.length === 0) return '';
       const maxPast = Math.max(...earlier.map(h => get1RMd((h.weight || 0) + (h.barWeight || 0), h.reps)));
       if (setRM > maxPast) return ' <span aria-label="Récord Personal" style="margin-left:2px; vertical-align:middle; display:inline-block;">' + svgTrophyYellow + '</span>';
@@ -7458,11 +7484,153 @@ function openEditHistorySetModal(type, idx) {
       const pr = get1RMd((p.weight || 0) + (p.barWeight || 0), p.reps);
       if (setRM > pr) return ' <span style="color:var(--green); font-weight:bold;">↑</span>';
       if (setRM < pr) return ' <span style="color:var(--red); font-weight:bold;">↓</span>';
+      return sameRmBadge(rpe, p.rpe);
+    }
+    function sameRmBadge(cur, prev) {
+      const a = parseFloat(cur), b = parseFloat(prev);
+      if (!isNaN(a) && !isNaN(b)) {
+        if (a < b) return ' <span style="color:var(--green); font-weight:bold;">-</span>';
+        if (a > b) return ' <span style="color:var(--red); font-weight:bold;">-</span>';
+      }
       return ' <span style="color:#ffffff; font-weight:bold;">-</span>';
     }
     function toggleSetDetailsRow(row) {
       const d = row && row.querySelector ? row.querySelector('.set-details-line') : null;
       if (d) d.style.display = (d.style.display === 'none') ? 'flex' : 'none';
+    }
+
+
+    // ===== Aviso de subir peso (doble progresión por grupos de rango) =====
+    const STEP_OPTIONS = [0.5, 1, 1.25, 2.5, 5, 10, 20];
+    let progressCtx = null;
+
+    function labelSets(arr) {
+      const a = arr.slice().sort((x, y) => x - y);
+      if (a.length === 1) return 'Serie ' + a[0];
+      const contiguous = a.every((n, i) => i === 0 || n === a[i - 1] + 1);
+      return 'Series ' + (contiguous ? a[0] + '-' + a[a.length - 1] : a.join(', '));
+    }
+    function computeProgressionGroups() {
+      const ex = state.activeExObj;
+      if (!ex || !session || isIsometricEx(ex) || !exUsesWeight(ex)) return [];
+      const exName = ex.name, cur = session.startTime;
+      const past = ((db.history && db.history[exName]) || []).filter(h => !(cur && h.sessionId === cur));
+      if (!past.length) return [];
+      let lastKey = null, lastV = '';
+      past.forEach(h => { const v = sessOrderVal(h); if (v > lastV) { lastV = v; lastKey = h.sessionId || h.date; } });
+      const lastSets = past.filter(h => (h.sessionId || h.date) === lastKey);
+      const days = (Date.now() - parseDateStr(lastSets[0].date).getTime()) / 86400000;
+      if (days > 21) return [];
+      const total = parseInt(ex.sets) || 3, groups = {};
+      for (let i = 1; i <= total; i++) {
+        const c = getSetConfig(ex, i);
+        if (!(c.min > 0 && c.max > 0)) continue;
+        const k = c.min + '-' + c.max;
+        (groups[k] = groups[k] || { key: k, min: c.min, max: c.max, sets: [] }).sets.push(i);
+      }
+      const todayLogs = (session.logs && session.logs[exName]) || [];
+      const done = (session.progressDone && session.progressDone[exName]) || {};
+      const out = [];
+      Object.values(groups).forEach(g => {
+        if (done[g.key]) return;
+        if (g.sets.some(n => todayLogs.some(l => l.set === n))) return;
+        const ls = g.sets.map(n => lastSets.find(h => h.set === n)).filter(Boolean);
+        if (ls.length < g.sets.length) return;
+        if (!ls.some(h => h.reps >= g.max)) return;
+        if (ls.some(h => h.reps < g.min)) return;
+        out.push({ key: g.key, sets: g.sets, base: Math.max(...ls.map(h => +h.weight || 0)) });
+      });
+      return out;
+    }
+    function maybeShowProgression(mode) {
+      try {
+        if (window.__restoringTimer || !session || !state.activeExObj) return;
+        if (activeModalStack.indexOf('modal-progress') >= 0) return;
+        let groups = computeProgressionGroups();
+        if (mode === 'return') {
+          const next = ((session.logs && session.logs[state.activeExObj.name]) || []).length + 1;
+          groups = groups.filter(g => g.sets[0] === next);
+        }
+        if (groups.length) openProgressionModal(groups);
+      } catch (e) {}
+    }
+    function openProgressionModal(groups) {
+      const step = state.weightStep || 2.5;
+      progressCtx = { ex: state.activeExObj.name, step: step, origStep: step, groups: groups.map(g => ({ key: g.key, sets: g.sets, base: g.base, weight: Math.round((g.base + step) * 100) / 100 })) };
+      renderProgressionModal();
+      openModal('modal-progress');
+    }
+    function renderProgressionModal() {
+      const c = progressCtx; if (!c) return;
+      document.getElementById('progress-groups').innerHTML = c.groups.map((g, i) => `
+        <div style="display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:10px; background:var(--surface-1); border:1px solid var(--card-border); border-radius:12px; padding:10px 12px;">
+          <div><div style="font-weight:bold;">${labelSets(g.sets)}</div><div style="font-size:0.8rem; color:var(--text-dim);">Antes: ${g.base} kg</div></div>
+          <div style="display:flex; align-items:center; gap:8px;">
+            <button class="btn btn-secondary" style="width:38px; height:38px; padding:0; margin:0; font-size:1.2rem;" onclick="adjustProgress(${i}, -1)">−</button>
+            <span style="min-width:56px; text-align:center; font-size:1.2rem; font-weight:bold;">${g.weight}</span>
+            <button class="btn btn-secondary" style="width:38px; height:38px; padding:0; margin:0; font-size:1.2rem;" onclick="adjustProgress(${i}, 1)">+</button>
+          </div>
+        </div>`).join('');
+      document.getElementById('progress-step-val').textContent = c.step;
+    }
+    function adjustProgress(i, dir) {
+      const g = progressCtx && progressCtx.groups[i]; if (!g) return;
+      g.weight = Math.max(0, Math.round((g.weight + dir * progressCtx.step) * 100) / 100);
+      renderProgressionModal();
+    }
+    function adjustProgressStep(dir) {
+      if (!progressCtx) return;
+      let idx = STEP_OPTIONS.indexOf(progressCtx.step);
+      if (idx < 0) idx = STEP_OPTIONS.reduce((b, v, k) => Math.abs(v - progressCtx.step) < Math.abs(STEP_OPTIONS[b] - progressCtx.step) ? k : b, 0);
+      idx = Math.max(0, Math.min(STEP_OPTIONS.length - 1, idx + dir));
+      progressCtx.step = STEP_OPTIONS[idx];
+      progressCtx.groups.forEach(g => { g.weight = Math.round((g.base + progressCtx.step) * 100) / 100; });
+      renderProgressionModal();
+    }
+    function confirmProgression() {
+      const c = progressCtx; if (!c || !session) return;
+      if (!session.weightOverrides) session.weightOverrides = {};
+      if (!session.weightOverrides[c.ex]) session.weightOverrides[c.ex] = {};
+      if (!session.progressDone) session.progressDone = {};
+      if (!session.progressDone[c.ex]) session.progressDone[c.ex] = {};
+      const next = ((session.logs && session.logs[c.ex]) || []).length + 1;
+      c.groups.forEach(g => {
+        g.sets.forEach(n => { session.weightOverrides[c.ex][n] = g.weight; });
+        session.progressDone[c.ex][g.key] = true;
+        if (g.sets.indexOf(next) >= 0 && state.activeExObj && state.activeExObj.name === c.ex) state.weight = g.weight;
+      });
+      if (c.step !== c.origStep) {
+        if (!db.lastWeightSteps) db.lastWeightSteps = {};
+        db.lastWeightSteps[c.ex] = c.step; saveDB();
+        state.weightStep = c.step;
+      }
+      saveSession();
+      closeModal('modal-progress');
+      try { updateWorkoutUI(); } catch (e) {}
+    }
+
+    // ===== Puntitos de tendencia (RM medio de las últimas sesiones) =====
+    function trendDotsHtml() {
+      try {
+        const ex = state.activeExObj;
+        if (!ex || isIsometricEx(ex)) return '';
+        const hist = (db.history && db.history[ex.name]) || [], cur = session ? session.startTime : null, groups = {};
+        hist.forEach(h => {
+          if (cur && h.sessionId === cur) return;
+          const k = h.sessionId || h.date;
+          (groups[k] = groups[k] || { v: sessOrderVal(h), sets: [] }).sets.push(h);
+        });
+        const avgs = Object.values(groups).sort((a, b) => a.v < b.v ? -1 : 1)
+          .map(g => g.sets.reduce((a, h) => a + get1RMd((h.weight || 0) + (h.barWeight || 0), h.reps), 0) / g.sets.length);
+        if (avgs.length < 2) return '';
+        const dots = [];
+        for (let i = Math.max(1, avgs.length - 5); i < avgs.length; i++) {
+          const ch = avgs[i - 1] > 0 ? (avgs[i] - avgs[i - 1]) / avgs[i - 1] : 0;
+          const col = ch > 0.01 ? 'var(--green)' : ch < -0.01 ? 'var(--red)' : 'var(--text-dim)';
+          dots.push(`<span style="width:7px; height:7px; border-radius:50%; background:${col}; display:inline-block;"></span>`);
+        }
+        return `<span style="display:inline-flex; gap:3px; align-items:center; margin-right:10px; vertical-align:middle;">${dots.join('')}</span>`;
+      } catch (e) { return ''; }
     }
 
     // ===== Menús ⋯ =====
