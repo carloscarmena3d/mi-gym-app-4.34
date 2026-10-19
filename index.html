@@ -11,7 +11,7 @@
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%230b132b'/%3E%3Cpath d='M20 35h12v30H20zM68 35h12v30H68z' fill='%232ec4b6'/%3E%3Cpath d='M32 42h36v16H32z' fill='%23ff6b35'/%3E%3Cpath d='M14 42h6v16h-6zM80 42h6v16h-6z' fill='%23ffd166'/%3E%3C/svg%3E">
   <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%230b132b'/%3E%3Cpath d='M20 35h12v30H20zM68 35h12v30H68z' fill='%232ec4b6'/%3E%3Cpath d='M32 42h36v16H32z' fill='%23ff6b35'/%3E%3Cpath d='M14 42h6v16h-6zM80 42h6v16h-6z' fill='%23ffd166'/%3E%3C/svg%3E">
   
-  <title>Mi Gym App V4.56</title>
+  <title>Mi Gym App V4.57</title>
   <style>
     :root {
       --bg-color: #0b132b;    /* Azul oscuro profundo */
@@ -1262,7 +1262,7 @@
           <input type="checkbox" id="chk-amoled-mode" onchange="toggleAmoledModeSetting(this.checked)" style="width:20px; height:20px; accent-color:var(--green); cursor:pointer;">
         </label>
       </div>
-      <p style="text-align:center; font-size:0.75rem; color:var(--text-dim); margin-top:4px;">MiGymApp V4.56</p>
+      <p style="text-align:center; font-size:0.75rem; color:var(--text-dim); margin-top:4px;">MiGymApp V4.57</p>
     </div>
   </div>
 
@@ -2987,7 +2987,7 @@
     }
 
     function calculateIE(avgRM, avgRawInterval, targetRest) {
-      if(!avgRawInterval || !targetRest) return avgRM;
+      if(!avgRawInterval || !targetRest) return Math.round(avgRM);
       const restDiff = targetRest - avgRawInterval;
       const factor = 1 + (restDiff / (targetRest * 4));
       return Math.round(avgRM * factor);
@@ -3049,6 +3049,7 @@
     
     function get1RM(weight, reps) { if(reps <= 1) return weight; return Math.round(weight * (1 + (reps / 30))); }
     function get1RMd(weight, reps) { if(reps <= 1) return weight; return Math.round(weight * (1 + (reps / 30)) * 10) / 10; }
+    function r1(v) { return Math.round(v * 10) / 10; }
     function fmtRM(v) { return (Math.round(v * 10) / 10).toFixed(1); }
     
     let editingBwIdx = null;
@@ -6163,10 +6164,10 @@ function openEditHistorySetModal(type, idx) {
 
           let tRMToday = 0; let tRestToday = 0;
           currentLogs.forEach(l => { 
-            tRMToday += get1RM(l.weight + (l.barWeight || 0), l.reps); 
+            tRMToday += get1RMd(l.weight + (l.barWeight || 0), l.reps); 
             tRestToday += (l.restTime || state.activeExObj.rest); 
           });
-          const todayAvgRM = currentLogs.length > 0 ? Math.round(tRMToday / currentLogs.length) : 0;
+          const todayAvgRM = currentLogs.length > 0 ? r1(tRMToday / currentLogs.length) : 0;
           const todayAvgRest = currentLogs.length > 0 ? Math.round(tRestToday / currentLogs.length) : 0;
           const todayIE = currentLogs.length > 0 ? calculateIE(todayAvgRM, todayAvgRest, state.activeExObj.rest) : 0;
 
@@ -6176,7 +6177,7 @@ function openEditHistorySetModal(type, idx) {
 
             let dayTd = '';
             if (isFirstRow) {
-              let rmBadge = todayAvgRM > 0 ? `<br><span style="font-size:0.65rem; color:var(--green); font-weight:bold;">${todayAvgRM}kg</span>` : '';
+              let rmBadge = todayAvgRM > 0 ? `<br><span style="font-size:0.65rem; color:var(--green); font-weight:bold;">${fmtRM(todayAvgRM)}kg</span>` : '';
               let ieBadge = todayIE > 0 ? `<br><span style="font-size:0.62rem; color:var(--accent); font-weight:bold;">Efic. ${todayIE}</span>` : '';
               dayTd = `
                 <td rowspan="${totalRowsToday}" style="vertical-align:middle; border-right:1px solid var(--card-border); background:rgba(46,196,182,0.05); padding:2px;">
@@ -6288,11 +6289,11 @@ function openEditHistorySetModal(type, idx) {
               let tRM = 0; let tRest = 0;
               sessSets.forEach(h => { 
                 const bW = (h.barWeight !== undefined) ? h.barWeight : 0;
-                tRM += get1RM(h.weight + bW, h.reps); 
+                tRM += get1RMd(h.weight + bW, h.reps); 
                 tRest += (h.restTime || state.activeExObj.rest); 
               });
               
-              const avgRM = Math.round(tRM / sessSets.length);
+              const avgRM = r1(tRM / sessSets.length);
               const avgRest = Math.round(tRest / sessSets.length);
               const ieScore = calculateIE(avgRM, avgRest, state.activeExObj.rest);
               const earlierS = earlierHistoryFor(pastHist, sessSets[0]);
@@ -6305,7 +6306,7 @@ function openEditHistorySetModal(type, idx) {
                   dayTdPast = `
                     <td rowspan="${sessSets.length}" style="vertical-align:middle; border-right:1px solid var(--card-border); background:var(--surface-1); padding:2px; border-top:2px solid var(--card-border);">
                       <span class="rel-day-tag is-past" onclick="showDateInfo('${dateStr}')">${relInfo.label}</span><div style="margin-top:4px; text-align:center;">${dayNoteBtn(normalizeDate(dateStr)).replace('margin-right:8px;', '')}</div><br>
-                      <span style="font-size:0.65rem; color:var(--green); font-weight:bold;">${avgRM}kg</span><br>
+                      <span style="font-size:0.65rem; color:var(--green); font-weight:bold;">${fmtRM(avgRM)}kg</span><br>
                       <span style="font-size:0.62rem; color:var(--accent); font-weight:bold;">Efic. ${ieScore}</span>
                     </td>
                   `;
@@ -6526,11 +6527,11 @@ function openEditHistorySetModal(type, idx) {
               let tRM = 0; let tRest = 0;
               sessSets.forEach(h => { 
                 const bW = (h.barWeight !== undefined) ? h.barWeight : 0;
-                tRM += get1RM(h.weight + bW, h.reps); 
+                tRM += get1RMd(h.weight + bW, h.reps); 
                 tRest += (h.restTime || state.activeExObj.rest); 
               });
               
-              const avgRM = Math.round(tRM / sessSets.length);
+              const avgRM = r1(tRM / sessSets.length);
               const avgRest = Math.round(tRest / sessSets.length);
               const ieScore = calculateIE(avgRM, avgRest, state.activeExObj.rest);
 
@@ -6539,7 +6540,7 @@ function openEditHistorySetModal(type, idx) {
                   <div style="background:var(--surface-1); padding:10px 14px; display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--card-border);">
                     <strong class="rel-day-tag is-past" onclick="showDateInfo('${dateStr}')">${relInfo.label}</strong>
                     <div style="display:flex; gap:6px;">
-                      <span style="background:rgba(46,196,182,0.15); color:var(--green); border:1px solid var(--green); padding:3px 8px; border-radius:6px; font-weight:bold; font-size:0.75rem;">RM: ${avgRM}kg</span>
+                      <span style="background:rgba(46,196,182,0.15); color:var(--green); border:1px solid var(--green); padding:3px 8px; border-radius:6px; font-weight:bold; font-size:0.75rem;">RM: ${fmtRM(avgRM)}kg</span>
                       <span style="background:rgba(255,107,53,0.15); color:var(--accent); border:1px solid var(--accent); padding:3px 8px; border-radius:6px; font-weight:bold; font-size:0.75rem;">Efic. ${ieScore} pts</span>
                     </div>
                   </div>
@@ -6952,13 +6953,13 @@ function openEditHistorySetModal(type, idx) {
         exLogs.forEach(log => { 
           const bW = (log.barWeight !== undefined) ? log.barWeight : 0;
           const totW = log.weight + bW;
-          currentTotalRM += get1RM(totW, log.reps); 
+          currentTotalRM += get1RMd(totW, log.reps); 
           currentTotalRest += (log.restTime || exObj.rest);
           tS++; 
           tV += (totW * log.reps); 
         });
 
-        const currentAvgRM = Math.round(currentTotalRM / exLogs.length);
+        const currentAvgRM = r1(currentTotalRM / exLogs.length);
         const currentAvgRest = Math.round(currentTotalRest / exLogs.length);
         const currentIE = calculateIE(currentAvgRM, currentAvgRest, exObj.rest);
 
@@ -6975,10 +6976,10 @@ function openEditHistorySetModal(type, idx) {
           let lRM = 0; let lRest = 0;
           lastSessSets.forEach(h => { 
             const bW = (h.barWeight !== undefined) ? h.barWeight : 0;
-            lRM += get1RM(h.weight + bW, h.reps); 
+            lRM += get1RMd(h.weight + bW, h.reps); 
             lRest += (h.restTime || exObj.rest); 
           });
-          prevAvgRM = Math.round(lRM / lastSessSets.length);
+          prevAvgRM = r1(lRM / lastSessSets.length);
           prevIE = calculateIE(prevAvgRM, Math.round(lRest / lastSessSets.length), exObj.rest);
 
           uniquePastSessions.forEach(sKey => {
@@ -6986,10 +6987,10 @@ function openEditHistorySetModal(type, idx) {
             let sRM = 0; let sRest = 0;
             sSets.forEach(h => { 
               const bW = (h.barWeight !== undefined) ? h.barWeight : 0;
-              sRM += get1RM(h.weight + bW, h.reps); 
+              sRM += get1RMd(h.weight + bW, h.reps); 
               sRest += (h.restTime || exObj.rest); 
             });
-            const sAvgRM = Math.round(sRM / sSets.length);
+            const sAvgRM = r1(sRM / sSets.length);
             const sIE = calculateIE(sAvgRM, Math.round(sRest / sSets.length), exObj.rest);
             
             if (bestAvgRM === null || sAvgRM > bestAvgRM) bestAvgRM = sAvgRM;
@@ -6999,7 +7000,7 @@ function openEditHistorySetModal(type, idx) {
 
         function getBadge(curr, target, unit = 'kg') {
           if (target === null) return '<span style="color:var(--text-dim)">Primera vez</span>';
-          const diff = curr - target;
+          const diff = Math.round((curr - target) * 10) / 10;
           if (diff > 0) return `<span style="color:var(--green); font-weight:bold;">▲ +${diff} ${unit}</span>`;
           if (diff < 0) return `<span style="color:var(--red); font-weight:bold;">▼ ${diff} ${unit}</span>`;
           return `<span style="color:var(--yellow); font-weight:bold;">= 0 ${unit}</span>`;
@@ -7007,9 +7008,9 @@ function openEditHistorySetModal(type, idx) {
 
         function getRecordBadge(curr, best, unit = 'kg') {
           if (best === null) return `<span style="color:var(--green); font-weight:bold; display:inline-flex; align-items:center; gap:4px;">${svgTrophyYellow} Primer Récord</span>`;
-          if (curr > best) return `<span style="color:var(--green); font-weight:bold; display:inline-flex; align-items:center; gap:4px;">${svgTrophyYellow} ¡NUEVO RÉCORD! (▲ +${curr - best} ${unit})</span>`;
+          if (curr > best) return `<span style="color:var(--green); font-weight:bold; display:inline-flex; align-items:center; gap:4px;">${svgTrophyYellow} ¡NUEVO RÉCORD! (▲ +${Math.round((curr - best) * 10) / 10} ${unit})</span>`;
           if (curr === best) return `<span style="color:var(--yellow); font-weight:bold; display:inline-flex; align-items:center; gap:4px;">${svgEqualYellow} Iguala Récord</span>`;
-          return `<span style="color:var(--red); font-weight:bold;">▼ ${curr - best} ${unit} del récord</span>`;
+          return `<span style="color:var(--red); font-weight:bold;">▼ ${Math.round((curr - best) * 10) / 10} ${unit} del récord</span>`;
         }
 
         let exHtml = `<div class="card" style="margin-bottom:15px; border:1px solid var(--card-border);"><h4>${exName}</h4>`;
@@ -7023,7 +7024,7 @@ function openEditHistorySetModal(type, idx) {
         exHtml += `
           <div class="comp-box">
             <div class="comp-row">
-              <span>RM Media Hoy: <strong>${currentAvgRM} kg</strong></span>
+              <span>RM Media Hoy: <strong>${fmtRM(currentAvgRM)} kg</strong></span>
               <span>vs Última: ${getBadge(currentAvgRM, prevAvgRM, 'kg')}</span>
             </div>
             <div class="comp-row" style="margin-top:2px;">
@@ -7103,7 +7104,7 @@ function openEditHistorySetModal(type, idx) {
     }
 
 
-    // ===== V4.56: utilidades =====
+    // ===== V4.57: utilidades =====
     const XSVG = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>';
     let editingParamsCtx = 'routine';
 
@@ -7875,8 +7876,8 @@ function openEditHistorySetModal(type, idx) {
       const stats = getExerciseStatsData(currentStatsExName);
 
       // KPIs
-      document.getElementById('kpi-max-rm').innerText = stats.maxRM > 0 ? `${stats.maxRM} kg` : '-';
-      document.getElementById('kpi-latest-rm').innerText = stats.latestRM > 0 ? `${stats.latestRM} kg` : '-';
+      document.getElementById('kpi-max-rm').innerText = stats.maxRM > 0 ? `${fmtRM(stats.maxRM)} kg` : '-';
+      document.getElementById('kpi-latest-rm').innerText = stats.latestRM > 0 ? `${fmtRM(stats.latestRM)} kg` : '-';
       document.getElementById('kpi-max-ie').innerText = stats.maxIE > 0 ? `${stats.maxIE} pts` : '-';
       
       const trendEl = document.getElementById('kpi-trend');
@@ -7920,11 +7921,11 @@ function openEditHistorySetModal(type, idx) {
 
         sessSets.forEach(h => {
           const bW = (h.barWeight !== undefined) ? h.barWeight : 0;
-          totalRM += get1RM(h.weight + bW, h.reps);
+          totalRM += get1RMd(h.weight + bW, h.reps);
           totalRest += (h.restTime || 90);
         });
 
-        const avgRM = Math.round(totalRM / sessSets.length);
+        const avgRM = r1(totalRM / sessSets.length);
         const avgRest = Math.round(totalRest / sessSets.length);
         const ieScore = calculateIE(avgRM, avgRest, 90);
 
@@ -7988,11 +7989,11 @@ function openEditHistorySetModal(type, idx) {
         let tRM = 0; let tRest = 0;
         sessSets.forEach(h => { 
           const bW = (h.barWeight !== undefined) ? h.barWeight : 0;
-          tRM += get1RM(h.weight + bW, h.reps); 
+          tRM += get1RMd(h.weight + bW, h.reps); 
           tRest += (h.restTime || 90); 
         });
 
-        const avgRM = Math.round(tRM / sessSets.length);
+        const avgRM = r1(tRM / sessSets.length);
         const avgRest = Math.round(tRest / sessSets.length);
         const ieScore = calculateIE(avgRM, avgRest, 90);
 
@@ -8001,7 +8002,7 @@ function openEditHistorySetModal(type, idx) {
             <div style="background:var(--surface-1); padding:8px 12px; display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--card-border);">
               <strong style="color:var(--green); font-size:0.85rem;">${relInfo.label} (${dateStr})</strong>
               <div style="display:flex; gap:6px;">
-                <span style="background:rgba(46,196,182,0.15); color:var(--green); border:1px solid var(--green); padding:2px 6px; border-radius:4px; font-weight:bold; font-size:0.7rem;">RM: ${avgRM}kg</span>
+                <span style="background:rgba(46,196,182,0.15); color:var(--green); border:1px solid var(--green); padding:2px 6px; border-radius:4px; font-weight:bold; font-size:0.7rem;">RM: ${fmtRM(avgRM)}kg</span>
                 <span style="background:rgba(255,107,53,0.15); color:var(--accent); border:1px solid var(--accent); padding:2px 6px; border-radius:4px; font-weight:bold; font-size:0.7rem;">Efic. ${ieScore} pts</span>
               </div>
             </div>
