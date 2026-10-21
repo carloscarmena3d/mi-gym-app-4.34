@@ -11,7 +11,7 @@
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%230b132b'/%3E%3Cpath d='M20 35h12v30H20zM68 35h12v30H68z' fill='%232ec4b6'/%3E%3Cpath d='M32 42h36v16H32z' fill='%23ff6b35'/%3E%3Cpath d='M14 42h6v16h-6zM80 42h6v16h-6z' fill='%23ffd166'/%3E%3C/svg%3E">
   <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%230b132b'/%3E%3Cpath d='M20 35h12v30H20zM68 35h12v30H68z' fill='%232ec4b6'/%3E%3Cpath d='M32 42h36v16H32z' fill='%23ff6b35'/%3E%3Cpath d='M14 42h6v16h-6zM80 42h6v16h-6z' fill='%23ffd166'/%3E%3C/svg%3E">
   
-  <title>Mi Gym App V4.58</title>
+  <title>Mi Gym App V4.59</title>
   <style>
     :root {
       --bg-color: #0b132b;    /* Azul oscuro profundo */
@@ -1262,7 +1262,7 @@
           <input type="checkbox" id="chk-amoled-mode" onchange="toggleAmoledModeSetting(this.checked)" style="width:20px; height:20px; accent-color:var(--green); cursor:pointer;">
         </label>
       </div>
-      <p style="text-align:center; font-size:0.75rem; color:var(--text-dim); margin-top:4px;">MiGymApp V4.58</p>
+      <p style="text-align:center; font-size:0.75rem; color:var(--text-dim); margin-top:4px;">MiGymApp V4.59</p>
     </div>
   </div>
 
@@ -7104,7 +7104,7 @@ function openEditHistorySetModal(type, idx) {
     }
 
 
-    // ===== V4.58: utilidades =====
+    // ===== V4.59: utilidades =====
     const XSVG = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>';
     let editingParamsCtx = 'routine';
 
@@ -7630,7 +7630,7 @@ function openEditHistorySetModal(type, idx) {
           const col = curV > prevV ? 'var(--green)' : curV < prevV ? 'var(--red)' : 'var(--text-dim)';
           dots.push(`<span style="width:7px; height:7px; border-radius:50%; background:${col}; display:inline-block;"></span>`);
         }
-        return `<span style="display:inline-flex; gap:3px; align-items:center; margin-right:10px; vertical-align:middle;">${dots.join('')}</span>`;
+        return `<span style="display:inline-flex; gap:3px; align-items:center; margin-right:10px; vertical-align:middle;">${dots.reverse().join('')}</span>`;
       } catch (e) { return ''; }
     }
 
