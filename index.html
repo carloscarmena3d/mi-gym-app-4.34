@@ -11,7 +11,7 @@
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%230b132b'/%3E%3Cpath d='M20 35h12v30H20zM68 35h12v30H68z' fill='%232ec4b6'/%3E%3Cpath d='M32 42h36v16H32z' fill='%23ff6b35'/%3E%3Cpath d='M14 42h6v16h-6zM80 42h6v16h-6z' fill='%23ffd166'/%3E%3C/svg%3E">
   <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%230b132b'/%3E%3Cpath d='M20 35h12v30H20zM68 35h12v30H68z' fill='%232ec4b6'/%3E%3Cpath d='M32 42h36v16H32z' fill='%23ff6b35'/%3E%3Cpath d='M14 42h6v16h-6zM80 42h6v16h-6z' fill='%23ffd166'/%3E%3C/svg%3E">
   
-  <title>Mi Gym App V4.66</title>
+  <title>Mi Gym App V4.69</title>
   <style>
     :root {
       --bg-color: #0b132b;    /* Azul oscuro profundo */
@@ -54,6 +54,9 @@
     .btn-ok { background-color: var(--green); color: #000; font-weight: bold; }
     .dc-dot { width:22px; height:22px; border-radius:50%; border:2px solid var(--c); background:transparent; opacity:0.4; cursor:pointer; transition:all 0.2s ease; padding:0; }
     .dc-dot.selected { background:var(--c); opacity:1; box-shadow:0 0 8px var(--c); }
+    .reg-cell { background:var(--surface-1); border:1px solid var(--card-border); border-radius:12px; padding:10px 12px; transition:border-color 0.15s; }
+    button.rb-btn { width:40px; height:40px; border-radius:50%; background:var(--surface-2); border:1px solid var(--card-border); color:var(--text); font-size:1.3rem; line-height:1; padding:0; display:flex; align-items:center; justify-content:center; cursor:pointer; touch-action:manipulation; user-select:none; -webkit-user-select:none; flex-shrink:0; }
+    button.rb-btn:active { transform:scale(0.94); }
     .btn-calc { background-color: var(--blue); }
     .btn-demo { background-color: #2b2d42; border: 1px solid var(--text-dim); }
     
@@ -603,6 +606,7 @@
     <button class="view-close nav-back-btn" onclick="showView('view-routines')" aria-label="Cerrar"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
     <h1 id="routine-title" style="margin-top:15px;"></h1>
     <div id="daily-check-card"></div>
+    <div id="session-alert"></div>
     <div id="exercises-list"></div>
     <button class="btn btn-secondary" style="margin-top:15px; margin-bottom: 15px;" onclick="openRoutinePickerModal()">+ Ejercicio</button>
   </div>
@@ -615,6 +619,7 @@
       </div>
       
       <h2 id="workout-ex-title" style="margin-bottom: 8px; font-size: 1.25rem; flex-shrink: 0;"></h2>
+      <div id="live-alert"></div>
       
       <div class="history-scroll-box" id="exercise-history"></div>
     </div>
@@ -713,11 +718,10 @@
   <!-- VISTA 4: RESUMEN CON COMPARATIVA AVANZADA -->
   <div id="view-summary" class="hidden">
     <h1 style="color: var(--green); text-align: center; font-size: 2rem;">¡Completado!</h1>
-    <div class="card" style="text-align: center; margin: 20px 0;">
-      <p style="color: var(--text-dim);">Tiempo total</p>
-      <h2 id="summary-time" style="font-size: 2.5rem; margin-top: 5px;">00:00</h2>
-    </div>
-    <h3>Rendimiento</h3>
+    <div id="summary-verdict" style="margin:16px 0 0;"></div>
+    <span id="summary-time" class="hidden"></span>
+    <div id="summary-blocks"></div>
+    <h3 style="margin-top:16px;">Ejercicios</h3>
     <div id="summary-details"></div>
     <button class="btn" style="margin-top: 20px;" onclick="closeSummaryAndReset()">Guardar</button>
   </div>
@@ -886,31 +890,31 @@
       <h2 style="">Peso y medidas</h2>
 
       <div class="chart-tab-bar" style="margin-top:10px;">
-        <button class="chart-tab-btn active" id="btn-mwtab-peso" onclick="switchMeasurementsModalTab('peso')">Peso</button>
-        <button class="chart-tab-btn" id="btn-mwtab-medidas" onclick="switchMeasurementsModalTab('medidas')">Medidas</button>
+        <button class="chart-tab-btn active" id="btn-mwtab-reg" onclick="switchMeasurementsModalTab('reg')">Registrar</button>
+        <button class="chart-tab-btn" id="btn-mwtab-evo" onclick="switchMeasurementsModalTab('evo')">Evolución</button>
       </div>
 
-      <label id="mw-date-pill" style="position:relative; display:flex; align-items:center; gap:10px; margin-top:12px; height:46px; padding:0 14px; background:var(--surface-1); border:1px solid var(--card-border); border-radius:12px; cursor:pointer; overflow:hidden;">
+      <div id="mw-date-row" style="display:flex; gap:8px; margin-top:12px;">
+      <label id="mw-date-pill" style="position:relative; display:flex; align-items:center; gap:10px; margin-top:0; flex:1; height:46px; padding:0 14px; background:var(--surface-1); border:1px solid var(--card-border); border-radius:12px; cursor:pointer; overflow:hidden;">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><rect x="3" y="4" width="18" height="18" rx="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
         <span id="mw-date-text" style="font-weight:bold; font-size:0.95rem; color:var(--text);">Hoy</span>
         <span id="mw-date-sub" style="margin-left:auto; font-size:0.8rem; color:var(--text-dim);"></span>
         <input type="date" id="mw-date" aria-label="Fecha" onchange="updateMwDateLabel()" onclick="try { this.showPicker(); } catch (e) {}" style="position:absolute; top:0; left:0; width:100%; height:100%; margin:0; padding:0; border:0; background:transparent; opacity:0; cursor:pointer; color-scheme:dark;">
       </label>
-
-      <div id="mw-tab-peso" style="flex:1; display:flex; flex-direction:column; min-height:0;">
-        <div style="display: flex; gap: 12px; align-items: center; margin-top: 12px; margin-bottom:15px;">
-          <input type="number" id="bw-input" step="0.1" placeholder="Peso (kg)" style="margin-top: 0; flex:1;">
-          <button onclick="saveBodyWeight()" style="width:48px; height:48px; border-radius:50%; background:var(--accent); color:#ffffff; border:none; font-size:1.5rem; font-weight:bold; cursor:pointer; display:flex; align-items:center; justify-content:center; flex-shrink:0;" aria-label="Guardar Peso">✓</button>
-        </div>
-
-        <canvas id="bw-chart-canvas" style="width:100%; height:150px; background:var(--surface-1); border-radius:12px; border:1px solid var(--card-border); margin-bottom:10px; display:block;"></canvas>
-
-        <div style="font-size:0.85rem; font-weight:bold; color:var(--text-dim); margin-bottom:6px;">Historial de registros</div>
-        <div id="bw-history" style="flex:1; overflow-y: auto; padding-right:2px; max-height:200px;"></div>
+      <button onclick="editHeight()" aria-label="Altura" style="display:flex; align-items:center; gap:6px; height:46px; padding:0 12px; background:var(--surface-1); border:1px solid var(--card-border); border-radius:12px; color:var(--text); cursor:pointer; font-size:0.85rem; font-family:inherit; flex-shrink:0;"><span style="color:var(--text-dim);">Altura</span><strong id="reg-height">—</strong></button>
       </div>
 
-      <div id="mw-tab-medidas" class="hidden" style="flex:1; overflow-y:auto; padding-right:2px; min-height:0;">
-        <div id="ms-categories"></div>
+      <div id="mw-tab-reg" style="flex:1; display:flex; flex-direction:column; min-height:0; margin-top:12px;">
+        <div id="reg-scroll" style="flex:1; overflow-y:auto; min-height:0; padding-right:2px;"></div>
+        <button class="btn btn-ok" onclick="saveRegistro()" style="margin-top:10px; flex-shrink:0;">Guardar</button>
+      </div>
+
+      <div id="mw-tab-evo" class="hidden" style="flex:1; overflow-y:auto; min-height:0; margin-top:12px; padding-right:2px;">
+        <div id="evo-chips" style="display:flex; flex-wrap:wrap; gap:6px; margin-bottom:10px;"></div>
+        <div id="evo-ranges" style="display:flex; flex-wrap:wrap; gap:6px; margin-bottom:12px;"></div>
+        <div id="evo-sum" style="margin-bottom:8px;"></div>
+        <div id="evo-chart" style="background:var(--surface-1); border:1px solid var(--card-border); border-radius:12px; padding:8px 6px 4px;"></div>
+        <div id="evo-list"></div>
       </div>
 
       
@@ -1267,7 +1271,7 @@
           <input type="checkbox" id="chk-amoled-mode" onchange="toggleAmoledModeSetting(this.checked)" style="width:20px; height:20px; accent-color:var(--green); cursor:pointer;">
         </label>
       </div>
-      <p style="text-align:center; font-size:0.75rem; color:var(--text-dim); margin-top:4px;">MiGymApp V4.66</p>
+      <p style="text-align:center; font-size:0.75rem; color:var(--text-dim); margin-top:4px;">MiGymApp V4.69</p>
     </div>
   </div>
 
@@ -3347,6 +3351,7 @@
     function wkCalMove(delta) { calMonth = new Date(calMonth.getFullYear(), calMonth.getMonth() + delta, 1); renderWkCalendar(); }
     function wkCalSelect(iso) { calSel = iso; renderWkCalendar(); }
     function wkSetCheck(iso, key, val) {
+      wkAnCache = {};
       if (!db.dailyChecks) db.dailyChecks = {};
       const cur = Object.assign({}, db.dailyChecks[iso] || {});
       if (cur[key] === val) delete cur[key]; else cur[key] = val;
@@ -3429,9 +3434,9 @@
         }).join('');
         html += '<div style="cursor:pointer; margin-top:6px;" onclick="this.querySelector(\'.wk-detail\').classList.toggle(\'hidden\')">'
           + '<div style="display:flex; justify-content:space-between; align-items:center; gap:8px;">'
-          + '<div style="font-size:0.9rem; color:' + (getDayColorForWorkout(g) || 'var(--green)') + '; font-weight:bold;">' + (g.name || 'Entrenamiento') + '</div>'
+          + '<div style="font-size:0.9rem; color:' + (getDayColorForWorkout(g) || 'var(--green)') + '; font-weight:bold;">' + (g.name || 'Entrenamiento') + wkChip(g) + '</div>'
           + '<div style="text-align:right; font-size:0.78rem; color:var(--text-dim);">' + (g.minutes ? g.minutes + ' min · ' : '') + g.sets + ' series<br>' + Math.round(g.volume).toLocaleString('es-ES') + ' kg</div></div>'
-          + '<div class="wk-detail hidden" style="margin-top:8px; border-top:1px solid var(--card-border); padding-top:8px; font-size:0.8rem;">' + exHtml + '</div></div>';
+          + '<div class="wk-detail hidden" style="margin-top:8px; border-top:1px solid var(--card-border); padding-top:8px; font-size:0.8rem;">' + wkAnalysisHtml(g) + exHtml + '</div></div>';
       });
       if (calSel <= today) {
         const c = getDailyCheck(calSel);
@@ -3449,6 +3454,7 @@
         html += '</div>';
       }
       html += '</div>';
+      html += wkTrendsHtml();
       box.innerHTML = html;
     }
 
@@ -3463,21 +3469,8 @@
       return L > 0.6 ? '#000' : '#fff';
     }
     function getDayColorForWorkout(g) {
-      const rts = db.routines || [];
-      const norm = x => String(x || '').trim().toLowerCase();
-      let day = null;
-      if (g.dayId) {
-        for (const r of rts) { const d = (r.days || []).find(x => x.id === g.dayId); if (d) { day = d; break; } }
-      }
-      if (!day && g.name) {
-        const ordered = rts.slice().sort((a, b) => (b.isActive ? 1 : 0) - (a.isActive ? 1 : 0));
-        for (const r of ordered) {
-          const d = (r.days || []).find(x => norm(x.name) === norm(g.name));
-          if (d && d.color) { day = d; break; }
-          if (d && !day) day = d;
-        }
-      }
-      return day && day.color ? day.color : null;
+      const d = getDayForWorkout(g);
+      return d && d.color ? d.color : null;
     }
     function openDayColorPicker(dayId) {
       const day = currentEditingRoutineObj && (currentEditingRoutineObj.days || []).find(d => d.id === dayId);
@@ -3493,6 +3486,275 @@
       closeModal('modal-day-color');
     }
 
+    // ===== V4.69: PESO Y MEDIDAS (Registrar | Evolución) =====
+    const REG_FIELDS = [
+      { key: 'w', label: 'Peso', unit: 'kg' },
+      { key: 'shoulders', label: 'Hombros' }, { key: 'chest', label: 'Pecho' },
+      { key: 'neck', label: 'Cuello' }, { key: 'waist', label: 'Cintura' },
+      { key: 'hips', label: 'Cadera' }, null,
+      { key: 'armLeftFlexed', label: 'Brazo izq. flex.' }, { key: 'armRightFlexed', label: 'Brazo der. flex.' },
+      { key: 'armLeftRelaxed', label: 'Brazo izq. relaj.' }, { key: 'armRightRelaxed', label: 'Brazo der. relaj.' },
+      { key: 'thighLeft', label: 'Muslo izq.' }, { key: 'thighRight', label: 'Muslo der.' },
+      { key: 'calfLeft', label: 'Gemelo izq.' }, { key: 'calfRight', label: 'Gemelo der.' }
+    ];
+    let regVals = {};
+    function fmt1(v) { return (Math.round(v * 10) / 10).toFixed(1).replace('.', ','); }
+    function isoDay(iso) { const a = String(iso).split('-'); return Math.round(Date.UTC(+a[0], +a[1] - 1, +a[2]) / 86400000); }
+    function mergeMeasurementsByDate() {
+      if (!db || !Array.isArray(db.bodyMeasurements)) return;
+      const map = {}, out = [];
+      db.bodyMeasurements.forEach(m => {
+        const d = normalizeDate(m.date);
+        if (map[d]) { Object.keys(m).forEach(k => { if (k !== 'date' && m[k] != null) map[d][k] = m[k]; }); }
+        else { const c = Object.assign({}, m); c.date = d; map[d] = c; out.push(c); }
+      });
+      if (out.length !== db.bodyMeasurements.length) { db.bodyMeasurements = out; saveDB(); }
+    }
+    function regPrev(key, iso) {
+      if (key === 'w') {
+        let best = null, bd = '';
+        (db.bodyWeight || []).forEach(x => { const d = normalizeDate(x.date); if (d <= iso && d >= bd) { best = +x.weight; bd = d; } });
+        return best;
+      }
+      let best = null, bd = '';
+      (db.bodyMeasurements || []).forEach(m => { const d = normalizeDate(m.date); if (m[key] != null && d <= iso && d >= bd) { best = +m[key]; bd = d; } });
+      return best;
+    }
+    function regOnDate() {
+      if (!document.getElementById('reg-scroll')) return;
+      const iso = getMwDate();
+      regVals = {};
+      REG_FIELDS.forEach(f => { if (f) { const p = regPrev(f.key, iso); regVals[f.key] = { prev: p, cur: p, touched: false }; } });
+      renderRegistrar();
+    }
+    function regCellHtml(f, big) {
+      const unit = f.unit || 'cm';
+      return `<div class="reg-cell" id="rc-${f.key}"${big ? ' style="margin-bottom:10px; padding:12px 14px;"' : ''}>
+        <div style="font-size:0.8rem; color:var(--text-dim); display:flex; justify-content:space-between; min-height:16px;"><span>${f.label}</span><span class="rc-dlt" style="color:var(--accent);"></span></div>
+        <div style="display:flex; align-items:center; justify-content:space-between; margin-top:6px;">
+          <button class="rb-btn" data-k="${f.key}" data-d="-1" aria-label="Bajar ${f.label}">−</button>
+          <div class="rc-val" data-k="${f.key}" style="flex:1; text-align:center; cursor:pointer; font-weight:bold; font-size:${big ? '1.7rem' : '1.05rem'};"><span class="rc-n"></span><span style="font-size:0.7rem; color:var(--text-dim); font-weight:normal; margin-left:2px;">${unit}</span></div>
+          <button class="rb-btn" data-k="${f.key}" data-d="1" aria-label="Subir ${f.label}">+</button>
+        </div></div>`;
+    }
+    function paintRegCell(k) {
+      const c = document.getElementById('rc-' + k), s = regVals[k];
+      if (!c || !s) return;
+      const changed = s.touched && s.cur != null && (s.prev == null || Math.abs(s.cur - s.prev) > 0.001);
+      c.querySelector('.rc-n').textContent = s.cur == null ? '—' : fmt1(s.cur);
+      c.querySelector('.rc-val').style.color = changed ? 'var(--accent)' : 'var(--text)';
+      c.style.borderColor = changed ? 'var(--accent)' : 'var(--card-border)';
+      c.querySelector('.rc-dlt').textContent = (changed && s.prev != null) ? ((s.cur > s.prev ? '+' : '−') + fmt1(Math.abs(s.cur - s.prev))) : '';
+    }
+    function regStep(k, dir, mult) {
+      const s = regVals[k];
+      if (!s) return;
+      if (s.cur == null) { regType(k); return; }
+      s.cur = Math.max(0.1, Math.round((s.cur + dir * 0.1 * mult) * 10) / 10);
+      s.touched = true;
+      paintRegCell(k);
+    }
+    function regType(k) {
+      const s = regVals[k], f = REG_FIELDS.find(x => x && x.key === k);
+      if (!s || !f) return;
+      customPrompt(f.label + ' (' + (f.unit || 'cm') + ')', s.cur == null ? '' : s.cur, function(v) {
+        const x = parseFloat(String(v).replace(',', '.'));
+        if (!isNaN(x) && x > 0) { s.cur = Math.round(x * 10) / 10; s.touched = true; paintRegCell(k); }
+      }, 'number');
+    }
+    function bindRegistrar(box) {
+      let t = null, iv = null, n = 0;
+      const stop = () => { clearTimeout(t); clearInterval(iv); n = 0; };
+      box.addEventListener('pointerdown', e => {
+        const b = e.target.closest('.rb-btn');
+        if (!b) return;
+        e.preventDefault();
+        const k = b.dataset.k, d = +b.dataset.d;
+        const run = () => { n++; regStep(k, d, n > 14 ? 5 : 1); };
+        stop(); run();
+        t = setTimeout(() => { iv = setInterval(run, 80); }, 450);
+      });
+      ['pointerup', 'pointercancel', 'pointerleave'].forEach(ev => box.addEventListener(ev, stop));
+      box.addEventListener('click', e => { const v = e.target.closest('.rc-val'); if (v) regType(v.dataset.k); });
+    }
+    function renderRegistrar() {
+      const box = document.getElementById('reg-scroll');
+      if (!box) return;
+      if (!document.getElementById('rc-w')) {
+        box.innerHTML = regCellHtml(REG_FIELDS[0], true)
+          + '<div style="display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; padding-bottom:6px;">'
+          + REG_FIELDS.slice(1).map(f => f ? regCellHtml(f, false) : '<div></div>').join('') + '</div>';
+        bindRegistrar(box);
+      }
+      REG_FIELDS.forEach(f => { if (f) paintRegCell(f.key); });
+      const h = document.getElementById('reg-height');
+      if (h) h.textContent = db.heightCm ? db.heightCm + ' cm' : '—';
+    }
+    function editHeight() {
+      customPrompt('Altura (cm)', db.heightCm || '', function(v) {
+        const x = parseFloat(String(v).replace(',', '.'));
+        if (!isNaN(x) && x >= 100 && x <= 250) { db.heightCm = Math.round(x * 10) / 10; saveDB(); renderRegistrar(); }
+        else { customAlert('Introduce una altura válida en cm.'); }
+      }, 'number');
+    }
+    function saveRegistro() {
+      const iso = getMwDate();
+      const keys = Object.keys(regVals).filter(k => regVals[k].touched && regVals[k].cur != null && regVals[k].cur > 0);
+      if (!keys.length) { showToast('No has cambiado ningún valor'); return; }
+      keys.forEach(k => {
+        const v = regVals[k].cur;
+        if (k === 'w') {
+          if (!db.bodyWeight) db.bodyWeight = [];
+          let i = -1;
+          db.bodyWeight.forEach((x, j) => { if (normalizeDate(x.date) === iso) i = j; });
+          if (i >= 0) db.bodyWeight[i].weight = v; else db.bodyWeight.push({ date: iso, weight: v });
+        } else {
+          if (!db.bodyMeasurements) db.bodyMeasurements = [];
+          let e = db.bodyMeasurements.find(m => normalizeDate(m.date) === iso);
+          if (!e) { e = { date: iso }; db.bodyMeasurements.push(e); }
+          e[k] = v;
+        }
+      });
+      sortBodyWeightByDate();
+      saveDB();
+      showToast('Guardado en ' + (iso === todayISO() ? 'hoy' : formatDate(iso)));
+      regOnDate();
+      renderEvo();
+    }
+
+    const EVO_METRICS = [
+      { id: 'peso', label: 'Peso', unit: 'kg', cat: null, series: [{ key: 'w', label: 'Peso' }] },
+      { id: 'cintura', label: 'Cintura', unit: 'cm', cat: 'zonamedia', series: [{ key: 'waist', label: 'Cintura' }] },
+      { id: 'pecho', label: 'Pecho', unit: 'cm', cat: 'torso', series: [{ key: 'chest', label: 'Pecho' }] },
+      { id: 'hombros', label: 'Hombros', unit: 'cm', cat: 'torso', series: [{ key: 'shoulders', label: 'Hombros' }] },
+      { id: 'cuello', label: 'Cuello', unit: 'cm', cat: 'torso', series: [{ key: 'neck', label: 'Cuello' }] },
+      { id: 'cadera', label: 'Cadera', unit: 'cm', cat: 'zonamedia', series: [{ key: 'hips', label: 'Cadera' }] },
+      { id: 'brazos', label: 'Brazos', unit: 'cm', cat: 'brazos', series: [
+        { key: 'armLeftFlexed', label: 'Izq. flex.', color: 'var(--accent)' }, { key: 'armRightFlexed', label: 'Der. flex.', color: 'var(--green)' },
+        { key: 'armLeftRelaxed', label: 'Izq. relaj.', color: 'var(--accent)', dash: '4 3' }, { key: 'armRightRelaxed', label: 'Der. relaj.', color: 'var(--green)', dash: '4 3' }] },
+      { id: 'muslos', label: 'Muslos', unit: 'cm', cat: 'piernas', series: [
+        { key: 'thighLeft', label: 'Izq.', color: 'var(--accent)' }, { key: 'thighRight', label: 'Der.', color: 'var(--green)' }] },
+      { id: 'gemelos', label: 'Gemelos', unit: 'cm', cat: 'piernas', series: [
+        { key: 'calfLeft', label: 'Izq.', color: 'var(--accent)' }, { key: 'calfRight', label: 'Der.', color: 'var(--green)' }] }
+    ];
+    const EVO_RANGES = [['1 mes', 30], ['3 meses', 91], ['6 meses', 182], ['1 año', 365], ['Total', 0]];
+    let evoMetric = 'peso', evoRange = 91, evoAll = false;
+    function evoSetMetric(id) { evoMetric = id; evoAll = false; renderEvo(); }
+    function evoSetRange(r) { evoRange = r; renderEvo(); }
+    function evoToggleAll() { evoAll = !evoAll; renderEvo(); }
+    function evoEdit(idx) {
+      const m = EVO_METRICS.find(x => x.id === evoMetric);
+      if (!m) return;
+      if (m.id === 'peso') openEditBodyWeightModal(idx); else openEditMeasurementsModal(idx, m.cat);
+    }
+    function evoSeries(m) {
+      return m.series.map(s => {
+        let pts;
+        if (s.key === 'w') pts = (db.bodyWeight || []).map((x, i) => ({ date: normalizeDate(x.date), v: +x.weight, idx: i }));
+        else pts = (db.bodyMeasurements || []).map((x, i) => ({ date: normalizeDate(x.date), v: x[s.key] != null ? +x[s.key] : null, idx: i })).filter(p => p.v != null && !isNaN(p.v));
+        pts = pts.filter(p => !isNaN(p.v)).sort((a, b) => a.date < b.date ? -1 : a.date > b.date ? 1 : 0);
+        pts.forEach(p => { p.t = isoDay(p.date); });
+        return { label: s.label, color: s.color || 'var(--text)', dash: s.dash || '', pts: pts };
+      });
+    }
+    function renderEvo() {
+      const chartEl = document.getElementById('evo-chart');
+      if (!chartEl) return;
+      const m = EVO_METRICS.find(x => x.id === evoMetric) || EVO_METRICS[0];
+      const chip = (on, onclick, label) => `<div onclick="${onclick}" style="padding:6px 12px; border-radius:999px; font-size:0.8rem; cursor:pointer; white-space:nowrap; background:${on ? 'var(--accent)' : 'var(--surface-1)'}; color:${on ? '#fff' : 'var(--text-dim)'}; border:1px solid ${on ? 'var(--accent)' : 'var(--card-border)'};">${label}</div>`;
+      document.getElementById('evo-chips').innerHTML = EVO_METRICS.map(x => chip(x.id === m.id, `evoSetMetric('${x.id}')`, x.label)).join('');
+      document.getElementById('evo-ranges').innerHTML = EVO_RANGES.map(r => chip(r[1] === evoRange, `evoSetRange(${r[1]})`, r[0])).join('');
+      const ser = evoSeries(m);
+      const todayT = isoDay(todayISO());
+      const allPts = [].concat.apply([], ser.map(s => s.pts));
+      const minT = evoRange ? todayT - evoRange : (allPts.length ? Math.min.apply(null, allPts.map(p => p.t)) : todayT - 30);
+      const vis = ser.map(s => s.pts.filter(p => p.t >= minT));
+      const flat = [].concat.apply([], vis);
+      const single = ser.length === 1;
+      let sum = '';
+      if (single) {
+        const all = ser[0].pts, v = vis[0];
+        if (all.length) {
+          const last = all[all.length - 1];
+          const dl = v.length ? last.v - v[0].v : 0;
+          sum = `<div style="font-size:1.7rem; font-weight:bold;">${fmt1(last.v)}<span style="font-size:0.85rem; color:var(--text-dim); font-weight:normal; margin-left:4px;">${m.unit}</span></div><div style="font-size:0.8rem; color:var(--text-dim);">${v.length > 1 ? (dl > 0 ? '+' : dl < 0 ? '−' : '') + fmt1(Math.abs(dl)) + ' ' + m.unit + ' en el periodo' : 'Un solo registro en el periodo'}</div>`;
+        }
+      } else {
+        sum = '<div style="display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:4px 12px;">' + ser.map((s, i) => {
+          const v = vis[i], last = s.pts.length ? s.pts[s.pts.length - 1] : null;
+          const dl = (last && v.length > 1) ? last.v - v[0].v : null;
+          return `<div style="font-size:0.8rem; display:flex; align-items:center; gap:6px;"><span style="width:14px; height:0; border-top:3px ${s.dash ? 'dashed' : 'solid'} ${s.color};"></span><span style="color:var(--text-dim);">${s.label}</span><strong>${last ? fmt1(last.v) : '—'}</strong>${dl !== null ? `<span style="color:var(--text-dim); font-size:0.72rem;">${dl > 0 ? '+' : dl < 0 ? '−' : ''}${fmt1(Math.abs(dl))}</span>` : ''}</div>`;
+        }).join('') + '</div>';
+      }
+      document.getElementById('evo-sum').innerHTML = sum;
+      if (!flat.length) {
+        chartEl.innerHTML = '<div style="padding:30px 10px; text-align:center; font-size:0.85rem; color:var(--text-dim);">Sin datos en este periodo.</div>';
+      } else {
+        const W = 340, H = 150, L = 34, R = 8, T = 10, B = 20;
+        let mn = Math.min.apply(null, flat.map(p => p.v)), mx = Math.max.apply(null, flat.map(p => p.v));
+        const pad = (mx - mn) * 0.15 || 0.5; mn -= pad; mx += pad;
+        const span = Math.max(todayT - minT, 1);
+        const X = t => L + (t - minT) / span * (W - L - R), Y = v => T + (mx - v) / (mx - mn) * (H - T - B);
+        let s = `<svg viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="Gráfica de evolución">`;
+        const ph = getPhases();
+        ph.forEach((p, i) => {
+          const a = Math.max(isoDay(p.start), minT), b = Math.min(ph[i + 1] ? isoDay(ph[i + 1].start) : todayT, todayT);
+          if (b > a) s += `<rect x="${X(a)}" y="${T}" width="${X(b) - X(a)}" height="${H - T - B}" style="fill:${PHASE_INFO[p.type].color}; opacity:0.13;"/>`;
+        });
+        for (let g = 0; g < 3; g++) {
+          const gv = mn + (mx - mn) * g / 2;
+          s += `<line x1="${L}" x2="${W - R}" y1="${Y(gv)}" y2="${Y(gv)}" style="stroke:var(--card-border);" stroke-width="0.5"/><text x="${L - 4}" y="${Y(gv) + 4}" text-anchor="end" font-size="10" style="fill:var(--text-dim);">${fmt1(gv)}</text>`;
+        }
+        ser.forEach((se, i) => {
+          const v = vis[i];
+          if (!v.length) return;
+          s += `<polyline points="${v.map(p => X(p.t) + ',' + Y(p.v)).join(' ')}" fill="none" style="stroke:${se.color};" stroke-width="2" stroke-linejoin="round"${se.dash ? ` stroke-dasharray="${se.dash}"` : ''}/>`;
+          if (v.length <= 60) v.forEach(p => { s += `<circle cx="${X(p.t)}" cy="${Y(p.v)}" r="2.2" style="fill:${se.color};"/>`; });
+          const lp = v[v.length - 1];
+          s += `<circle cx="${X(lp.t)}" cy="${Y(lp.v)}" r="4" style="fill:${single ? 'var(--accent)' : se.color};"/>`;
+        });
+        const dl = t => { const d = new Date(t * 86400000); return d.getUTCDate() + ' ' + ['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'][d.getUTCMonth()] + (evoRange === 0 || evoRange > 200 ? ' ' + String(d.getUTCFullYear()).slice(2) : ''); };
+        s += `<text x="${L}" y="${H - 5}" font-size="10" style="fill:var(--text-dim);">${dl(minT)}</text><text x="${W - R}" y="${H - 5}" text-anchor="end" font-size="10" style="fill:var(--text-dim);">${dl(todayT)}</text></svg>`;
+        chartEl.innerHTML = s;
+      }
+      const byIdx = {};
+      ser.forEach((se, si) => se.pts.forEach(p => { if (!byIdx[p.idx]) byIdx[p.idx] = { idx: p.idx, date: p.date, vals: [] }; byIdx[p.idx].vals[si] = p.v; }));
+      let recs = Object.keys(byIdx).map(k => byIdx[k]).sort((a, b) => a.date < b.date ? -1 : a.date > b.date ? 1 : 0);
+      recs.forEach((r, i) => { r.prev = i > 0 ? recs[i - 1] : null; });
+      recs.reverse();
+      const total = recs.length;
+      if (!evoAll) recs = recs.slice(0, 8);
+      let html = recs.length ? '<div style="font-size:0.85rem; font-weight:bold; color:var(--text-dim); margin:12px 0 6px;">Registros</div>' : '';
+      recs.forEach(r => {
+        let right;
+        if (single) {
+          const dl = r.prev ? r.vals[0] - r.prev.vals[0] : null;
+          right = `<strong>${fmt1(r.vals[0])} ${m.unit}</strong>${dl !== null ? `<span style="font-size:0.75rem; color:var(--text-dim); margin-left:8px;">${dl > 0 ? '+' : dl < 0 ? '−' : ''}${fmt1(Math.abs(dl))}</span>` : ''}`;
+        } else {
+          right = '<div style="text-align:right; font-size:0.8rem; line-height:1.5;">' + ser.map((se, i) => r.vals[i] != null ? `<div><span style="color:var(--text-dim);">${se.label}</span> <strong>${fmt1(r.vals[i])}</strong></div>` : '').join('') + '</div>';
+        }
+        html += `<div onclick="evoEdit(${r.idx})" class="card" style="padding:10px 14px; margin-bottom:8px; cursor:pointer; display:flex; justify-content:space-between; align-items:center; gap:10px;"><span style="font-size:0.9rem;">${formatDate(r.date)}</span><span>${right}</span></div>`;
+      });
+      if (total > 8) html += `<button class="btn btn-secondary btn-small" style="width:100%;" onclick="evoToggleAll()">${evoAll ? 'Ver menos' : 'Ver todos (' + total + ')'}</button>`;
+      document.getElementById('evo-list').innerHTML = html;
+    }
+    function switchMeasurementsModalTab(tab) {
+      document.getElementById('mw-tab-reg').classList.toggle('hidden', tab !== 'reg');
+      document.getElementById('mw-tab-evo').classList.toggle('hidden', tab !== 'evo');
+      document.getElementById('btn-mwtab-reg').classList.toggle('active', tab === 'reg');
+      document.getElementById('btn-mwtab-evo').classList.toggle('active', tab === 'evo');
+      document.getElementById('mw-date-row').style.display = tab === 'reg' ? 'flex' : 'none';
+      if (tab === 'reg') regOnDate(); else renderEvo();
+    }
+    function openMeasurementsModal() {
+      resetMwDate();
+      switchMeasurementsModalTab('reg');
+      openModal('modal-weight');
+    }
+    function refreshPesoMedidas() { regOnDate(); renderEvo(); }
+    function renderBodyWeight() { refreshPesoMedidas(); }
+    function renderMeasurements() { if (!db.bodyMeasurements) db.bodyMeasurements = []; refreshPesoMedidas(); }
+
     function initApp() {
       migrateDatesToISO();
       migrateExerciseNamesAndEquipment();
@@ -3504,6 +3766,8 @@
       renderMeasurements();
       updateDatalist(); 
       updateActiveSessionUI();
+      if (!db.rpeValidFrom) { db.rpeValidFrom = todayISO(); saveDB(); }
+      mergeMeasurementsByDate();
       renderPhasePill();
       if (session) requestWakeLock();
     }
@@ -3536,41 +3800,6 @@
       saveDB();
       document.getElementById('bw-input').value = '';
       renderBodyWeight();
-    }
-
-    function renderBodyWeight() {
-      const container = document.getElementById('bw-history');
-      if (!container) return;
-      if (!db.bodyWeight) db.bodyWeight = [];
-
-      setTimeout(() => {
-        if (db.bodyWeight.length === 0) {
-          drawLineChart('bw-chart-canvas', [], '#ff6b35', 'kg');
-        } else {
-          const chartPoints = [...db.bodyWeight].sort((a,b) => parseDateStr(a.date) - parseDateStr(b.date)).map(bw => {
-            const relInfo = getRelativeDaysTag(bw.date);
-            return { label: relInfo.label, value: bw.weight };
-          });
-          drawLineChart('bw-chart-canvas', chartPoints, '#ff6b35', 'kg');
-        }
-      }, 50);
-
-      if (db.bodyWeight.length === 0) {
-        container.innerHTML = '<p style="color:var(--text-dim); text-align:center; padding:15px; font-size:0.85rem;">Sin registros aún.</p>';
-        return;
-      }
-
-      let html = '';
-      for (let i = db.bodyWeight.length - 1; i >= 0; i--) {
-        const bw = db.bodyWeight[i];
-        html += `
-          <div class="history-item flex-between" style="cursor:pointer;" onclick="openEditBodyWeightModal(${i})">
-            <span style="display:inline-flex; align-items:center;">${svgCalendarDim}${formatDate(bw.date)}</span>
-            <span style="font-weight:bold; color:var(--accent); font-size:1.1rem;">${bw.weight} kg</span>
-          </div>
-        `;
-      }
-      container.innerHTML = html;
     }
 
     function openEditBodyWeightModal(idx) {
@@ -3625,6 +3854,7 @@
     const ALL_MEASURE_FIELDS = [
       { key: 'shoulders', label: 'Hombros' },
       { key: 'chest', label: 'Pecho' },
+      { key: 'neck', label: 'Cuello' },
       { key: 'waist', label: 'Cintura' },
       { key: 'hips', label: 'Cadera' },
       { key: 'armLeftFlexed', label: 'Brazo Izq. (flexionado)' },
@@ -3637,7 +3867,7 @@
       { key: 'calfRight', label: 'Gemelo Der.' }
     ];
     const MEASURE_CATEGORIES = [
-      { id: 'torso', label: 'Torso', type: 'simple', metrics: [{ key: 'shoulders', label: 'Hombros' }, { key: 'chest', label: 'Pecho' }] },
+      { id: 'torso', label: 'Torso', type: 'simple', metrics: [{ key: 'shoulders', label: 'Hombros' }, { key: 'chest', label: 'Pecho' }, { key: 'neck', label: 'Cuello' }] },
       { id: 'brazos', label: 'Brazos', type: 'armRow', fields: ARM_FIELDS, chartRows: [
           { rowLabel: 'Flexionado', left: 'armLeftFlexed', right: 'armRightFlexed' },
           { rowLabel: 'Relajado', left: 'armLeftRelaxed', right: 'armRightRelaxed' }
@@ -3792,26 +4022,6 @@
       renderMeasurementsAccordion();
     }
 
-    function openMeasurementsModal() {
-      resetMwDate();
-      switchMeasurementsModalTab('peso');
-      openModal('modal-weight');
-    }
-
-    function switchMeasurementsModalTab(tab) {
-      document.getElementById('mw-tab-peso').classList.toggle('hidden', tab !== 'peso');
-      document.getElementById('mw-tab-medidas').classList.toggle('hidden', tab !== 'medidas');
-      document.getElementById('btn-mwtab-peso').classList.toggle('active', tab === 'peso');
-      document.getElementById('btn-mwtab-medidas').classList.toggle('active', tab === 'medidas');
-      if (tab === 'peso') { renderBodyWeight(); }
-      else { renderMeasurements(); }
-    }
-
-    function renderMeasurements() {
-      if (!db.bodyMeasurements) db.bodyMeasurements = [];
-      renderMeasurementsAccordion();
-    }
-
     function saveMeasurementCategory(catId) {
       const cat = MEASURE_CATEGORIES.find(c => c.id === catId);
       if (!cat) return;
@@ -3931,6 +4141,7 @@
       });
       const stillHasData = ALL_MEASURE_FIELDS.some(f => entry[f.key] != null);
       if (!stillHasData) { db.bodyMeasurements.splice(editingMsIdx, 1); }
+      mergeMeasurementsByDate();
       saveDB();
       closeModal('modal-edit-measurements');
       renderMeasurements();
@@ -3939,7 +4150,10 @@
     function deleteEditingMeasurements() {
       if (editingMsIdx === null || !db.bodyMeasurements || !db.bodyMeasurements[editingMsIdx]) return;
       customConfirm("¿Estás seguro de que deseas eliminar este registro?", function() {
-        db.bodyMeasurements.splice(editingMsIdx, 1);
+        const _cat = MEASURE_CATEGORIES.find(c => c.id === editingMsCategoryId);
+        const _en = db.bodyMeasurements[editingMsIdx];
+        if (_cat && _en) getCategoryFieldKeys(_cat).forEach(k => { delete _en[k]; });
+        if (!_en || !ALL_MEASURE_FIELDS.some(f => _en[f.key] != null)) db.bodyMeasurements.splice(editingMsIdx, 1);
         saveDB();
         closeModal('modal-edit-measurements');
         renderMeasurements();
@@ -3981,7 +4195,7 @@
 
         const cardStyle = isDayActive 
           ? 'border:2px solid var(--green); border-left:6px solid var(--green); background:var(--surface-1); box-shadow:0 0 14px rgba(46,196,182,0.35);'
-          : 'border:1px solid var(--card-border); border-left:6px solid var(--accent); background:var(--card-bg);';
+          : 'border:1px solid var(--card-border); border-left:6px solid ' + (day.color || 'var(--accent)') + '; background:var(--card-bg);';
 
         const statusTag = isDayActive
           ? `<span style="background:rgba(46,196,182,0.15); color:var(--green); padding:2px 8px; border-radius:10px; font-weight:bold; font-size:0.75rem; margin-left:6px;">En marcha</span>`
@@ -5635,6 +5849,8 @@
 
       container.innerHTML = html;
       initExerciseDragAndDrop();
+    
+      try { renderSessionAlert(); } catch (e) {}
     }
 
     let dragSrcIndex = null;
@@ -7068,6 +7284,8 @@ function openEditHistorySetModal(type, idx) {
       }
 
       c.innerHTML = html;
+    
+      try { updateLiveAlert(); } catch (e) {}
     }
 
     function completeSet() {
@@ -7085,7 +7303,7 @@ function openEditHistorySetModal(type, idx) {
       
       let calculatedRest = rawElapsed; 
 
-      state.selectedRPE = 10;
+      state.selectedRPE = '-';
       state.selectedRIR = '-';
       state.selectedTech = '-';
       document.getElementById('set-note').value = '';
@@ -7125,6 +7343,7 @@ function openEditHistorySetModal(type, idx) {
       if (type === 'rpe') {
         const seq = ['-', 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
         let curr = state.selectedRPE;
+        if (curr === '-') { state.selectedRPE = 8; updatePickerUI(); return; }
         let idx = seq.indexOf(curr);
         if (idx === -1) {
           const num = parseInt(curr);
@@ -7351,6 +7570,8 @@ function openEditHistorySetModal(type, idx) {
       requestWakeLock();
 
       document.getElementById('timer-inputs-panel').classList.add('hidden');
+    
+      try { updateLiveAlert(); } catch (e) {}
     }
 
     function minimizeTimer() { 
@@ -7411,6 +7632,303 @@ function openEditHistorySetModal(type, idx) {
       }
     }
 
+    function f1fmt(v) { return String(Math.round(v * 10) / 10).replace('.', ','); }
+    function lowReasonsOf(chk) {
+      const r = [];
+      if (chk.sleep === 1) r.push('dormiste mal');
+      if (chk.energy && chk.energy <= 2) r.push('tu energía estaba baja');
+      if (chk.health === 1) r.push('no estabas bien de salud');
+      if (chk.nutrition === 1) r.push('la alimentación no acompañó');
+      return r;
+    }
+    function rpeAvgOf(entries) {
+      const from = db.rpeValidFrom;
+      if (!from || !entries || !entries.length) return null;
+      const vals = entries.filter(h => normalizeDate(h.date) >= from).map(h => parseFloat(h.rpe)).filter(v => !isNaN(v));
+      return vals.length >= Math.max(1, Math.ceil(entries.length / 2)) ? vals.reduce((a, b) => a + b, 0) / vals.length : null;
+    }
+    function analyzeStats(stats, dateISO) {
+      const phase = getPhaseForDate(dateISO);
+      const ptype = phase ? phase.type : null;
+      const chk = getDailyCheck(dateISO);
+      const eqVal = ptype === 'deficit' ? 0.3 : 0;
+      let score = 0, n = 0, up = 0, same = 0, down = 0;
+      stats.forEach(s => {
+        s.moreEffort = s.rpeCurr != null && s.rpePrev != null && (s.rpeCurr - s.rpePrev) >= 1 && s.pct !== null && s.pct <= 2;
+        s.lessEffort = s.rpeCurr != null && s.rpePrev != null && (s.rpePrev - s.rpeCurr) >= 1 && s.pct !== null && s.pct >= -2;
+        if (s.pct === null) return;
+        n++;
+        let v;
+        if (s.pct >= 2) { v = 1; up++; } else if (s.pct <= -5) { v = -1; down++; } else { v = eqVal; same++; }
+        if (s.isRecord) v += 0.5;
+        if (s.moreEffort) v -= 0.3;
+        if (s.lessEffort) v += 0.3;
+        score += v;
+      });
+      const avg = n ? score / n : null;
+      const lowReasons = lowReasonsOf(chk);
+      const goodCtx = chk.sleep >= 3 && chk.energy >= 4;
+      const cparts = [];
+      if (up) cparts.push(up + (up === 1 ? ' mejora' : ' mejoran'));
+      if (same) cparts.push(same + ' igual');
+      if (down) cparts.push(down + (down === 1 ? ' baja' : ' bajan'));
+      const counts = cparts.join(' · ');
+      let label, color, reason;
+      if (avg === null) {
+        label = 'Primera referencia'; color = 'var(--blue)';
+        reason = 'Aún no hay sesiones anteriores de estos ejercicios con las que comparar.';
+      } else if (avg >= 0.3) {
+        label = 'Buena sesión'; color = 'var(--green)';
+        reason = counts + '.' + (ptype === 'volumen' ? ' Justo lo que se busca en volumen.' : '');
+        if (ptype === 'deficit' && up === 0 && down === 0) reason = 'En déficit, mantener la fuerza ya es un buen resultado.';
+      } else if (avg > (ptype === 'deficit' ? -0.5 : -0.35)) {
+        label = 'Sesión justa'; color = 'var(--yellow)';
+        reason = counts + '.' + (ptype === 'deficit' ? ' En déficit es un resultado razonable.' : '');
+      } else {
+        label = 'Sesión floja'; color = 'var(--red)';
+        reason = counts + '.' + (ptype === 'volumen' ? ' En volumen se espera progresar: vigila el descanso y la comida.' : '');
+      }
+      if (avg !== null && avg < 0 && lowReasons.length) {
+        label = 'Día flojo'; color = 'var(--yellow)';
+        reason = 'Rendimiento por debajo de lo habitual, pero ' + lowReasons.slice(0, 2).join(' y ') + ': parece algo puntual.';
+      }
+      const best = [], watch = [], next = [];
+      stats.filter(s => s.isRecord).forEach(s => best.push(s.name + ': nuevo récord'));
+      stats.filter(s => s.pct !== null && s.pct >= 2 && !s.isRecord).sort((a, b) => b.pct - a.pct)
+        .forEach(s => best.push(s.name + ' mejora (+' + f1fmt(s.curr - s.prev) + ' kg de RM)'));
+      stats.filter(s => s.lessEffort).forEach(s => best.push(s.name + ': mismo rendimiento con menos esfuerzo'));
+      if (avg !== null && avg < 0 && goodCtx) watch.push('Con buen sueño y energía, la bajada no se explica por el estado de ese día: posible fatiga acumulada.');
+      stats.forEach(s => {
+        const stalled = s.pastRMs.length >= 3 && (function() {
+          const w = s.pastRMs.slice(-3).concat([s.curr]);
+          return Math.max(w[2], w[3]) <= Math.max(w[0], w[1]);
+        })();
+        s.stalled = stalled;
+        if (s.pct !== null && s.pct <= -5) watch.push(s.name + ' baja un ' + Math.round(Math.abs(s.pct)) + '% respecto a la última');
+        else if (stalled && ptype !== 'deficit') watch.push(s.name + ' lleva 3 sesiones sin mejorar');
+        if (s.moreEffort) watch.push(s.name + ': mismo rendimiento con más esfuerzo (RPE ' + f1fmt(s.rpePrev) + ' → ' + f1fmt(s.rpeCurr) + ')');
+        if (s.setRMs.length >= 3 && s.setRMs[0] > 0 && (s.setRMs[0] - s.setRMs[s.setRMs.length - 1]) / s.setRMs[0] > 0.12) watch.push(s.name + ': caída fuerte entre series');
+        if (s.targetRest > 0 && s.avgRest > s.targetRest * 1.35 && s.avgRest - s.targetRest > 30) watch.push(s.name + ': descansos más largos de lo previsto');
+      });
+      stats.forEach(s => {
+        if (s.progOK) next.push(s.rpeCurr != null && s.rpeCurr >= 9.5 ? s.name + ': rango superado, pero con esfuerzo máximo; repite el peso antes de subir' : 'Sube peso en ' + s.name);
+        else if (s.pct !== null && s.pct <= -5 && !lowReasons.length) next.push('Mantén el peso en ' + s.name);
+        else if (s.stalled && ptype === 'volumen' && !lowReasons.length) next.push('Prueba a variar reps o series en ' + s.name);
+      });
+      return { label: label, color: color, reason: reason, best: best, watch: watch, next: next, phase: phase };
+    }
+    function renderSessionSummaryTop(stats, tS, tV, dMins) {
+      const vEl = document.getElementById('summary-verdict'), bEl = document.getElementById('summary-blocks');
+      if (!vEl || !bEl) return;
+      if (tS === 0) { vEl.innerHTML = ''; bEl.innerHTML = ''; return; }
+      const an = analyzeStats(stats, todayISO());
+      const info = an.phase ? PHASE_INFO[an.phase.type] : null;
+      const hrs = Math.floor(dMins / 60);
+      const timeTxt = hrs > 0 ? hrs + 'h ' + (dMins % 60) + 'm' : dMins + ' min';
+      vEl.innerHTML = '<div class="card" style="border-left:6px solid ' + an.color + '; padding:16px; margin-bottom:10px;">'
+        + '<div style="font-size:1.35rem; font-weight:bold; color:' + an.color + '; margin-bottom:4px;">' + an.label + '</div>'
+        + '<div style="font-size:0.95rem; color:var(--text); line-height:1.4;">' + an.reason + '</div>'
+        + '<div style="margin-top:10px; font-size:0.8rem; color:var(--text-dim);">' + timeTxt + ' · ' + tS + ' series · ' + Math.round(tV).toLocaleString('es-ES') + ' kg'
+        + (info ? ' · <span style="color:' + info.color + '; font-weight:bold;">' + info.label + '</span>' : '') + '</div></div>';
+      const blk = (title, c, lines) => lines.length === 0 ? '' :
+        '<div class="card" style="padding:12px 16px; margin-bottom:10px;">'
+        + '<div style="font-size:0.78rem; font-weight:bold; letter-spacing:0.6px; color:' + c + '; margin-bottom:4px;">' + title + '</div>'
+        + lines.slice(0, 3).map(t => '<div style="font-size:0.9rem; margin-top:5px; line-height:1.35;">• ' + t + '</div>').join('') + '</div>';
+      bEl.innerHTML = blk('LO MEJOR', 'var(--green)', an.best) + blk('A VIGILAR', 'var(--yellow)', an.watch) + blk('PRÓXIMA VEZ', 'var(--blue)', an.next);
+    }
+
+    // ===== V4.68: ANÁLISIS DE SESIONES PASADAS =====
+    let wkAnCache = {};
+    function getDayForWorkout(g) {
+      const rts = db.routines || [];
+      const norm = x => String(x || '').trim().toLowerCase();
+      let day = null;
+      if (g.dayId) {
+        for (const r of rts) { const d = (r.days || []).find(x => x.id === g.dayId); if (d) { day = d; break; } }
+      }
+      if (!day && g.name) {
+        const ordered = rts.slice().sort((a, b) => (b.isActive ? 1 : 0) - (a.isActive ? 1 : 0));
+        for (const r of ordered) {
+          const d = (r.days || []).find(x => norm(x.name) === norm(g.name));
+          if (d && d.color) { day = d; break; }
+          if (d && !day) day = d;
+        }
+      }
+      return day;
+    }
+    function buildStatsFromHistory(g) {
+      const stats = [];
+      const day = getDayForWorkout(g);
+      const keyOf = e => String(e.sessionId || ('d_' + normalizeDate(e.date)));
+      const tw = e => (+e.weight || 0) + (+e.barWeight || 0);
+      const avgRM = arr => arr.length ? r1(arr.reduce((t, e) => t + get1RMd(tw(e), +e.reps || 0), 0) / arr.length) : 0;
+      const gid = String(g.id);
+      Object.keys(g.exercises).forEach(exName => {
+        const logs = g.exercises[exName].slice().sort((a, b) => (a.set || 0) - (b.set || 0));
+        if (!logs.length) return;
+        const full = (db.history && db.history[exName]) || [];
+        const idx0 = full.findIndex(e => keyOf(e) === gid);
+        const past = idx0 > 0 ? full.slice(0, idx0).filter(e => keyOf(e) !== gid) : [];
+        const order = [], groups = {};
+        past.forEach(e => { const k = keyOf(e); if (!groups[k]) { groups[k] = []; order.push(k); } groups[k].push(e); });
+        const pastRMs = order.map(k => avgRM(groups[k]));
+        const curr = avgRM(logs);
+        const prev = pastRMs.length ? pastRMs[pastRMs.length - 1] : null;
+        const best = pastRMs.length ? Math.max.apply(null, pastRMs) : null;
+        const exObj = day && (day.exercises || []).find(e => e.name === exName);
+        const rest = logs.map(l => +l.restTime || (exObj ? +exObj.rest : 0) || 0);
+        stats.push({
+          name: exName, curr: curr, prev: prev, best: best,
+          pct: prev ? (curr - prev) / prev * 100 : null,
+          isRecord: best !== null && curr > best,
+          progOK: exObj ? !!checkProgression(logs, exObj.sets, exObj.max) : false,
+          pastRMs: pastRMs, setRMs: logs.map(l => get1RMd(tw(l), +l.reps || 0)),
+          avgRest: rest.reduce((a, b) => a + b, 0) / rest.length, targetRest: exObj ? (+exObj.rest || 0) : 0,
+          rpeCurr: rpeAvgOf(logs), rpePrev: order.length ? rpeAvgOf(groups[order[order.length - 1]]) : null
+        });
+      });
+      return stats;
+    }
+    function getWorkoutAnalysis(g) {
+      const key = String(g.id);
+      if (key in wkAnCache) return wkAnCache[key];
+      let an = null;
+      try { const st = buildStatsFromHistory(g); if (st.length) an = analyzeStats(st, g.date); } catch (e) { an = null; }
+      wkAnCache[key] = an;
+      return an;
+    }
+    function wkChip(g) {
+      const an = getWorkoutAnalysis(g);
+      if (!an) return '';
+      return '<span style="display:inline-block; font-size:0.7rem; font-weight:bold; color:' + an.color + '; border:1px solid ' + an.color + '; border-radius:10px; padding:0 7px; margin-left:6px; vertical-align:middle;">' + an.label + '</span>';
+    }
+    function wkAnalysisHtml(g) {
+      const an = getWorkoutAnalysis(g);
+      if (!an) return '';
+      const sec = (title, c, lines) => lines.length === 0 ? '' :
+        '<div style="margin-top:6px;"><div style="font-size:0.7rem; font-weight:bold; letter-spacing:0.6px; color:' + c + ';">' + title + '</div>'
+        + lines.slice(0, 3).map(t => '<div style="margin-top:2px; line-height:1.35;">• ' + t + '</div>').join('') + '</div>';
+      return '<div style="margin-bottom:8px; padding-bottom:8px; border-bottom:1px dashed var(--card-border);">'
+        + '<div style="font-weight:bold; font-size:0.9rem; color:' + an.color + ';">' + an.label + '</div>'
+        + '<div style="margin-top:2px; line-height:1.35;">' + an.reason + '</div>'
+        + sec('LO MEJOR', 'var(--green)', an.best) + sec('A VIGILAR', 'var(--yellow)', an.watch) + sec('PRÓXIMA VEZ', 'var(--blue)', an.next) + '</div>';
+    }
+
+    // ===== V4.68: AVISOS EN VIVO (durante la sesión) =====
+    function getPastGroups(exName) {
+      const cur = session ? session.startTime : null;
+      const order = [], groups = {};
+      ((db.history && db.history[exName]) || []).forEach(e => {
+        if (cur && e.sessionId === cur) return;
+        const k = String(e.sessionId || ('d_' + normalizeDate(e.date)));
+        if (!groups[k]) { groups[k] = []; order.push(k); }
+        groups[k].push(e);
+      });
+      return { order: order, groups: groups };
+    }
+    function liveVsLast(exName, logs) {
+      const pg = getPastGroups(exName);
+      if (!pg.order.length || !logs.length) return null;
+      const lastSets = pg.groups[pg.order[pg.order.length - 1]];
+      const tw = e => (+e.weight || 0) + (+e.barWeight || 0);
+      let cur = 0, prev = 0, cnt = 0;
+      logs.forEach(l => {
+        const p = lastSets.find(x => x.set === l.set);
+        if (p) { cur += get1RMd(tw(l), +l.reps || 0); prev += get1RMd(tw(p), +p.reps || 0); cnt++; }
+      });
+      return (cnt && prev) ? (cur - prev) / prev * 100 : null;
+    }
+    function updateLiveAlert() {
+      const el = document.getElementById('live-alert');
+      if (!el) return;
+      if (!state.activeExObj || !session) { el.innerHTML = ''; return; }
+      const exName = state.activeExObj.name;
+      const logs = ((session.logs && session.logs[exName]) || []).slice().sort((a, b) => (a.set || 0) - (b.set || 0));
+      const pg = getPastGroups(exName);
+      const chk = getDailyCheck(todayISO());
+      const low = lowReasonsOf(chk);
+      const phase = getCurrentPhase();
+      const ptype = phase ? phase.type : null;
+      const msgs = [];
+      if (logs.length === 0 && pg.order.length >= 3 && ptype !== 'deficit') {
+        const rms = pg.order.slice(-3).map(k => {
+          const a = pg.groups[k];
+          return a.reduce((t, e) => t + get1RMd((+e.weight || 0) + (+e.barWeight || 0), +e.reps || 0), 0) / a.length;
+        });
+        if (Math.max(rms[1], rms[2]) <= rms[0] + 0.05) msgs.push({ c: 'var(--yellow)', t: 'Estancado: 3 sesiones sin mejorar. Hoy intenta una rep más o un poco más de peso.' });
+      }
+      if (logs.length >= 1) {
+        const pct = liveVsLast(exName, logs);
+        if (pct !== null && pct <= -8) {
+          msgs.push({ c: 'var(--red)', t: 'Vas un ' + Math.round(-pct) + '% por debajo de la última vez' + (low.length ? ' (' + low[0] + ')' : '') + '. Valora bajar un poco el peso o alargar el descanso.' });
+        }
+      }
+      if (logs.length >= 3) {
+        const rm = e => get1RMd((+e.weight || 0) + (+e.barWeight || 0), +e.reps || 0);
+        const r0 = rm(logs[0]), rl = rm(logs[logs.length - 1]);
+        if (r0 > 0 && (r0 - rl) / r0 > 0.12) msgs.push({ c: 'var(--yellow)', t: 'Caída fuerte entre series: alarga el descanso.' });
+      }
+      const targetSets = parseInt(state.activeExObj.sets) || 3;
+      const lastLog = logs[logs.length - 1];
+      if (lastLog && db.rpeValidFrom && normalizeDate(lastLog.date) >= db.rpeValidFrom && parseFloat(lastLog.rpe) >= 10 && targetSets - logs.length >= 2) {
+        msgs.push({ c: 'var(--yellow)', t: 'Esfuerzo máximo con varias series por hacer: considera bajar peso o reps.' });
+      }
+      msgs.sort((a, b) => (a.c === 'var(--red)' ? 0 : 1) - (b.c === 'var(--red)' ? 0 : 1));
+      el.innerHTML = msgs.slice(0, 2).map(m => '<div onclick="this.remove()" style="border-left:4px solid ' + m.c + '; background:var(--surface-1); border-radius:8px; padding:6px 10px; margin-bottom:6px; font-size:0.78rem; line-height:1.35; color:var(--text); flex-shrink:0;">' + m.t + '</div>').join('');
+    }
+    function renderSessionAlert() {
+      const el = document.getElementById('session-alert');
+      if (!el) return;
+      if (!session || !session.logs) { el.innerHTML = ''; return; }
+      let evaluated = 0, down = 0;
+      Object.keys(session.logs).forEach(ex => {
+        const logs = session.logs[ex];
+        if (!logs || !logs.length) return;
+        const pct = liveVsLast(ex, logs);
+        if (pct === null) return;
+        evaluated++;
+        if (pct <= -5) down++;
+      });
+      if (evaluated < 2 || down < 2) { el.innerHTML = ''; return; }
+      const chk = getDailyCheck(todayISO());
+      const low = lowReasonsOf(chk);
+      const goodCtx = chk.sleep >= 3 && chk.energy >= 4;
+      let msg = 'Hoy vas por debajo de lo habitual en ' + down + ' de ' + evaluated + ' ejercicios' + (low.length ? ' (' + low[0] + ')' : '') + '. Para encarrilar el día: baja un 5-10% el peso o quita una serie del último ejercicio.';
+      if (!low.length && goodCtx) msg += ' Con buen descanso puede ser fatiga acumulada: valora una semana de descarga.';
+      el.innerHTML = '<div class="card" style="border-left:6px solid var(--yellow); padding:12px 16px;"><div style="font-size:0.78rem; font-weight:bold; letter-spacing:0.6px; color:var(--yellow); margin-bottom:4px;">AVISO</div><div style="font-size:0.9rem; line-height:1.4;">' + msg + '</div></div>';
+    }
+
+    // ===== V4.68: TENDENCIAS (últimas 4 semanas) =====
+    function wkTrendsHtml() {
+      const rows = [['sleep', 'Sueño', 3], ['nutrition', 'Nutrición', 3], ['energy', 'Energía', 5], ['health', 'Salud', 3]];
+      const t0 = parseDateStr(todayISO());
+      const days = [];
+      for (let i = 27; i >= 0; i--) {
+        const d = new Date(t0.getFullYear(), t0.getMonth(), t0.getDate() - i);
+        days.push(d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'));
+      }
+      let any = false;
+      let html = '<div class="card" style="margin-top:12px; padding:12px 14px;"><div style="font-weight:bold;">Últimas 4 semanas</div>';
+      rows.forEach(r => {
+        const cols = r[2] === 5 ? DC_COLORS5 : DC_COLORS3;
+        const vals = days.map(d => getDailyCheck(d)[r[0]] || null);
+        if (vals.some(v => v)) any = true;
+        const dots = vals.map(v => '<span style="flex:1; height:16px; border-radius:3px; background:' + (v ? cols[v - 1] : 'var(--card-border)') + ';"></span>').join('');
+        const avg = a => { const f = a.filter(x => x); return f.length >= 2 ? f.reduce((p, c) => p + c, 0) / f.length : null; };
+        const cur = avg(vals.slice(21)), prev = avg(vals.slice(14, 21));
+        let trend = '<span style="color:var(--text-dim);">—</span>';
+        if (cur !== null && prev !== null) {
+          const diff = cur - prev, thr = r[2] === 5 ? 0.6 : 0.4;
+          trend = diff >= thr ? '<span style="color:var(--green);">▲</span>' : diff <= -thr ? '<span style="color:var(--red);">▼</span>' : '<span style="color:var(--text-dim);">=</span>';
+        }
+        html += '<div style="display:flex; align-items:center; gap:8px; margin-top:10px;"><span style="width:72px; font-size:0.85rem;">' + r[1] + '</span>'
+          + '<span style="flex:1; display:flex; gap:2px;">' + dots + '</span><span style="width:18px; text-align:center; font-weight:bold;">' + trend + '</span></div>';
+      });
+      html += '<div style="margin-top:10px; font-size:0.72rem; color:var(--text-dim); line-height:1.35;">'
+        + (any ? 'Cada barra es un día (el último, a la derecha). La flecha compara la última semana con la anterior.' : 'Aún no hay datos: rellena "Estado de hoy" al entrenar y aquí verás tu evolución.') + '</div></div>';
+      return html;
+    }
+
     function doFinishWorkout() {
       const dMins = (session && session.startTime) ? Math.floor((Date.now() - session.startTime) / 60000) : 0; 
       document.getElementById('summary-time').innerText = Math.floor(dMins/60)>0 ? `${Math.floor(dMins/60)}h ${dMins%60}m` : `${dMins} min`;
@@ -7418,6 +7936,7 @@ function openEditHistorySetModal(type, idx) {
       const d = document.getElementById('summary-details'); 
       d.innerHTML = ''; 
       let tS = 0; let tV = 0;
+      const sumStats = []; let sumRows = '';
 
       Object.keys(session.logs).forEach(exName => { 
         let exLogs = session.logs[exName]; 
@@ -7513,13 +8032,36 @@ function openEditHistorySetModal(type, idx) {
           </div>
         `;
 
-        if(checkProgression(exLogs, exObj.sets, exObj.max)) exHtml += `<div class="progression-badge" style="margin-top:8px; display:inline-flex; align-items:center; gap:4px;">${svgStarYellow} ¡Rango superado! (Sube peso próximo día)</div>`;
+        const progOK = checkProgression(exLogs, exObj.sets, exObj.max);
+        if(progOK) exHtml += `<div class="progression-badge" style="margin-top:8px; display:inline-flex; align-items:center; gap:4px;">${svgStarYellow} ¡Rango superado! (Sube peso próximo día)</div>`;
         exHtml += `</div>`; 
         
-        d.innerHTML += exHtml;
+        const _tw = l => l.weight + ((l.barWeight !== undefined) ? l.barWeight : 0);
+        const setRMs = exLogs.slice().sort((a, b) => (a.set || 0) - (b.set || 0)).map(l => get1RMd(_tw(l), l.reps));
+        const pastRMs = uniquePastSessions.map(sKey => {
+          const ss = pastHist.filter(h => (h.sessionId || h.date) === sKey);
+          let t = 0; ss.forEach(h => { t += get1RMd(_tw(h), h.reps); });
+          return ss.length ? r1(t / ss.length) : 0;
+        });
+        let bestLog = exLogs[0], bestLogRM = -1;
+        exLogs.forEach(l => { const rm = get1RMd(_tw(l), l.reps); if (rm > bestLogRM) { bestLogRM = rm; bestLog = l; } });
+        sumStats.push({
+          name: exName, curr: currentAvgRM, prev: prevAvgRM, best: bestAvgRM,
+          pct: (prevAvgRM ? (currentAvgRM - prevAvgRM) / prevAvgRM * 100 : null),
+          isRecord: (bestAvgRM !== null && currentAvgRM > bestAvgRM),
+          progOK: progOK, pastRMs: pastRMs, setRMs: setRMs,
+          avgRest: currentAvgRest, targetRest: +exObj.rest || 0,
+          rpeCurr: rpeAvgOf(exLogs),
+          rpePrev: uniquePastSessions.length ? rpeAvgOf(pastHist.filter(h => (h.sessionId || h.date) === uniquePastSessions[uniquePastSessions.length - 1])) : null
+        });
+        sumRows += '<div class="card" style="padding:12px 16px; margin-bottom:8px; cursor:pointer;" onclick="this.nextElementSibling.classList.toggle(\'hidden\')">'
+          + '<div class="flex-between" style="gap:10px;"><strong style="font-size:1rem;">' + exName + '</strong><span style="font-size:0.85rem; white-space:nowrap;">' + getBadge(currentAvgRM, prevAvgRM, 'kg') + '</span></div>'
+          + '<div style="font-size:0.8rem; color:var(--text-dim); margin-top:4px;">Mejor serie: ' + _tw(bestLog) + ' × ' + bestLog.reps + ' · ' + exLogs.length + (exLogs.length === 1 ? ' serie' : ' series') + '</div></div>'
+          + '<div class="hidden" style="margin-bottom:8px;">' + exHtml + '</div>';
       });
 
-      d.innerHTML += tS===0 ? '<p>No completaste ninguna serie.</p>' : `<div style="margin-top:15px; border-top:2px solid var(--card-border); padding-top:10px;"><strong>Total Series:</strong> ${tS} <br><strong>Volumen Total:</strong> ${tV} kg</div>`;
+      d.innerHTML = tS === 0 ? '<p>No completaste ninguna serie.</p>' : sumRows;
+      renderSessionSummaryTop(sumStats, tS, tV, dMins);
       document.getElementById('mini-timer').classList.add('hidden'); 
       clearInterval(state.timerInterval); 
       try { if (tS > 0 && session.startTime) { db.workouts = (db.workouts || []).filter(w => w.id !== session.startTime); db.workouts.push({ id: session.startTime, name: session.routineName || 'Entrenamiento', dayId: (session.dayIds || [])[0] || null, routineId: session.routineId || null, date: todayISO(new Date(session.startTime)), minutes: dMins, sets: tS, volume: Math.round(tV) }); saveDB(); } } catch(e) {}
@@ -7930,6 +8472,9 @@ function openEditHistorySetModal(type, idx) {
       else { label = d.toLocaleDateString('es-ES', { weekday: 'long' }); label = label.charAt(0).toUpperCase() + label.slice(1); }
       t.textContent = label; sub.textContent = formatDate(v);
       if (el.value !== v) el.value = v;
+      const _pill = document.getElementById('mw-date-pill');
+      if (_pill) _pill.style.borderColor = v !== todayISO() ? 'var(--accent)' : 'var(--card-border)';
+      if (typeof regOnDate === 'function') regOnDate();
     }
     function getMwDate() {
       const el = document.getElementById('mw-date');
@@ -8146,6 +8691,7 @@ function openEditHistorySetModal(type, idx) {
       }).sort((a, b) => a.date < b.date ? 1 : a.date > b.date ? -1 : (String(b.id) > String(a.id) ? 1 : -1));
     }
     function openWorkoutsHistory() {
+      wkAnCache = {};
       const list = getWorkoutsList();
       const curWeek = weekStartDate(new Date()).getTime();
       const weeks = new Set(list.map(g => weekStartDate(parseDateStr(g.date)).getTime()));
@@ -8170,10 +8716,10 @@ function openEditHistorySetModal(type, idx) {
         }).join('');
         html += `<div class="card" style="margin-bottom:8px; padding:10px 12px; cursor:pointer;" onclick="this.querySelector('.wk-detail').classList.toggle('hidden')">
           <div style="display:flex; justify-content:space-between; align-items:center; gap:8px;">
-            <div><strong>${wd} ${formatDate(g.date)}</strong>${g.name ? `<div style="font-size:0.8rem; color:var(--green);">${g.name}</div>` : ''}</div>
+            <div><strong>${wd} ${formatDate(g.date)}</strong>${g.name ? `<div style="font-size:0.8rem; color:var(--green);">${g.name}${wkChip(g)}</div>` : ''}</div>
             <div style="text-align:right; font-size:0.78rem; color:var(--text-dim);">${g.minutes ? g.minutes + ' min · ' : ''}${g.sets} series<br>${Math.round(g.volume).toLocaleString('es-ES')} kg</div>
           </div>
-          <div class="wk-detail hidden" style="margin-top:8px; border-top:1px solid var(--card-border); padding-top:8px; font-size:0.8rem;">${exHtml}</div>
+          <div class="wk-detail hidden" style="margin-top:8px; border-top:1px solid var(--card-border); padding-top:8px; font-size:0.8rem;">${wkAnalysisHtml(g)}${exHtml}</div>
         </div>`;
       });
       document.getElementById('workouts-list').innerHTML = html;
