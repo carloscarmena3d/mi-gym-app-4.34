@@ -6,12 +6,12 @@
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
-  <meta name="theme-color" content="#0d152a">
+  <meta name="theme-color" content="#040920">
   <link rel="manifest" href="manifest.json">
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%230b132b'/%3E%3Cpath d='M20 35h12v30H20zM68 35h12v30H68z' fill='%232ec4b6'/%3E%3Cpath d='M32 42h36v16H32z' fill='%23ff6b35'/%3E%3Cpath d='M14 42h6v16h-6zM80 42h6v16h-6z' fill='%23ffd166'/%3E%3C/svg%3E">
   <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%230b132b'/%3E%3Cpath d='M20 35h12v30H20zM68 35h12v30H68z' fill='%232ec4b6'/%3E%3Cpath d='M32 42h36v16H32z' fill='%23ff6b35'/%3E%3Cpath d='M14 42h6v16h-6zM80 42h6v16h-6z' fill='%23ffd166'/%3E%3C/svg%3E">
   
-  <title>Mi Gym App V4.70</title>
+  <title>Mi Gym App V4.71</title>
   <style>
     :root {
       --bg-color: #0b132b;    /* Azul oscuro profundo */
@@ -533,6 +533,215 @@
     body.hide-back-buttons .nav-back-btn {
       display: none !important;
     }
+</style>
+<style id="theme-metropolitano">
+/* ===== PROPUESTA 2 · "Metropolitano" =====
+ Base azul noche. Rojo neón = energía / acción. Blanco = claridad y selección. Magenta solo como puente de degradado (rojo→magenta→azul), como en las pantallas LED.
+ Reglas: texto claro sobre fondos oscuros; texto blanco sobre rojo; texto azul-tinta (#040A22) sobre cualquier relleno claro o vivo (blanco, menta, amarillo). */
+:root{
+  --ink:#040A22;
+  --bg-color:#040920; --card-bg:#0A1540; --card-border:rgba(120,150,255,.18);
+  --surface-1:#071030; --surface-2:#0F1D5A;
+  --text:#F4F7FF; --text-dim:#9AA9D8;
+  --accent:#F0243E; --accent-2:#FF7C88; --neon:#FF2E4D;
+  --blue:#3F78FF; --purple:#B2287F;
+  --green:#FFC93C; --yellow:#FFC93C; --red:#FF6070; --ice:#8FB4FF; --good:#2EC4B6;
+  --tech-green:#2EC4B6; --tech-yellow:#FFC93C; --tech-red:#FF6070;
+  --cta:linear-gradient(180deg,#F83A50,#C80F2B);
+  --edge:linear-gradient(135deg,rgba(100,140,255,.65),rgba(100,140,255,.10) 40%,rgba(255,46,77,.55));
+  --glass:linear-gradient(180deg,rgba(18,36,104,.92),rgba(6,13,40,.97));
+  --label:"SF Pro Display","Helvetica Neue",Helvetica,Arial,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+}
+html{background:#040920}
+*{font-family:"SF Pro Display","Helvetica Neue",Helvetica,Arial,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+body{color:var(--text)!important;background:
+  radial-gradient(620px 420px at 110% -8%,rgba(40,80,230,.55),transparent 70%),
+  radial-gradient(520px 380px at -16% 30%,rgba(30,60,190,.35),transparent 70%),
+  #040920!important;background-attachment:fixed}
+/* haces verticales de luz LED rojo → magenta → azul */
+body::after{content:"";position:fixed;left:-10%;right:-10%;bottom:-6%;height:46%;pointer-events:none;z-index:0;opacity:.55;filter:blur(10px);
+  background:repeating-linear-gradient(90deg,rgba(4,9,32,.62) 0 16px,transparent 16px 44px),linear-gradient(90deg,#FF2E4D 0%,#B2287F 45%,#2D55E8 100%);
+  -webkit-mask-image:linear-gradient(0deg,rgba(0,0,0,.85),transparent);mask-image:linear-gradient(0deg,rgba(0,0,0,.85),transparent)}
+body>*{position:relative;z-index:1}
+body>#pwa-splash,body>.modal-overlay,body>#app-toast{position:fixed}
+.modal-overlay{z-index:2000}
+
+/* ---------- tipografía: pesada cursiva + fina espaciada ---------- */
+h1{font-size:1.9rem!important;font-weight:700!important;font-style:italic;text-transform:uppercase;letter-spacing:-0.035em;color:#fff!important;-webkit-text-fill-color:#fff;text-shadow:0 0 28px rgba(255,46,77,.55)}
+#view-exercises h1{font-size:clamp(1.25rem,6.2vw,1.65rem)!important;line-height:1.06;margin-top:16px!important;text-wrap:balance;overflow-wrap:anywhere}
+h2{font-weight:600}
+.modal-box h2{font-weight:700!important;font-style:italic;text-transform:uppercase;letter-spacing:-0.02em;font-size:clamp(1.15rem,5.6vw,1.45rem);color:#fff}
+#routines-list > div:first-child{font-size:.64rem!important;font-weight:300;text-transform:uppercase;letter-spacing:.34em!important;color:var(--text-dim)!important;margin:4px 2px 14px!important;display:flex;flex-wrap:wrap;gap:0 .6em}
+#routines-list > div:first-child span:first-child{color:var(--accent-2)!important;font-weight:700}
+#routines-list > div:first-child span:last-child{color:var(--text)!important;font-weight:600;overflow-wrap:anywhere}
+
+/* ---------- tarjetas con borde de luz ---------- */
+.card,.history-item,.kpi-card,.library-group-card,#exercise-history > div,#exercises-list .card{
+  border:1px solid transparent!important;border-left-width:1px!important;border-radius:22px!important;
+  background:var(--glass) padding-box,var(--edge) border-box!important;box-shadow:0 20px 44px -30px rgba(0,0,0,.9)}
+.card{padding:16px!important}
+
+/* ---------- INICIO ---------- */
+#routines-list{counter-reset:day}
+#routines-list .card{--dc:#8FA6E8;position:relative;overflow:hidden;min-height:96px;padding:18px 16px 18px 22px!important;gap:12px;
+  background:linear-gradient(100deg,color-mix(in srgb,var(--dc) 13%,#0b1642) 0%,rgba(8,16,48,.97) 62%) padding-box,
+   linear-gradient(135deg,rgba(110,150,255,.7),rgba(110,150,255,.10) 45%,rgba(255,46,77,.6)) border-box!important;
+  box-shadow:0 22px 44px -32px #000,0 0 0 0 transparent}
+#routines-list .card::after{content:"";position:absolute;left:0;top:16px;bottom:16px;width:4px;border-radius:0 4px 4px 0;background:var(--dc);box-shadow:0 0 16px var(--dc)}
+#routines-list .card > div{position:relative;z-index:1;min-width:0}
+#routines-list .card strong{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;
+  font-size:clamp(.98rem,4.6vw,1.2rem)!important;font-weight:700;font-style:italic;text-transform:uppercase;letter-spacing:-0.015em;line-height:1.12;color:#fff!important;text-wrap:balance;overflow-wrap:anywhere}
+#routines-list .card span[style*="border-radius:12px"]{background:rgba(255,255,255,.08)!important;color:var(--text-dim)!important;border:1px solid rgba(255,255,255,.10)!important;font-size:.66rem!important;font-weight:600;letter-spacing:.14em;text-transform:uppercase;white-space:nowrap}
+#routines-list .card > span:last-child{position:relative;z-index:1;flex:none;width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  background:rgba(4,9,32,.75);border:1.5px solid var(--dc);color:var(--dc)!important;font-size:1.05rem!important;box-shadow:0 0 20px -6px var(--dc),inset 0 0 12px -6px var(--dc)}
+
+/* herramientas: azul = planificar · blanco hielo = analizar · rojo = utilidades */
+.tools-grid{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:10px!important;margin-top:20px!important}
+.tool-btn{--h:#5C8DFF;position:relative;min-width:0;background:linear-gradient(150deg,color-mix(in srgb,var(--h) 14%,#0a1440),#071030 74%) padding-box,linear-gradient(135deg,color-mix(in srgb,var(--h) 75%,transparent),rgba(110,150,255,.08) 58%) border-box!important;
+  border:1px solid transparent!important;border-radius:20px!important;color:var(--text)!important;font-weight:600;font-size:.84rem;letter-spacing:.005em;flex-direction:row!important;justify-content:flex-start!important;gap:11px!important;padding:13px!important;text-align:left;line-height:1.15}
+.tool-btn span{min-width:0;overflow-wrap:anywhere}
+.tool-btn svg{flex:none;stroke:var(--h)!important;width:36px!important;height:36px!important;padding:8px;border-radius:12px;box-sizing:border-box;background:color-mix(in srgb,var(--h) 15%,transparent);border:1px solid color-mix(in srgb,var(--h) 38%,transparent);filter:drop-shadow(0 0 7px color-mix(in srgb,var(--h) 55%,transparent))}
+.tool-btn:nth-child(1),.tool-btn:nth-child(2){--h:#5C8DFF}
+.tool-btn:nth-child(3),.tool-btn:nth-child(4),.tool-btn:nth-child(7){--h:#DCE6FF}
+.tool-btn:nth-child(5),.tool-btn:nth-child(6){--h:#FF4A63}
+
+/* ---------- botones ---------- */
+.btn{background:var(--cta)!important;color:#fff!important;border-radius:16px!important;font-weight:700!important;letter-spacing:.07em;text-transform:uppercase;font-size:.86rem!important;box-shadow:0 14px 30px -14px var(--neon),inset 0 1px 0 rgba(255,255,255,.28)}
+.btn-secondary,.btn-demo{background:rgba(255,255,255,.07)!important;color:var(--text)!important;border:1px solid var(--card-border)!important;box-shadow:none!important}
+.btn-danger{background:var(--red)!important;color:var(--ink)!important;box-shadow:none!important}
+.btn-ok{background:var(--green)!important;color:var(--ink)!important;box-shadow:none!important}
+.btn-calc{background:var(--blue)!important;color:#fff!important;box-shadow:none!important}
+[style*="background:var(--accent)"],[style*="background: var(--accent)"],[style*="background:var(--blue)"],[style*="background: var(--blue)"]{color:#fff!important}
+[style*="background:var(--green)"],[style*="background: var(--green)"],[style*="background:var(--red)"],[style*="background: var(--red)"],[style*="background:var(--yellow)"],[style*="background: var(--yellow)"]{color:var(--ink)!important}
+#mini-timer.warning,.mini-inline.warning{color:#fff!important}
+.view-close,.modal-close{width:40px!important;height:40px!important;border-radius:14px!important;background:rgba(255,255,255,.07)!important;border:1px solid var(--card-border)!important;color:var(--text)!important}
+
+/* ---------- DÍA ---------- */
+#daily-check-card > *,#daily-check-card .card{border-radius:20px!important}
+#exercises-list > div[style*="border-left:5px solid"]{background:transparent!important;border:none!important;padding:2px 2px!important;margin:26px 0 10px!important;gap:10px}
+#exercises-list > div[style*="border-left:5px solid"] > div{min-width:0}
+#exercises-list > div[style*="border-left:5px solid"] span[style*="letter-spacing:0.5px"]{font-size:.72rem!important;font-weight:600;text-transform:uppercase;letter-spacing:.3em!important;color:#fff!important;display:inline-flex;align-items:center;gap:10px;overflow-wrap:anywhere}
+#exercises-list > div[style*="border-left:5px solid"] span[style*="letter-spacing:0.5px"]::before{content:"";flex:none;width:6px;height:18px;transform:skewX(-18deg);background:var(--neon);box-shadow:0 0 12px var(--neon)}
+#exercises-list .card strong,#exercises-list .card b{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;font-weight:600;letter-spacing:-0.01em;line-height:1.18;overflow-wrap:anywhere}
+#exercises-list .card{padding:14px 14px!important}
+[style*="border-radius:12px; font-size:0.75rem"],[style*="border-radius:12px;font-size:0.75rem"]{background:rgba(255,255,255,.08)!important;border:1px solid rgba(255,255,255,.10)!important;color:var(--text-dim)!important;font-size:.66rem!important;font-weight:600;letter-spacing:.08em;white-space:nowrap}
+
+/* ---------- SERIE ---------- */
+#workout-ex-title{font-size:clamp(1.05rem,5.6vw,1.5rem)!important;font-weight:700!important;font-style:italic;text-transform:uppercase;letter-spacing:-0.02em;line-height:1.05;color:#fff;text-wrap:balance;overflow-wrap:anywhere;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+#exercise-history > div{position:relative;padding-bottom:2px}
+#exercise-history > div[style*="var(--red)"]{box-shadow:inset 4px 0 0 var(--red),0 20px 44px -30px #000}
+#exercise-history > div[style*="var(--green)"],#exercise-history > div[style*="var(--tech-green)"]{box-shadow:inset 4px 0 0 var(--green),0 20px 44px -30px #000}
+#exercise-history > div:first-child{background:linear-gradient(135deg,rgba(240,36,62,.20),rgba(8,16,48,.97) 62%) padding-box,linear-gradient(135deg,var(--neon),rgba(255,46,77,.12) 55%,rgba(63,120,255,.55)) border-box!important;box-shadow:0 0 40px -14px var(--neon)}
+#exercise-history strong{overflow-wrap:anywhere}
+.set-row-clean{border-bottom:1px solid rgba(120,150,255,.14)!important}
+.set-row-clean.completed{color:var(--text)!important}
+.set-row-clean.pending{color:#8493C9!important}
+[style*="rgba(46,196,182,0.15)"]{background:rgba(61,232,178,.12)!important;color:var(--green)!important;border-color:rgba(61,232,178,.6)!important}
+[style*="rgba(255,107,53,0.15)"]{background:rgba(255,46,77,.14)!important;color:var(--accent-2)!important;border-color:rgba(255,46,77,.65)!important}
+
+.workout-controls-card{background:linear-gradient(180deg,rgba(24,44,120,.82),rgba(6,12,36,.95)) padding-box,linear-gradient(160deg,rgba(255,46,77,.85),rgba(110,150,255,.2) 42%,rgba(63,120,255,.6)) border-box!important;border:1px solid transparent!important;border-radius:32px!important;backdrop-filter:blur(22px);box-shadow:0 -14px 60px -24px rgba(255,46,77,.65),0 -4px 40px -20px rgba(63,120,255,.9)}
+.workout-controls-card #set-counter{color:var(--accent-2)!important;text-transform:uppercase;letter-spacing:.3em;font-size:.7rem!important;font-weight:700!important;text-align:center}
+.control-group{min-width:0}
+.num-btn{background:rgba(255,255,255,.06)!important;border:1.5px solid rgba(170,190,255,.38)!important;color:var(--text)!important;width:48px!important;height:48px!important;flex:none;font-weight:700}
+.num-btn:active{background:#fff!important;color:var(--ink)!important;border-color:#fff!important}
+.num-val-text{font-weight:700!important;font-style:italic;font-variant-numeric:normal;letter-spacing:-0.04em;min-width:0;white-space:nowrap;text-align:center;text-shadow:0 0 26px rgba(255,46,77,.5);color:#fff!important}
+.btn-tick{background:var(--cta)!important;box-shadow:0 0 0 8px rgba(255,46,77,.16),0 0 46px -4px var(--neon)!important}
+.btn-tick{color:#fff!important;font-weight:700;font-size:1.9rem}
+.btn-tick svg,.btn-tick svg *{stroke:#fff!important}
+.tech-dot-btn.selected{color:var(--ink)}
+
+/* ---------- ventanas ---------- */
+.modal-overlay{background:rgba(2,5,20,.8)!important;backdrop-filter:blur(7px)}
+.modal-box{background:linear-gradient(180deg,rgba(18,36,104,.97),rgba(5,10,32,.99)) padding-box,linear-gradient(160deg,rgba(110,150,255,.6),rgba(110,150,255,.10) 40%,rgba(255,46,77,.5)) border-box!important;border:1px solid transparent!important;border-radius:30px!important;color:var(--text)!important;box-shadow:0 0 90px -34px rgba(63,120,255,.9)}
+.modal-box label{color:var(--text-dim)!important}
+.kpi-card{padding:12px!important}
+.kpi-title{font-size:.62rem!important;font-weight:600;text-transform:uppercase;letter-spacing:.2em;color:var(--text-dim)!important}
+.kpi-val{font-weight:700!important;font-style:italic;letter-spacing:-0.03em;font-variant-numeric:normal;font-size:clamp(1rem,5.4vw,1.45rem)!important;overflow-wrap:anywhere}
+.chip-btn{background:rgba(255,255,255,.07)!important;color:var(--text-dim)!important;border:1px solid var(--card-border)!important}
+.chip-btn.selected,.chart-tab-btn.active{background:#fff!important;color:var(--ink)!important;border-color:transparent!important;font-weight:600;box-shadow:0 0 22px -6px rgba(255,255,255,.55)}
+.chart-tab-btn{background:rgba(255,255,255,.06)!important;color:var(--text-dim)!important;border:1px solid var(--card-border)!important}
+button[id^="wk-tab"][style*="background:var(--accent)"],button[id^="wk-tab"][style*="background: var(--accent)"]{background:#fff!important;color:var(--ink)!important}
+input[type="text"],input[type="number"],textarea,select{background:rgba(255,255,255,.06)!important;border:1px solid var(--card-border)!important;border-radius:14px!important;color:var(--text)!important}
+input:focus,textarea:focus,select:focus{outline:none;border-color:var(--blue)!important;box-shadow:0 0 0 3px rgba(63,120,255,.28)}
+#app-toast{background:#fff!important;color:var(--ink)!important;font-weight:700}
+svg text{fill:var(--text-dim)!important}
+#timer-screen{background:radial-gradient(520px 440px at 50% 28%,rgba(40,80,230,.5),transparent 70%),#040920!important}
+#timer-display{font-style:italic;font-variant-numeric:normal;font-weight:700;letter-spacing:-0.05em;color:#fff;text-shadow:0 0 50px rgba(255,46,77,.7)}
+/* texto en rojo sobre fondo oscuro: versión clara para buena lectura */
+[style*="color:var(--accent)"],[style*="color: var(--accent)"]{color:var(--ice)!important}
+.library-group-card [style*="font-weight"]{color:inherit}
+/* pasos de peso y medidas: botones compactos que nunca se salen de la tarjeta */
+.rb-btn{flex:none;width:34px!important;height:34px!important;min-width:0;padding:0!important;border-radius:50%!important;background:rgba(255,255,255,.07)!important;border:1.5px solid rgba(170,190,255,.35)!important;color:var(--text)!important;font-weight:700;display:inline-flex;align-items:center;justify-content:center}
+.rb-btn:active{background:#fff!important;color:var(--ink)!important}
+.rc-val{min-width:0;overflow:hidden;font-variant-numeric:normal;white-space:nowrap}
+.num-val-text{flex:1 1 0!important;min-width:0!important;overflow:hidden;padding:0 2px}
+.set-row-clean.pending{opacity:.9!important;color:#A3B1E0!important}
+.num-val-text{text-shadow:none!important;filter:drop-shadow(0 0 9px rgba(255,46,77,.55));padding:0 6px!important}
+
+/* ===== v2.1 · sistema de color coherente =====
+ ROJO = acción / energía · ORO = activo, seleccionado, completado, récord · AZUL = estructura, información, fase déficit · HIELO = eficiencia y tiempo · BLANCO = texto y datos
+ SEMÁFORO (puntos de estado y técnica) = escala propia rojo→ámbar→verde, solo en esos puntos. */
+html,body,*{font-family:"SF Pro Display","Helvetica Neue",Helvetica,Arial,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif!important}
+h1,h2,.modal-box h2,#workout-ex-title,#routines-list .card strong{font-weight:700!important}
+/* números: sans-serif extra bold, rectos y tabulares */
+.num-val-text,.kpi-val,#timer-display{font-style:normal!important;font-weight:700!important;font-variant-numeric:normal;letter-spacing:-0.03em}
+.num-val-text{font-size:2.7rem}
+/* etiqueta plan activo = concepto "activo" (oro) */
+#routines-list > div:first-child span:first-child{color:var(--green)!important}
+/* botones de acción principal = rojo */
+.btn-ok,.btn-calc{background:var(--cta)!important;color:#fff!important;box-shadow:0 14px 30px -14px var(--neon),inset 0 1px 0 rgba(255,255,255,.28)!important}
+[style*="background: var(--green)"]{background:var(--cta)!important;color:#fff!important;border:none!important;font-weight:700!important;letter-spacing:.07em;text-transform:uppercase}
+/* destructivo = contorno coral (no compite con la acción principal) */
+.btn-danger{background:transparent!important;color:var(--accent-2)!important;border:1.5px solid var(--accent-2)!important}
+/* seleccionado/activo = oro con texto tinta */
+[style*="background:var(--green)"],[style*="background: var(--green);"][style*="border-radius:6px"]{background:var(--green)!important;color:var(--ink)!important}
+.chip-btn.selected,.chart-tab-btn.active{background:var(--green)!important;color:var(--ink)!important;box-shadow:0 0 22px -6px rgba(255,201,60,.6)}
+button[id^="wk-tab"][style*="background:var(--accent)"],button[id^="wk-tab"][style*="background: var(--accent)"]{background:var(--green)!important;color:var(--ink)!important}
+.num-btn:active,.rb-btn:active{background:var(--green)!important;color:var(--ink)!important;border-color:var(--green)!important}
+/* etiquetas de métricas: RM = oro · Eficiencia = hielo */
+[style*="rgba(46,196,182,0.15)"]{background:rgba(255,201,60,.12)!important;color:var(--green)!important;border-color:rgba(255,201,60,.65)!important}
+[style*="rgba(255,107,53,0.15)"],[style*="rgba(255,107,53,0.12)"]{background:rgba(143,180,255,.12)!important;color:var(--ice)!important;border-color:rgba(143,180,255,.65)!important}
+#modal-stats .kpi-card:nth-child(3) .kpi-val,#modal-stats .kpi-card:nth-child(3) [style*="color"]{color:var(--ice)!important}
+/* tiempo (descanso) = hielo */
+[onclick*="promptChangeRestTime"]{color:var(--ice)!important}
+/* foco de campos = azul */
+input:focus,textarea:focus,select:focus{border-color:var(--ice)!important;box-shadow:0 0 0 3px rgba(143,180,255,.25)!important}
+#timer-display{text-shadow:0 0 50px rgba(255,46,77,.6)}
+
+/* v2.2 · últimos ajustes de coherencia */
+/* rojo reservado a acción: títulos/grupos/cabeceras informativas pasan a hielo */
+.library-group-card [style*="color"],.library-group-card svg{color:var(--text)!important}
+#modal-exercise-library [style*="var(--accent)"]{color:var(--ice)!important}
+#modal-exercise-library .library-group-card [style*="font-size:1.1rem"],#modal-exercise-library .library-group-card strong{color:#fff!important}
+/* botones "añadir" (borde discontinuo) = hielo */
+[style*="dashed"]{color:var(--ice)!important;border-color:rgba(143,180,255,.7)!important;background:rgba(143,180,255,.08)!important}
+/* ajustes de tiempo del descanso = hielo */
+#timer-screen button[onclick^="addRestTime"]{color:var(--ice)!important;border:1px solid rgba(143,180,255,.35)!important}
+/* chips seleccionados con relleno accent inline = oro (seleccionado) */
+#modal-weight [style*="background:var(--accent)"],#modal-weight [style*="background: var(--accent)"],#modal-stats [style*="background:var(--accent)"],#modal-stats [style*="background: var(--accent)"]{background:var(--green)!important;color:var(--ink)!important;border-color:transparent!important}
+.library-group-header{color:#fff!important;font-weight:600}
+.library-group-header svg{stroke:var(--ice)!important}
+.library-group-header > :not(span:first-child),.library-group-header .arrow,.library-group-header [class*="arrow"]{color:var(--ice)!important}
+.library-group-card{border-left-width:1px!important}
+.swap-add-btn{color:var(--ice)!important;border-color:rgba(143,180,255,.7)!important;background:rgba(143,180,255,.08)!important}
+.swap-add-btn svg{stroke:var(--ice)!important}
+
+/* v3 · funcional se mantiene (verde = bien / progreso / semáforo); decorativo = oro */
+html{font-variant-numeric:lining-nums proportional-nums;font-feature-settings:"tnum" 0,"zero" 0}
+.tech-dot-btn.dot-green{border-color:var(--good)}
+.tech-dot-btn.dot-green.selected{background:var(--good)!important;color:var(--ink)!important;box-shadow:0 0 15px rgba(46,196,182,.6)}
+.tech-dot-btn.dot-yellow{border-color:var(--tech-yellow)}
+.tech-dot-btn.dot-red{border-color:var(--tech-red)}
+[style*="rgba(46,196,181,0.15)"]{background:rgba(46,196,182,.14)!important}
+h1,h2,.modal-box h2,#workout-ex-title,#routines-list .card strong{font-weight:700!important}
+.btn,.btn-ok,.btn-calc{font-weight:700!important}
+.num-val-text,.kpi-val,#timer-display{font-weight:700!important;font-variant-numeric:normal!important;font-feature-settings:"tnum" 0!important}
+
+/* v4 · cronómetro: cursiva con cifras proporcionales (sin serifa) + modo oscuro puro */
+#timer-display{font-style:italic!important}
+body.amoled{background:radial-gradient(620px 420px at 110% -8%,rgba(40,80,230,.40),transparent 70%),#000!important}
+html:has(body.amoled){background:#000}
+
 </style>
 </head>
 <body>
@@ -1274,7 +1483,7 @@
           <input type="checkbox" id="chk-amoled-mode" onchange="toggleAmoledModeSetting(this.checked)" style="width:20px; height:20px; accent-color:var(--green); cursor:pointer;">
         </label>
       </div>
-      <p style="text-align:center; font-size:0.75rem; color:var(--text-dim); margin-top:4px;">MiGymApp V4.70</p>
+      <p style="text-align:center; font-size:0.75rem; color:var(--text-dim); margin-top:4px;">MiGymApp V4.71</p>
     </div>
   </div>
 
@@ -3090,7 +3299,7 @@
     // ===== V4.60: FASE (volumen / déficit) =====
     const PHASE_INFO = {
       volumen: { label: 'Volumen', color: 'var(--accent)', textColor: '#fff' },
-      deficit: { label: 'Déficit', color: 'var(--green)', textColor: '#000' }
+      deficit: { label: 'Déficit', color: '#5C8DFF', textColor: '#040A22' }
     };
     let phaseModalType = 'deficit';
     let phaseEditIdx = -1;
@@ -3301,8 +3510,8 @@
       { key: 'nutrition', label: 'Nutrición', n: 3 },
       { key: 'energy', label: 'Energía', n: 5 }
     ];
-    const DC_COLORS3 = ['var(--red)', 'var(--yellow)', 'var(--green)'];
-    const DC_COLORS5 = ['var(--red)', '#f4a259', 'var(--yellow)', '#99d98c', 'var(--green)'];
+    const DC_COLORS3 = ['var(--red)', 'var(--yellow)', 'var(--good)'];
+    const DC_COLORS5 = ['var(--red)', '#f4a259', 'var(--yellow)', '#99d98c', 'var(--good)'];
     let dcOpen = null;
     function getDailyCheck(iso) { return (db && db.dailyChecks && db.dailyChecks[iso]) || {}; }
     function setDailyCheck(key, val) {
@@ -3482,7 +3691,7 @@
     }
 
     
-    const DAY_COLORS = ['#ff6b35', '#ffd166', '#8ac926', '#2ec4b6', '#3a86ff', '#9b5de5', '#f15bb5', '#e63946'];
+    const DAY_COLORS = ['#5C8DFF', '#8FB4FF', '#38C8FF', '#9C7BFF', '#C07CFF', '#D655A8', '#DCE6FF', '#6F8BFF'];
     let dayColorTargetId = null;
     function contrastText(hex) {
       const m = /^#?([0-9a-f]{6})$/i.exec(hex || '');
@@ -4201,7 +4410,7 @@
         .filter(m => m[key] != null)
         .sort((a, b) => parseDateStr(a.date) - parseDateStr(b.date))
         .map(m => ({ value: m[key] }));
-      drawMiniLineChart('mschart-' + key, pts, '#ff6b35');
+      drawMiniLineChart('mschart-' + key, pts, '#8FB4FF');
     }
 
     function drawMiniLineChart(canvasId, dataPoints, strokeColor) {
@@ -4341,8 +4550,8 @@
         const isDayActive = session && activeDayIds.includes(day.id) && hasAnyLogs;
 
         const cardStyle = isDayActive 
-          ? 'border:2px solid var(--green); border-left:6px solid var(--green); background:var(--surface-1); box-shadow:0 0 14px rgba(46,196,182,0.35);'
-          : 'border:1px solid var(--card-border); border-left:6px solid ' + (day.color || 'var(--accent)') + '; background:var(--card-bg);';
+          ? '--dc:' + (day.color || '#8FA6E8') + '; border:2px solid var(--green); border-left:6px solid var(--green); background:var(--surface-1); box-shadow:0 0 14px rgba(255,201,60,0.35);'
+          : '--dc:' + (day.color || '#8FA6E8') + '; border:1px solid var(--card-border); border-left:6px solid ' + (day.color || 'var(--accent)') + '; background:var(--card-bg);';
 
         const statusTag = isDayActive
           ? `<span style="background:rgba(46,196,182,0.15); color:var(--green); padding:2px 8px; border-radius:10px; font-weight:bold; font-size:0.75rem; margin-left:6px;">En marcha</span>`
@@ -5910,11 +6119,11 @@
           const safeBlock = currentBlock.replace(/'/g, "\'");
 
           const blockBorderLeft = isBlockFinished ? '5px solid var(--green)' : '5px solid var(--accent)';
-          const blockTitleColor = isBlockFinished ? 'var(--green)' : 'var(--accent)';
+          const blockTitleColor = isBlockFinished ? 'var(--good)' : 'var(--accent)';
           const blockBadgeStyle = isBlockFinished 
-            ? 'background:rgba(46,196,182,0.15); border:1px solid var(--green); color:var(--green);' 
+            ? 'background:rgba(46,196,181,0.15); border:1px solid var(--good); color:var(--good);' 
             : 'background:var(--surface-2); border:1px solid var(--card-border); color:var(--text-dim);';
-          const checkMark = isBlockFinished ? ' <span style="font-size:0.85rem; color:var(--green); font-weight:bold;">✓</span>' : '';
+          const checkMark = isBlockFinished ? ' <span style="font-size:0.85rem; color:var(--good); font-weight:bold;">✓</span>' : '';
 
           html += `
             <div style="margin-top:14px; margin-bottom:8px; display:flex; align-items:center; justify-content:space-between; background:var(--surface-1); border:1px solid var(--card-border); border-left:${blockBorderLeft}; padding:10px 14px; border-radius:12px; cursor:pointer; user-select:none; -webkit-user-select:none;"
@@ -5940,19 +6149,19 @@
           const setsDone = (session.logs && session.logs[ex.name]) ? session.logs[ex.name].length : 0;
           const targetSets = parseInt(ex.sets) || 3;
           const isFullyCompleted = setsDone >= targetSets && targetSets > 0;
-          const titleColor = isFullyCompleted ? 'var(--green)' : '#ffffff';
+          const titleColor = isFullyCompleted ? 'var(--good)' : '#ffffff';
           const isIso = isIsometricEx(ex);
           
           let badgeHtml = '';
           if (isFullyCompleted) {
-            badgeHtml = `<span style="background:rgba(46,196,182,0.15); color:var(--green); padding:2px 8px; border-radius:10px; font-weight:bold; font-size:0.75rem;">Completado (${setsDone}/${targetSets})</span>`;
+            badgeHtml = `<span style="background:rgba(46,196,181,0.15); color:var(--good); padding:2px 8px; border-radius:10px; font-weight:bold; font-size:0.75rem;">Completado (${setsDone}/${targetSets})</span>`;
           } else if (setsDone > 0) {
-            badgeHtml = `<span style="background:rgba(46,196,182,0.15); color:var(--green); padding:2px 8px; border-radius:10px; font-weight:bold; font-size:0.75rem;">En marcha (${setsDone}/${targetSets})</span>`;
+            badgeHtml = `<span style="background:rgba(46,196,181,0.15); color:var(--good); padding:2px 8px; border-radius:10px; font-weight:bold; font-size:0.75rem;">En marcha (${setsDone}/${targetSets})</span>`;
           }
 
           let cardStyle = 'border:1px solid var(--card-border); border-left:6px solid var(--accent); background:var(--card-bg);';
           if (isFullyCompleted) {
-            cardStyle = 'border:2px solid var(--green); border-left:6px solid var(--green); background:var(--surface-1); box-shadow:0 0 12px rgba(46,196,182,0.25);';
+            cardStyle = 'border:2px solid var(--good); border-left:6px solid var(--good); background:var(--surface-1); box-shadow:0 0 12px rgba(46,196,181,0.25);';
           } else if (setsDone > 0) {
             cardStyle = 'border:1px solid var(--card-border); border-left:6px solid var(--green); background:var(--surface-1);';
           }
@@ -5966,7 +6175,7 @@
             ? `<span onclick="event.stopPropagation(); handleSessionExPointerCancel(); toggleSupersetWithNext('session', ${idx}, null);" aria-label="${ex.supersetWith ? 'Vinculado con: ' + ex.supersetWith : 'Vincular con el siguiente ejercicio (superserie)'}" style="padding:6px 4px; cursor:pointer; display:inline-flex; align-items:center;">${svgLinkIcon(!!ex.supersetWith)}</span>`
             : '';
 
-          html += isFullyCompleted ? `<div class="card flex-between ex-drag-card" data-index="${idx}" onpointerdown="handleSessionExPointerDown(${idx})" onpointerup="handleSessionExPointerCancel()" onpointercancel="handleSessionExPointerCancel()" onpointermove="lpMove(event, handleSessionExPointerCancel)" onclick="if(!sessionExLongPressTriggered) startWorkout(${idx})" style="border:1px solid var(--green); border-left:6px solid var(--green); background:var(--surface-1); user-select:none; -webkit-user-select:none; cursor:pointer; padding:8px 14px; margin-bottom:6px;"><div style="display:flex; align-items:center; gap:8px; flex:1; min-width:0;"><span class="drag-handle" onclick="event.stopPropagation(); handleSessionExPointerCancel();">⋮</span><strong style="font-size:1rem; color:var(--green); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${ex.name}</strong></div><span style="color:var(--green); font-weight:bold; font-size:1.1rem;">✓</span>${linkIconHtml}<span class="icon-gear" onclick="event.stopPropagation(); handleSessionExPointerCancel(); openSessionExGearModal(${idx});" aria-label="Ajustar ejercicio" style="padding:6px 2px 6px 10px; cursor:pointer; display:inline-flex; align-items:center;">${svgGearDark}</span></div>` : `
+          html += isFullyCompleted ? `<div class="card flex-between ex-drag-card" data-index="${idx}" onpointerdown="handleSessionExPointerDown(${idx})" onpointerup="handleSessionExPointerCancel()" onpointercancel="handleSessionExPointerCancel()" onpointermove="lpMove(event, handleSessionExPointerCancel)" onclick="if(!sessionExLongPressTriggered) startWorkout(${idx})" style="border:1px solid var(--good); border-left:6px solid var(--good); background:var(--surface-1); user-select:none; -webkit-user-select:none; cursor:pointer; padding:8px 14px; margin-bottom:6px;"><div style="display:flex; align-items:center; gap:8px; flex:1; min-width:0;"><span class="drag-handle" onclick="event.stopPropagation(); handleSessionExPointerCancel();">⋮</span><strong style="font-size:1rem; color:var(--good); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${ex.name}</strong></div><span style="color:var(--good); font-weight:bold; font-size:1.1rem;">✓</span>${linkIconHtml}<span class="icon-gear" onclick="event.stopPropagation(); handleSessionExPointerCancel(); openSessionExGearModal(${idx});" aria-label="Ajustar ejercicio" style="padding:6px 2px 6px 10px; cursor:pointer; display:inline-flex; align-items:center;">${svgGearDark}</span></div>` : `
             <div class="card flex-between ex-drag-card" 
                  data-index="${idx}" 
                  onpointerdown="handleSessionExPointerDown(${idx})"
@@ -7044,7 +7253,7 @@ function openEditHistorySetModal(type, idx) {
               if (log.reps < minReps) {
                 repsColor = 'var(--accent)';
               } else if (log.reps >= maxReps) {
-                repsColor = 'var(--green)';
+                repsColor = 'var(--good)';
               }
 
               let isAllTimePR = false;
@@ -7061,7 +7270,7 @@ function openEditHistorySetModal(type, idx) {
                 if (pastSetStd) {
                   const pastSetRM = get1RMd(pastSetStd.weight + (pastSetStd.barWeight || 0), pastSetStd.reps);
                   if (setRM > pastSetRM) {
-                    trendBadge = ' <span style="color:var(--green); font-weight:bold;" aria-label="Superado respecto al último entrenamiento">↑</span>';
+                    trendBadge = ' <span style="color:var(--good); font-weight:bold;" aria-label="Superado respecto al último entrenamiento">↑</span>';
                   } else if (setRM < pastSetRM) {
                     trendBadge = ' <span style="color:var(--red); font-weight:bold;" aria-label="Por debajo del último entrenamiento">↓</span>';
                   } else {
@@ -7163,7 +7372,7 @@ function openEditHistorySetModal(type, idx) {
 
                 let repsColor = '#ffffff';
                 if (h.reps < minReps) repsColor = 'var(--accent)';
-                else if (h.reps >= maxReps) repsColor = 'var(--green)';
+                else if (h.reps >= maxReps) repsColor = 'var(--good)';
 
                 const dbIdx = hist.indexOf(h);
                 html += `
@@ -7243,7 +7452,7 @@ function openEditHistorySetModal(type, idx) {
               if (log.reps < minReps) {
                 repsColor = 'var(--accent)';
               } else if (log.reps >= maxReps) {
-                repsColor = 'var(--green)';
+                repsColor = 'var(--good)';
               }
 
               let isAllTimePR = false;
@@ -7260,7 +7469,7 @@ function openEditHistorySetModal(type, idx) {
                 if (pastSetStd) {
                   const pastSetRM = get1RMd(pastSetStd.weight + (pastSetStd.barWeight || 0), pastSetStd.reps);
                   if (setRM > pastSetRM) {
-                    trendBadge = ' <span style="color:var(--green); font-weight:bold;" aria-label="Superado respecto al último entrenamiento">↑</span>';
+                    trendBadge = ' <span style="color:var(--good); font-weight:bold;" aria-label="Superado respecto al último entrenamiento">↑</span>';
                   } else if (setRM < pastSetRM) {
                     trendBadge = ' <span style="color:var(--red); font-weight:bold;" aria-label="Por debajo del último entrenamiento">↓</span>';
                   } else {
@@ -7400,7 +7609,7 @@ function openEditHistorySetModal(type, idx) {
 
                 let repsColor = '#ffffff';
                 if (h.reps < minReps) repsColor = 'var(--accent)';
-                else if (h.reps >= maxReps) repsColor = 'var(--green)';
+                else if (h.reps >= maxReps) repsColor = 'var(--good)';
 
                 const dbIdx = hist.indexOf(h);
                 html += `
@@ -7825,7 +8034,7 @@ function openEditHistorySetModal(type, idx) {
         label = 'Primera referencia'; color = 'var(--blue)';
         reason = 'Aún no hay sesiones anteriores de estos ejercicios con las que comparar.';
       } else if (avg >= 0.3) {
-        label = 'Buena sesión'; color = 'var(--green)';
+        label = 'Buena sesión'; color = 'var(--good)';
         reason = counts + '.' + (ptype === 'volumen' ? ' Justo lo que se busca en volumen.' : '');
         if (ptype === 'deficit' && up === 0 && down === 0) reason = 'En déficit, mantener la fuerza ya es un buen resultado.';
       } else if (avg > (ptype === 'deficit' ? -0.5 : -0.35)) {
@@ -7881,7 +8090,7 @@ function openEditHistorySetModal(type, idx) {
         '<div class="card" style="padding:12px 16px; margin-bottom:10px;">'
         + '<div style="font-size:0.78rem; font-weight:bold; letter-spacing:0.6px; color:' + c + '; margin-bottom:4px;">' + title + '</div>'
         + lines.slice(0, 3).map(t => '<div style="font-size:0.9rem; margin-top:5px; line-height:1.35;">• ' + t + '</div>').join('') + '</div>';
-      bEl.innerHTML = blk('LO MEJOR', 'var(--green)', an.best) + blk('A VIGILAR', 'var(--yellow)', an.watch) + blk('PRÓXIMA VEZ', 'var(--blue)', an.next);
+      bEl.innerHTML = blk('LO MEJOR', 'var(--good)', an.best) + blk('A VIGILAR', 'var(--yellow)', an.watch) + blk('PRÓXIMA VEZ', 'var(--blue)', an.next);
     }
 
     // ===== V4.68: ANÁLISIS DE SESIONES PASADAS =====
@@ -7958,7 +8167,7 @@ function openEditHistorySetModal(type, idx) {
       return '<div style="margin-bottom:8px; padding-bottom:8px; border-bottom:1px dashed var(--card-border);">'
         + '<div style="font-weight:bold; font-size:0.9rem; color:' + an.color + ';">' + an.label + '</div>'
         + '<div style="margin-top:2px; line-height:1.35;">' + an.reason + '</div>'
-        + sec('LO MEJOR', 'var(--green)', an.best) + sec('A VIGILAR', 'var(--yellow)', an.watch) + sec('PRÓXIMA VEZ', 'var(--blue)', an.next) + '</div>';
+        + sec('LO MEJOR', 'var(--good)', an.best) + sec('A VIGILAR', 'var(--yellow)', an.watch) + sec('PRÓXIMA VEZ', 'var(--blue)', an.next) + '</div>';
     }
 
     // ===== V4.68: AVISOS EN VIVO (durante la sesión) =====
@@ -8066,7 +8275,7 @@ function openEditHistorySetModal(type, idx) {
         let trend = '<span style="color:var(--text-dim);">—</span>';
         if (cur !== null && prev !== null) {
           const diff = cur - prev, thr = r[2] === 5 ? 0.6 : 0.4;
-          trend = diff >= thr ? '<span style="color:var(--green);">▲</span>' : diff <= -thr ? '<span style="color:var(--red);">▼</span>' : '<span style="color:var(--text-dim);">=</span>';
+          trend = diff >= thr ? '<span style="color:var(--good);">▲</span>' : diff <= -thr ? '<span style="color:var(--red);">▼</span>' : '<span style="color:var(--text-dim);">=</span>';
         }
         html += '<div style="display:flex; align-items:center; gap:8px; margin-top:10px;"><span style="width:72px; font-size:0.85rem;">' + r[1] + '</span>'
           + '<span style="flex:1; display:flex; gap:2px;">' + dots + '</span><span style="width:18px; text-align:center; font-weight:bold;">' + trend + '</span></div>';
@@ -8141,14 +8350,14 @@ function openEditHistorySetModal(type, idx) {
         function getBadge(curr, target, unit = 'kg') {
           if (target === null) return '<span style="color:var(--text-dim)">Primera vez</span>';
           const diff = Math.round((curr - target) * 10) / 10;
-          if (diff > 0) return `<span style="color:var(--green); font-weight:bold;">▲ +${diff} ${unit}</span>`;
+          if (diff > 0) return `<span style="color:var(--good); font-weight:bold;">▲ +${diff} ${unit}</span>`;
           if (diff < 0) return `<span style="color:var(--red); font-weight:bold;">▼ ${diff} ${unit}</span>`;
           return `<span style="color:var(--yellow); font-weight:bold;">= 0 ${unit}</span>`;
         }
 
         function getRecordBadge(curr, best, unit = 'kg') {
           if (best === null) return `<span style="color:var(--green); font-weight:bold; display:inline-flex; align-items:center; gap:4px;">${svgTrophyYellow} Primer Récord</span>`;
-          if (curr > best) return `<span style="color:var(--green); font-weight:bold; display:inline-flex; align-items:center; gap:4px;">${svgTrophyYellow} ¡NUEVO RÉCORD! (▲ +${Math.round((curr - best) * 10) / 10} ${unit})</span>`;
+          if (curr > best) return `<span style="color:var(--good); font-weight:bold; display:inline-flex; align-items:center; gap:4px;">${svgTrophyYellow} ¡NUEVO RÉCORD! (▲ +${Math.round((curr - best) * 10) / 10} ${unit})</span>`;
           if (curr === best) return `<span style="color:var(--yellow); font-weight:bold; display:inline-flex; align-items:center; gap:4px;">${svgEqualYellow} Iguala Récord</span>`;
           return `<span style="color:var(--red); font-weight:bold;">▼ ${Math.round((curr - best) * 10) / 10} ${unit} del récord</span>`;
         }
@@ -8649,7 +8858,7 @@ function openEditHistorySetModal(type, idx) {
       const p = getPastSetData(earlier, setNum);
       if (!p) return '';
       const pr = get1RMd((p.weight || 0) + (p.barWeight || 0), p.reps);
-      if (setRM > pr) return ' <span style="color:var(--green); font-weight:bold;">↑</span>';
+      if (setRM > pr) return ' <span style="color:var(--good); font-weight:bold;">↑</span>';
       if (setRM < pr) return ' <span style="color:var(--red); font-weight:bold;">↓</span>';
       return sameRmBadge(rpe, p.rpe);
     }
@@ -8793,7 +9002,7 @@ function openEditHistorySetModal(type, idx) {
         const dots = [];
         for (let i = Math.max(1, avgs.length - 5); i < avgs.length; i++) {
           const prevV = r1(avgs[i - 1]), curV = r1(avgs[i]);
-          const col = curV > prevV ? 'var(--green)' : curV < prevV ? 'var(--red)' : 'var(--text-dim)';
+          const col = curV > prevV ? 'var(--good)' : curV < prevV ? 'var(--red)' : 'var(--text-dim)';
           dots.push(`<span style="width:7px; height:7px; border-radius:50%; background:${col}; display:inline-block;"></span>`);
         }
         return `<span style="display:inline-flex; gap:3px; align-items:center; margin-right:10px; vertical-align:middle;">${dots.reverse().join('')}</span>`;
@@ -9051,16 +9260,16 @@ function openEditHistorySetModal(type, idx) {
       
       const trendEl = document.getElementById('kpi-trend');
       trendEl.innerText = stats.trend;
-      if (stats.trend.includes('Progreso')) trendEl.style.color = 'var(--green)';
+      if (stats.trend.includes('Progreso')) trendEl.style.color = 'var(--good)';
       else if (stats.trend.includes('Descenso')) trendEl.style.color = 'var(--red)';
       else trendEl.style.color = 'var(--yellow)';
 
       // Canvas Chart - Using theme colors (Turquoise #2ec4b6 & Orange #ff6b35)
       setTimeout(() => {
         if (activeStatsChartTab === 'RM') {
-          drawLineChart('stats-chart-canvas', prepareStatsChartPoints(stats.sessionPoints, 'rm'), '#2ec4b6', 'kg');
+          drawLineChart('stats-chart-canvas', prepareStatsChartPoints(stats.sessionPoints, 'rm'), '#FFC93C', 'kg');
         } else {
-          drawLineChart('stats-chart-canvas', prepareStatsChartPoints(stats.sessionPoints, 'ie'), '#ff6b35', 'pts');
+          drawLineChart('stats-chart-canvas', prepareStatsChartPoints(stats.sessionPoints, 'ie'), '#8FB4FF', 'pts');
         }
       }, 50);
 
@@ -9453,5 +9662,19 @@ function openEditHistorySetModal(type, idx) {
 
 </script>
 
+
+<script id="theme-metropolitano-fit">
+(function(){
+  function fit(){
+    document.querySelectorAll('.num-val-text').forEach(function(el){
+      var fs=2.7; el.style.fontSize=fs+'rem';
+      while(el.scrollWidth>el.clientWidth+1 && fs>1.0){ fs-=0.1; el.style.fontSize=fs.toFixed(1)+'rem'; }
+    });
+  }
+  new MutationObserver(function(){requestAnimationFrame(fit)}).observe(document.body,{subtree:true,childList:true,characterData:true});
+  window.addEventListener('resize',fit); fit();
+})();
+
+</script>
 </body>
 </html>
