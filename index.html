@@ -11,7 +11,7 @@
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%230b132b'/%3E%3Cpath d='M20 35h12v30H20zM68 35h12v30H68z' fill='%232ec4b6'/%3E%3Cpath d='M32 42h36v16H32z' fill='%23ff6b35'/%3E%3Cpath d='M14 42h6v16h-6zM80 42h6v16h-6z' fill='%23ffd166'/%3E%3C/svg%3E">
   <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%230b132b'/%3E%3Cpath d='M20 35h12v30H20zM68 35h12v30H68z' fill='%232ec4b6'/%3E%3Cpath d='M32 42h36v16H32z' fill='%23ff6b35'/%3E%3Cpath d='M14 42h6v16h-6zM80 42h6v16h-6z' fill='%23ffd166'/%3E%3C/svg%3E">
   
-  <title>Mi Gym App V4.70</title>
+  <title>Mi Gym App V4.73</title>
   <style>
     :root {
       --bg-color: #0b132b;    /* Azul oscuro profundo */
@@ -339,7 +339,9 @@
 
     /* Temporizadores */
     #timer-screen { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: #050914; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 1000; padding: 20px; padding-top: max(40px, env(safe-area-inset-top, 40px)); text-align: center; overflow-y: auto; }
-    #timer-display { font-size: 5rem; font-weight: bold; color: var(--green); margin: 5px 0; }
+    #timer-display { font-size: 5rem; font-weight: bold; color: var(--green); margin: 5px 0; display: flex; justify-content: center; align-items: baseline; font-variant-numeric: tabular-nums; }
+    #timer-display .td-d { display: inline-block; width: 0.62em; text-align: center; }
+    #timer-display .td-c { display: inline-block; width: 0.3em; text-align: center; }
     #timer-display.warning { color: var(--accent); }
     #timer-display.overtime { color: var(--yellow); }
     #mini-timer { box-sizing: border-box; text-align: center; white-space: nowrap; font-variant-numeric: tabular-nums; position: fixed; bottom: 31px; left: calc(50% + 44px); right: 20px; background: var(--green); color: #000; padding: 10px 0; border-radius: 30px; font-weight: bold; font-size: 1.2rem; box-shadow: 0 4px 15px rgba(0,0,0,0.6); z-index: 999; display: flex; align-items: center; justify-content: center; gap: 10px; }
@@ -625,8 +627,11 @@
     </div>
 
     <div class="workout-controls-card">
-      <div style="font-size: 1.05rem; font-weight: bold; margin-bottom: 8px; color: var(--accent);" id="set-counter">
-        Serie 1 / 3
+      <div style="display:flex; justify-content:space-between; align-items:baseline; gap:10px; margin-bottom:8px;">
+        <div style="font-size: 1.05rem; font-weight: bold; color: var(--accent);" id="set-counter">
+          Serie 1 / 3
+        </div>
+        <div id="rm-live" onclick="openRmTable()" role="button" aria-label="Ver equivalencias de RM" style="font-size:0.85rem; font-weight:bold; color:var(--text); cursor:pointer; white-space:nowrap; padding:2px 0; font-variant-numeric:tabular-nums;"></div>
       </div>
       
       <!-- CONTROLES ESTÁNDAR (PESO, REPETICIONES, BARRA) -->
@@ -1274,7 +1279,7 @@
           <input type="checkbox" id="chk-amoled-mode" onchange="toggleAmoledModeSetting(this.checked)" style="width:20px; height:20px; accent-color:var(--green); cursor:pointer;">
         </label>
       </div>
-      <p style="text-align:center; font-size:0.75rem; color:var(--text-dim); margin-top:4px;">MiGymApp V4.70</p>
+      <p style="text-align:center; font-size:0.75rem; color:var(--text-dim); margin-top:4px;">MiGymApp V4.73</p>
     </div>
   </div>
 
@@ -1332,6 +1337,7 @@
   
   <div id="timer-screen" class="hidden">
     <h2>Descanso</h2>
+    <div id="timer-next-ex" class="hidden" style="font-size:0.95rem; color:var(--text-dim); margin-top:-4px; margin-bottom:6px;"></div>
     <div id="timer-display">01:30</div>
     
     <!-- BOTONES DE AJUSTE RÁPIDO DE TIEMPO -->
@@ -1411,6 +1417,15 @@
         <button class="btn btn-secondary" style="flex:1; margin-top:0;" onclick="closeModal('modal-measure-note')">Cancelar</button>
         <button class="btn btn-ok" style="flex:1;" onclick="saveMeasureNote()">Guardar</button>
       </div>
+    </div>
+  </div>
+
+  <div id="modal-rm-table" class="modal-overlay hidden">
+    <div class="modal-box" style="max-height:88vh; overflow-y:auto;">
+      <h2 style="margin-bottom:2px;">Equivalencias de RM</h2>
+      <div id="rm-table-sub" style="font-size:0.85rem; color:var(--text-dim); margin-bottom:10px;"></div>
+      <div id="rm-table-body"></div>
+      <button class="btn btn-secondary" style="margin-top:14px;" onclick="closeModal('modal-rm-table')">Cerrar</button>
     </div>
   </div>
 
@@ -2554,6 +2569,18 @@
       else { renderEditingRoutineDays(); }
     }
 
+    function exPendingSets(ex) {
+      const done = (session && session.logs && session.logs[ex.name]) ? session.logs[ex.name].length : 0;
+      const total = parseInt(ex.sets) || 0;
+      return total ? total - done : 1;
+    }
+    function updateTimerNextLabel() {
+      const nx = document.getElementById('timer-next-ex');
+      if (!nx) return;
+      const p = (state.supersetAutoJump && session && session.exercises) ? session.exercises[state.supersetJumpPartnerIdx] : null;
+      nx.innerText = p ? 'Después: ' + p.name : '';
+      nx.classList.toggle('hidden', !p);
+    }
     function getSupersetPartnerIndex(ex) {
       if (!ex || !ex.supersetWith || !session || !session.exercises) return -1;
       return session.exercises.findIndex(e => e.name === ex.supersetWith);
@@ -3900,6 +3927,65 @@
         ${changes || `<div style="font-size:0.85rem; ${dim}">Aún no hay registros suficientes en este periodo.</div>`}
         ${read ? `<div style="font-size:0.9rem; line-height:1.45; margin-top:10px;">${read}</div>` : ''}
         <button onclick="baEditProfile()" style="background:none; border:none; color:var(--text-dim); font-size:0.8rem; margin-top:12px; cursor:pointer; padding:4px 0; text-decoration:underline;">Editar altura y sexo (${h} cm, ${female ? 'mujer' : 'hombre'})</button>`;
+    }
+
+    // ===== V4.73: RM ESTIMADO EN VIVO =====
+    function rmRefForCurrentSet() {
+      if (!state.activeExObj || !session) return null;
+      const past = ((db.history && db.history[state.activeExObj.name]) || []).filter(h => h.sessionId !== session.startTime);
+      if (!past.length) return null;
+      let ps = null;
+      try { ps = getPastSetData(past, state.currentSet); } catch (e) { ps = null; }
+      const src = ps || past[past.length - 1];
+      const w = (+src.weight || 0) + (+src.barWeight || 0);
+      return (w > 0 && +src.reps > 0) ? get1RMd(w, +src.reps) : null;
+    }
+    function updateRmLive() {
+      const el = document.getElementById('rm-live');
+      if (!el) return;
+      const total = (+state.weight || 0) + (+state.barWeight || 0);
+      if (!state.activeExObj || isIsometricEx(state.activeExObj) || total <= 0 || !(state.reps > 0)) { el.innerHTML = ''; return; }
+      const rm = get1RMd(total, state.reps);
+      const ref = rmRefForCurrentSet();
+      let html = 'RM ' + fmt1(rm);
+      if (ref) {
+        const p = (rm - ref) / ref * 100;
+        const c = p >= -1 ? 'var(--green)' : p >= -5 ? 'var(--yellow)' : 'var(--red)';
+        const a = Math.round(Math.abs(p) * 10) / 10;
+        html += ' <span style="color:' + c + ';">' + (p > 0.05 ? '+' : p < -0.05 ? '−' : '') + String(a).replace('.', ',') + '%</span>';
+      }
+      el.innerHTML = html;
+    }
+    function openRmTable() {
+      if (!state.activeExObj) return;
+      const bar = +state.barWeight || 0;
+      const usesBar = exUsesBar(state.activeExObj) && bar > 0;
+      const total = (+state.weight || 0) + bar;
+      const cur = total > 0 ? get1RMd(total, state.reps) : null;
+      const ref = rmRefForCurrentSet();
+      const base = ref || cur;
+      if (!base) return;
+      document.getElementById('rm-table-sub').innerText = ref
+        ? 'Para igualar tu RM de la última sesión: ' + fmt1(ref) + ' kg'
+        : 'Con tu configuración actual: ' + fmt1(cur) + ' kg';
+      const step = +state.weightStep > 0 ? +state.weightStep : 2.5;
+      const cols = usesBar ? '0.6fr 1fr 1fr 1fr' : '0.6fr 1fr 1fr';
+      const head = ['Reps'].concat(usesBar ? ['Discos', 'Total'] : ['Peso']).concat(['RM']);
+      let html = '<div style="display:grid; grid-template-columns:' + cols + '; gap:4px; font-size:0.72rem; color:var(--text-dim); padding:0 8px 4px;">' + head.map(h => '<div>' + h + '</div>').join('') + '</div>';
+      for (let r = 3; r <= 12; r++) {
+        const need = base / (1 + r / 30);
+        const discs = Math.max(0, Math.round((need - bar) / step) * step);
+        const tot = discs + bar;
+        const rm = get1RMd(tot, r);
+        const c = rm >= base * 0.99 ? 'var(--green)' : rm >= base * 0.97 ? 'var(--yellow)' : 'var(--red)';
+        const cells = [String(r)].concat(usesBar ? [fmt1(discs), fmt1(tot)] : [fmt1(tot)]);
+        html += '<div style="display:grid; grid-template-columns:' + cols + '; gap:4px; font-size:0.95rem; padding:7px 8px; border-radius:8px; background:' + (r === state.reps ? 'var(--card-border)' : 'transparent') + ';">'
+          + cells.map((v, i) => '<div' + (i === 0 ? ' style="font-weight:bold;"' : '') + '>' + v + '</div>').join('')
+          + '<div style="color:' + c + ';">' + fmt1(rm) + '</div></div>';
+      }
+      html += '<div style="font-size:0.72rem; color:var(--text-dim); margin-top:8px; line-height:1.4;">Estimación con la fórmula de Epley, más fiable hasta unas 10 repeticiones. El peso se redondea al paso de discos que usas.</div>';
+      document.getElementById('rm-table-body').innerHTML = html;
+      openModal('modal-rm-table');
     }
 
     function initApp() {
@@ -6217,6 +6303,7 @@ function startWorkout(exIndex, isInternalSupersetNav) {
         state.supersetReturnIdx = null;
         state.supersetJumpPartnerIdx = null;
         state.pendingSupersetReturn = null;
+        state.supersetAutoJump = false;
       }
       state.activeExObj = session.exercises[exIndex]; const exName = state.activeExObj.name;
       state.currentSet = session.logs[exName] ? session.logs[exName].length + 1 : 1;
@@ -6573,6 +6660,8 @@ function startWorkout(exIndex, isInternalSupersetNav) {
         if (bEl) bEl.innerText = state.barWeight;
         if (rEl) rEl.innerText = state.reps;
       }
+    
+      try { updateRmLive(); } catch (e) {}
     }
 
     // LÓGICA DE EDICIÓN / ELIMINACIÓN DE SERIES DE HOY
@@ -7463,22 +7552,17 @@ function openEditHistorySetModal(type, idx) {
 
       document.getElementById('timer-inputs-panel').classList.remove('hidden');
 
-      // SUPERSERIES: si este ejercicio está vinculado, alternar entre "salto al compañero" y "descanso largo + vuelta"
+      // SUPERSERIES: tras cada serie se descansa lo configurado y, al terminar, la app pasa sola al compañero
       const partnerIdx = getSupersetPartnerIndex(state.activeExObj);
-      const isReturningLeg = (partnerIdx !== -1 && state.supersetLeg === 1);
-
-      if (partnerIdx !== -1 && !isReturningLeg) {
-        // Primer ejercicio del par: guardar serie y saltar de inmediato al compañero (sin descanso largo)
+      const partnerEx = partnerIdx !== -1 ? session.exercises[partnerIdx] : null;
+      if (partnerEx && exPendingSets(partnerEx) > 0) {
         state.supersetJumpPartnerIdx = partnerIdx;
-        state.supersetReturnIdx = session.exercises.indexOf(state.activeExObj);
-        startTimer(0, calculatedRest, true);
+        state.supersetAutoJump = true;
       } else {
-        if (isReturningLeg) {
-          state.pendingSupersetReturn = state.supersetReturnIdx;
-          state.supersetLeg = 0;
-        }
-        startTimer(getSetConfig(state.activeExObj, state.currentSet).rest, calculatedRest, false);
+        state.supersetJumpPartnerIdx = null;
+        state.supersetAutoJump = false;
       }
+      startTimer(getSetConfig(state.activeExObj, state.currentSet).rest, calculatedRest, false);
     }
 
     function addRestTime(seconds) {
@@ -7565,7 +7649,11 @@ function openEditHistorySetModal(type, idx) {
       }
 
       let f = `${Math.floor(displaySec / 60).toString().padStart(2, '0')}:${(displaySec % 60).toString().padStart(2, '0')}`;
-      document.getElementById('timer-display').innerText = f;
+      const _td = document.getElementById('timer-display');
+      if (_td && _td.dataset.f !== f) {
+        _td.dataset.f = f;
+        _td.innerHTML = f.split('').map(ch => ch === ':' ? '<span class="td-c">:</span>' : '<span class="td-d">' + ch + '</span>').join('');
+      }
       document.getElementById('mini-timer-text').innerText = f;
     }
 
@@ -7645,7 +7733,7 @@ function openEditHistorySetModal(type, idx) {
 
       if (titleEl) {
         titleEl.innerText = isTransition ? 'Cambio de ejercicio' : 'Descanso';
-        titleEl.style.color = isTransition ? 'var(--purple)' : 'var(--text)';
+        titleEl.style.color = isTransition ? 'var(--blue)' : 'var(--text)';
       }
       if (displayEl) {
         displayEl.style.color = '';
@@ -7654,6 +7742,7 @@ function openEditHistorySetModal(type, idx) {
         inputsPanel.classList.remove('hidden');
       }
       configureTimerBackBtn(isTransition);
+      updateTimerNextLabel();
 
       screenEl.classList.remove('hidden'); 
       document.getElementById('mini-timer').classList.add('hidden');
@@ -7687,7 +7776,7 @@ function openEditHistorySetModal(type, idx) {
         session.logs[_ex].push(state.currentSavedSet);
         saveDB(); saveSession();
         if (state.timerIsTransition) localStorage.removeItem('gym_rest_timer');
-        else persistRestTimer({ exName: _ex, restStart: state.restStartTime, target: state.timerTarget, setNum: state.currentSet, pending: true, maximized: true });
+        else persistRestTimer({ exName: _ex, restStart: state.restStartTime, target: state.timerTarget, setNum: state.currentSet, pending: true, maximized: true, jumpIdx: state.supersetAutoJump ? state.supersetJumpPartnerIdx : null });
         renderHistory();
       }
     }
@@ -8394,6 +8483,10 @@ function openEditHistorySetModal(type, idx) {
           if (!state.hasBeeped && state.timerElapsed >= state.timerTarget) {
             state.hasBeeped = true; playBeepSound('end');
             if ('vibrate' in navigator) navigator.vibrate([250, 90, 250]);
+            if (state.supersetAutoJump && state.supersetJumpPartnerIdx !== null && state.supersetJumpPartnerIdx !== undefined && state.supersetJumpPartnerIdx !== -1) {
+              state.supersetAutoJump = false;
+              setTimeout(goToSupersetPartner, 700);
+            }
           }
         }
       }, 1000);
@@ -8408,6 +8501,7 @@ function openEditHistorySetModal(type, idx) {
         window.__restoringTimer = true;
         try { startWorkout(idx, false); } finally { window.__restoringTimer = false; }
         localStorage.setItem('gym_rest_timer', raw);
+        if (t.jumpIdx !== null && t.jumpIdx !== undefined) { state.supersetJumpPartnerIdx = t.jumpIdx; state.supersetAutoJump = true; }
         const logs = session.logs[t.exName] || [];
         const last = logs[logs.length - 1];
         if (t.pending && last) {
@@ -8429,6 +8523,7 @@ function openEditHistorySetModal(type, idx) {
         const h2 = document.querySelector('#timer-screen h2'); if (h2) { h2.innerText = 'Descanso'; h2.style.color = 'var(--text)'; }
         const disp = document.getElementById('timer-display'); if (disp) disp.style.color = '';
         configureTimerBackBtn(false);
+        updateTimerNextLabel();
         updateTimerDisplay(); startRestInterval();
         const max = t.maximized !== false;
         document.getElementById('timer-screen').classList.toggle('hidden', !max);
