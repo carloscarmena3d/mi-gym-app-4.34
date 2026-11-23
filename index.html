@@ -11,7 +11,7 @@
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%230b132b'/%3E%3Cpath d='M20 35h12v30H20zM68 35h12v30H68z' fill='%232ec4b6'/%3E%3Cpath d='M32 42h36v16H32z' fill='%23ff6b35'/%3E%3Cpath d='M14 42h6v16h-6zM80 42h6v16h-6z' fill='%23ffd166'/%3E%3C/svg%3E">
   <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%230b132b'/%3E%3Cpath d='M20 35h12v30H20zM68 35h12v30H68z' fill='%232ec4b6'/%3E%3Cpath d='M32 42h36v16H32z' fill='%23ff6b35'/%3E%3Cpath d='M14 42h6v16h-6zM80 42h6v16h-6z' fill='%23ffd166'/%3E%3C/svg%3E">
   
-  <title>Mi Gym App V4.73</title>
+  <title>Mi Gym App V4.77</title>
   <style>
     :root {
       --bg-color: #0b132b;    /* Azul oscuro profundo */
@@ -627,7 +627,7 @@
     </div>
 
     <div class="workout-controls-card">
-      <div style="display:flex; justify-content:space-between; align-items:baseline; gap:10px; margin-bottom:8px;">
+      <div style="display:flex; justify-content:space-between; align-items:baseline; gap:10px; margin-bottom:8px; width:100%;">
         <div style="font-size: 1.05rem; font-weight: bold; color: var(--accent);" id="set-counter">
           Serie 1 / 3
         </div>
@@ -1279,7 +1279,7 @@
           <input type="checkbox" id="chk-amoled-mode" onchange="toggleAmoledModeSetting(this.checked)" style="width:20px; height:20px; accent-color:var(--green); cursor:pointer;">
         </label>
       </div>
-      <p style="text-align:center; font-size:0.75rem; color:var(--text-dim); margin-top:4px;">MiGymApp V4.73</p>
+      <p style="text-align:center; font-size:0.75rem; color:var(--text-dim); margin-top:4px;">MiGymApp V4.77</p>
     </div>
   </div>
 
@@ -3570,11 +3570,24 @@
       (db.bodyMeasurements || []).forEach(m => { const d = normalizeDate(m.date); if (m[key] != null && d <= iso && d >= bd) { best = +m[key]; bd = d; } });
       return best;
     }
+    function regPrevDate(key, iso) {
+      let bd = '';
+      if (key === 'w') {
+        (db.bodyWeight || []).forEach(x => { const d = normalizeDate(x.date); if (d <= iso && d >= bd) bd = d; });
+        return bd || null;
+      }
+      (db.bodyMeasurements || []).forEach(m => { const d = normalizeDate(m.date); if (m[key] != null && d <= iso && d >= bd) bd = d; });
+      return bd || null;
+    }
+    function shortDateEs(iso) {
+      const d = parseDateStr(iso);
+      return d.getDate() + ' ' + ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'][d.getMonth()];
+    }
     function regOnDate() {
       if (!document.getElementById('reg-scroll')) return;
       const iso = getMwDate();
       regVals = {};
-      REG_FIELDS.forEach(f => { if (f) { const p = regPrev(f.key, iso); regVals[f.key] = { prev: p, cur: p, touched: false }; } });
+      REG_FIELDS.forEach(f => { if (f) { const p = regPrev(f.key, iso); regVals[f.key] = { prev: p, cur: p, touched: false, prevDate: regPrevDate(f.key, iso) }; } });
       renderRegistrar();
     }
     function regCellHtml(f, big) {
@@ -3587,14 +3600,24 @@
           <button class="rb-btn" data-k="${f.key}" data-d="1" aria-label="Subir ${f.label}">+</button>
         </div></div>`;
     }
+    function regMeasTouched() { return Object.keys(regVals).some(k => k !== 'w' && regVals[k].touched && regVals[k].cur != null); }
+    function regRepaintMeasures() { Object.keys(regVals).forEach(k => { if (k !== 'w') paintRegCell(k); }); }
     function paintRegCell(k) {
       const c = document.getElementById('rc-' + k), s = regVals[k];
       if (!c || !s) return;
       const changed = s.touched && s.cur != null && (s.prev == null || Math.abs(s.cur - s.prev) > 0.001);
       c.querySelector('.rc-n').textContent = s.cur == null ? '—' : fmt1(s.cur);
-      c.querySelector('.rc-val').style.color = changed ? 'var(--accent)' : 'var(--text)';
+      const isoNow = getMwDate();
+      const fromOtherDay = !!(s.prevDate && s.prevDate !== isoNow);
+      const implied = k !== 'w' && !s.touched && s.cur != null && regMeasTouched();
+      c.querySelector('.rc-val').style.color = changed ? 'var(--accent)' : (fromOtherDay && !s.touched && !implied ? 'var(--text-dim)' : 'var(--text)');
       c.style.borderColor = changed ? 'var(--accent)' : 'var(--card-border)';
-      c.querySelector('.rc-dlt').textContent = (changed && s.prev != null) ? ((s.cur > s.prev ? '+' : '−') + fmt1(Math.abs(s.cur - s.prev))) : '';
+      const dl = c.querySelector('.rc-dlt');
+      if (changed && s.prev != null) { dl.textContent = (s.cur > s.prev ? '+' : '−') + fmt1(Math.abs(s.cur - s.prev)); dl.style.color = 'var(--accent)'; }
+      else if (s.touched && s.cur != null && s.prev != null && !changed) { dl.textContent = 'igual'; dl.style.color = 'var(--green)'; }
+      else if (implied) { dl.textContent = 'igual'; dl.style.color = 'var(--green)'; }
+      else if (!s.touched && s.prevDate) { dl.textContent = s.prevDate === isoNow ? 'hoy' : shortDateEs(s.prevDate); dl.style.color = 'var(--text-dim)'; }
+      else { dl.textContent = ''; }
       const nt = c.querySelector('.rc-note');
       if (nt) nt.innerHTML = svgNoteIcon(!!(db.measureNotes && db.measureNotes[k] && String(db.measureNotes[k]).trim()));
     }
@@ -3605,13 +3628,14 @@
       s.cur = Math.max(0.1, Math.round((s.cur + dir * 0.1 * mult) * 10) / 10);
       s.touched = true;
       paintRegCell(k);
+      if (k !== 'w') regRepaintMeasures();
     }
     function regType(k) {
       const s = regVals[k], f = REG_FIELDS.find(x => x && x.key === k);
       if (!s || !f) return;
       customPrompt(f.label + ' (' + (f.unit || 'cm') + ')', s.cur == null ? '' : s.cur, function(v) {
         const x = parseFloat(String(v).replace(',', '.'));
-        if (!isNaN(x) && x > 0) { s.cur = Math.round(x * 10) / 10; s.touched = true; paintRegCell(k); }
+        if (!isNaN(x) && x > 0) { s.cur = Math.round(x * 10) / 10; s.touched = true; paintRegCell(k); if (k !== 'w') regRepaintMeasures(); }
       }, 'number');
     }
     function bindRegistrar(box) {
@@ -3659,8 +3683,12 @@
     }
     function saveRegistro() {
       const iso = getMwDate();
-      const keys = Object.keys(regVals).filter(k => regVals[k].touched && regVals[k].cur != null && regVals[k].cur > 0);
-      if (!keys.length) { showToast('No has cambiado ningún valor'); return; }
+      const okVal = k => regVals[k].cur != null && regVals[k].cur > 0;
+      const touchedKeys = Object.keys(regVals).filter(k => regVals[k].touched && okVal(k));
+      if (!touchedKeys.length) { showToast('No has cambiado ningún valor'); return; }
+      const keys = [];
+      if (touchedKeys.indexOf('w') !== -1) keys.push('w');
+      if (touchedKeys.some(k => k !== 'w')) Object.keys(regVals).forEach(k => { if (k !== 'w' && okVal(k)) keys.push(k); });
       keys.forEach(k => {
         const v = regVals[k].cur;
         if (k === 'w') {
@@ -3677,7 +3705,11 @@
       });
       sortBodyWeightByDate();
       saveDB();
-      showToast('Guardado en ' + (iso === todayISO() ? 'hoy' : formatDate(iso)));
+      const nMed = keys.filter(k => k !== 'w').length;
+      const partes = [];
+      if (keys.indexOf('w') !== -1) partes.push('peso');
+      if (nMed) partes.push(nMed + (nMed === 1 ? ' medida' : ' medidas'));
+      showToast('Guardado en ' + (iso === todayISO() ? 'hoy' : formatDate(iso)) + ': ' + partes.join(' y '));
       regOnDate();
       renderEvo();
     }
@@ -3947,14 +3979,13 @@
       if (!state.activeExObj || isIsometricEx(state.activeExObj) || total <= 0 || !(state.reps > 0)) { el.innerHTML = ''; return; }
       const rm = get1RMd(total, state.reps);
       const ref = rmRefForCurrentSet();
-      let html = 'RM ' + fmt1(rm);
+      let col = 'var(--text)';
       if (ref) {
         const p = (rm - ref) / ref * 100;
-        const c = p >= -1 ? 'var(--green)' : p >= -5 ? 'var(--yellow)' : 'var(--red)';
-        const a = Math.round(Math.abs(p) * 10) / 10;
-        html += ' <span style="color:' + c + ';">' + (p > 0.05 ? '+' : p < -0.05 ? '−' : '') + String(a).replace('.', ',') + '%</span>';
+        col = p > 0.5 ? 'var(--green)' : p < -0.5 ? 'var(--accent)' : 'var(--text)';
       }
-      el.innerHTML = html;
+      el.style.color = col;
+      el.innerHTML = 'RM ' + fmt1(rm);
     }
     function openRmTable() {
       if (!state.activeExObj) return;
@@ -3965,9 +3996,18 @@
       const ref = rmRefForCurrentSet();
       const base = ref || cur;
       if (!base) return;
-      document.getElementById('rm-table-sub').innerText = ref
-        ? 'Para igualar tu RM de la última sesión: ' + fmt1(ref) + ' kg'
-        : 'Con tu configuración actual: ' + fmt1(cur) + ' kg';
+      let subHtml = '';
+      if (cur) subHtml += '<div>RM actual: <strong style="color:var(--text);">' + fmt1(cur) + ' kg</strong></div>';
+      if (cur && ref) {
+        const pc = (cur - ref) / ref * 100;
+        const pa = Math.round(Math.abs(pc) * 10) / 10;
+        const pcol = pc > 0.5 ? 'var(--green)' : pc < -0.5 ? 'var(--accent)' : 'var(--text)';
+        subHtml += '<div>Frente a tu última sesión (' + fmt1(ref) + ' kg): <strong style="color:' + pcol + ';">' + (pc > 0.05 ? '+' : pc < -0.05 ? '−' : '') + String(pa).replace('.', ',') + '%</strong></div>';
+      } else if (!ref) {
+        subHtml += '<div>Aún no hay una sesión anterior para comparar.</div>';
+      }
+      subHtml += '<div style="margin-top:6px;">Pesos equivalentes' + (ref ? ' a ese RM de la última sesión' : ' a tu RM actual') + ':</div>';
+      document.getElementById('rm-table-sub').innerHTML = subHtml;
       const step = +state.weightStep > 0 ? +state.weightStep : 2.5;
       const cols = usesBar ? '0.6fr 1fr 1fr 1fr' : '0.6fr 1fr 1fr';
       const head = ['Reps'].concat(usesBar ? ['Discos', 'Total'] : ['Peso']).concat(['RM']);
@@ -8888,8 +8928,9 @@ function openEditHistorySetModal(type, idx) {
         const dots = [];
         for (let i = Math.max(1, avgs.length - 5); i < avgs.length; i++) {
           const prevV = r1(avgs[i - 1]), curV = r1(avgs[i]);
-          const col = curV > prevV ? 'var(--green)' : curV < prevV ? 'var(--red)' : 'var(--text-dim)';
-          dots.push(`<span style="width:7px; height:7px; border-radius:50%; background:${col}; display:inline-block;"></span>`);
+          const isRec = curV > r1(Math.max.apply(null, avgs.slice(0, i)));
+          const col = isRec ? '#ffd166' : curV > prevV ? 'var(--green)' : curV < prevV ? 'var(--red)' : 'var(--text-dim)';
+          dots.push(`<span style="width:7px; height:7px; border-radius:50%; background:${col}; display:inline-block;${isRec ? ' box-shadow:0 0 5px #ffd166;' : ''}"></span>`);
         }
         return `<span style="display:inline-flex; gap:3px; align-items:center; margin-right:10px; vertical-align:middle;">${dots.reverse().join('')}</span>`;
       } catch (e) { return ''; }

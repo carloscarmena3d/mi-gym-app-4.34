@@ -1,6 +1,6 @@
-// MiGymApp - Service Worker (v4.73)
+// MiGymApp - Service Worker (v4.77)
 // Estrategia: red primero (siempre la versión más nueva) y caché como respaldo sin conexión.
-const CACHE = 'migymapp-v4.73';
+const CACHE = 'migymapp-v4.77';
 const ASSETS = ['./', './index.html', './manifest.json', './icon-192.png', './icon-512.png'];
 
 self.addEventListener('install', event => {
